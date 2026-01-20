@@ -1,0 +1,57 @@
+/* System Info Module Styles */
+.sysinfo-container {
+  padding: var(--spacing-md);
+  overflow-y: auto;
+  height: 100%;
+}
+
+.sysinfo-section {
+  margin-bottom: var(--spacing-lg);
+}
+
+.sysinfo-section:last-child {
+  margin-bottom: 0;
+}
+
+.sysinfo-section-title {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--spacing-sm);
+}
+
+.sysinfo-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.sysinfo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--bg-secondary);
+  border-radius: 4px;
+}
+
+.sysinfo-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.sysinfo-value {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  text-align: right;
+  word-break: break-word;
+}
+
+.sysinfo-value-small {
+  font-size: 11px;
+  max-width: 150px;
+}

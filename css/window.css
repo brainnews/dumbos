@@ -1,0 +1,145 @@
+/* Window Frame */
+.window {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  min-width: var(--window-min-width);
+  min-height: var(--window-min-height);
+  background: var(--bg-window);
+  border: 1px solid var(--border-color);
+  border-radius: var(--window-border-radius);
+  box-shadow: var(--shadow-window);
+  overflow: hidden;
+  transition: box-shadow var(--transition-fast);
+}
+
+.window.active {
+  box-shadow: 0 8px 32px var(--shadow-color);
+  border-color: var(--border-light);
+}
+
+.window.minimized {
+  display: none;
+}
+
+.window.maximized {
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 0;
+}
+
+.window.dragging {
+  opacity: 0.9;
+  cursor: grabbing;
+}
+
+.window.resizing {
+  user-select: none;
+}
+
+/* Window Header */
+.window-header {
+  display: flex;
+  align-items: center;
+  height: var(--window-header-height);
+  padding: 0 var(--spacing-sm);
+  background: var(--bg-window-header);
+  border-bottom: 1px solid var(--border-color);
+  cursor: grab;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.window.dragging .window-header {
+  cursor: grabbing;
+}
+
+.window-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: var(--spacing-sm);
+  flex-shrink: 0;
+}
+
+.window-icon svg {
+  width: 100%;
+  height: 100%;
+  fill: var(--text-secondary);
+}
+
+.window-title {
+  flex: 1;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Window Controls */
+.window-controls {
+  display: flex;
+  gap: var(--spacing-xs);
+  margin-left: var(--spacing-sm);
+}
+
+.window-control {
+  width: 12px;
+  height: 12px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+  padding: 0;
+}
+
+.window-control:hover {
+  opacity: 0.8;
+}
+
+.window-control-close {
+  background: var(--control-close);
+}
+
+.window-control-minimize {
+  background: var(--control-minimize);
+}
+
+.window-control-maximize {
+  background: var(--control-maximize);
+}
+
+/* Window Content */
+.window-content {
+  flex: 1;
+  overflow: auto;
+  position: relative;
+}
+
+/* Resize Handle */
+.window-resize {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  cursor: se-resize;
+}
+
+.window-resize::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--border-light);
+  border-bottom: 2px solid var(--border-light);
+}
+
+.window.maximized .window-resize {
+  display: none;
+}

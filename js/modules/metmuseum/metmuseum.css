@@ -1,0 +1,210 @@
+/* Met Museum Module Styles */
+.metmuseum-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Header */
+.metmuseum-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.metmuseum-select {
+  flex: 1;
+  padding: var(--spacing-sm);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+}
+
+.metmuseum-select:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+}
+
+.metmuseum-refresh-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.metmuseum-refresh-btn:hover {
+  background: var(--accent-primary);
+}
+
+.metmuseum-refresh-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.metmuseum-refresh-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.metmuseum-refresh-btn.spinning svg {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Content Area */
+.metmuseum-content {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Image Container */
+.metmuseum-image-container {
+  position: relative;
+  background: var(--bg-secondary);
+  min-height: 200px;
+  max-height: 350px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.metmuseum-image {
+  max-width: 100%;
+  max-height: 350px;
+  object-fit: contain;
+}
+
+.metmuseum-image-placeholder {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* Metadata Section */
+.metmuseum-metadata {
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.metmuseum-title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+  margin-bottom: var(--spacing-xs);
+}
+
+.metmuseum-artist {
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+}
+
+.metmuseum-detail {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.metmuseum-detail-label {
+  color: var(--text-muted);
+}
+
+.metmuseum-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  transition: all var(--transition-fast);
+  align-self: flex-start;
+}
+
+.metmuseum-link:hover {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+
+.metmuseum-link svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Loading State */
+.metmuseum-loading {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  color: var(--text-muted);
+}
+
+.metmuseum-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border-color);
+  border-top-color: var(--accent-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Empty/Error State */
+.metmuseum-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.metmuseum-empty.error {
+  color: var(--accent-primary);
+}
+
+.metmuseum-retry-btn {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.metmuseum-retry-btn:hover {
+  background: var(--accent-primary);
+}

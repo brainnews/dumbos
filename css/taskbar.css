@@ -1,0 +1,80 @@
+/* Taskbar */
+#taskbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--taskbar-height);
+  background: var(--taskbar-bg);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--spacing-sm);
+  z-index: 1000;
+}
+
+/* Launcher Icons */
+.taskbar-launchers {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.taskbar-launcher {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-secondary);
+  border: 2px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  padding: 0;
+}
+
+.taskbar-launcher:hover {
+  background: var(--bg-tertiary);
+}
+
+.taskbar-launcher svg {
+  width: 20px;
+  height: 20px;
+  color: var(--text-secondary);
+  stroke: var(--text-secondary);
+}
+
+.taskbar-launcher:hover svg {
+  color: var(--text-primary);
+  stroke: var(--text-primary);
+}
+
+/* Active state - solid outline */
+.taskbar-launcher.active {
+  border-color: var(--accent-primary);
+  background: var(--bg-tertiary);
+}
+
+.taskbar-launcher.active svg {
+  color: var(--text-primary);
+  stroke: var(--text-primary);
+}
+
+/* Minimized state - dotted outline */
+.taskbar-launcher.minimized {
+  border-style: dashed;
+}
+
+/* Tray (right side) */
+.taskbar-tray {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.taskbar-clock {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}

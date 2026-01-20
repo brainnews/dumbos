@@ -1,0 +1,76 @@
+:root {
+  /* Colors - Dark Theme (default) */
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #242424;
+  --bg-tertiary: #2e2e2e;
+  --bg-window: #1e1e1e;
+  --bg-window-header: #282828;
+
+  --text-primary: #e8e8e8;
+  --text-secondary: #a0a0a0;
+  --text-muted: #666666;
+
+  --accent-primary: #e94560;
+  --accent-secondary: #3a3a3a;
+  --accent-hover: #ff6b6b;
+
+  --border-color: #333333;
+  --border-light: #444444;
+
+  --shadow-color: rgba(0, 0, 0, 0.4);
+  --shadow-window: 0 4px 20px var(--shadow-color);
+
+  /* Window Controls */
+  --control-close: #ff5f56;
+  --control-minimize: #ffbd2e;
+  --control-maximize: #27ca40;
+
+  /* Taskbar */
+  --taskbar-bg: #141414;
+  --taskbar-height: 48px;
+
+  /* Typography */
+  --font-system: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  --font-size-sm: 12px;
+  --font-size-base: 14px;
+  --font-size-lg: 16px;
+  --font-size-xl: 24px;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+
+  /* Window */
+  --window-header-height: 32px;
+  --window-border-radius: 8px;
+  --window-min-width: 200px;
+  --window-min-height: 150px;
+
+  /* Transitions */
+  --transition-fast: 0.1s ease;
+  --transition-normal: 0.2s ease;
+}
+
+/* Light Theme */
+[data-theme="light"] {
+  --bg-primary: #f0f0f5;
+  --bg-secondary: #e0e0e8;
+  --bg-tertiary: #d0d0d8;
+  --bg-window: #ffffff;
+  --bg-window-header: #f5f5f8;
+
+  --text-primary: #1a1a2e;
+  --text-secondary: #4a4a5a;
+  --text-muted: #8a8a9a;
+
+  --border-color: #d0d0d8;
+  --border-light: #e0e0e8;
+
+  --shadow-color: rgba(0, 0, 0, 0.1);
+
+  --taskbar-bg: #e0e0e8;
+}

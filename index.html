@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DumbOS</title>
+  <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+
+  <!-- Core Styles -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/window.css">
+  <link rel="stylesheet" href="css/taskbar.css">
+
+  <!-- Module Styles -->
+  <link rel="stylesheet" href="js/modules/notes/notes.css">
+  <link rel="stylesheet" href="js/modules/rss/rss.css">
+  <link rel="stylesheet" href="js/modules/settings/settings.css">
+  <link rel="stylesheet" href="js/modules/pomodoro/pomodoro.css">
+  <link rel="stylesheet" href="js/modules/bookmarks/bookmarks.css">
+  <link rel="stylesheet" href="js/modules/sysinfo/sysinfo.css">
+  <link rel="stylesheet" href="js/modules/metmuseum/metmuseum.css">
+</head>
+<body>
+  <div id="welcome-modal" class="welcome-modal" style="display: none;">
+    <div class="welcome-window">
+      <div class="welcome-header">
+        <span class="welcome-title">Welcome to DumbOS</span>
+        <button class="welcome-close" aria-label="Close">&times;</button>
+      </div>
+      <div class="welcome-content">
+        <p class="welcome-intro">A simple, privacy-first desktop environment that runs in your browser. All your data stays local.</p>
+
+        <div class="welcome-features">
+          <div class="welcome-feature">
+            <span class="welcome-feature-icon">&#128221;</span>
+            <div>
+              <strong>Notes</strong>
+              <span>Quick notes with auto-save</span>
+            </div>
+          </div>
+          <div class="welcome-feature">
+            <span class="welcome-feature-icon">&#128240;</span>
+            <div>
+              <strong>RSS Reader</strong>
+              <span>Follow your favorite feeds</span>
+            </div>
+          </div>
+          <div class="welcome-feature">
+            <span class="welcome-feature-icon">&#9201;</span>
+            <div>
+              <strong>Pomodoro</strong>
+              <span>Focus timer with notifications</span>
+            </div>
+          </div>
+          <div class="welcome-feature">
+            <span class="welcome-feature-icon">&#128278;</span>
+            <div>
+              <strong>Bookmarks</strong>
+              <span>Save and organize links</span>
+            </div>
+          </div>
+          <div class="welcome-feature">
+            <span class="welcome-feature-icon">&#127912;</span>
+            <div>
+              <strong>Met Museum</strong>
+              <span>Explore art from The Met</span>
+            </div>
+          </div>
+          <div class="welcome-feature">
+            <span class="welcome-feature-icon">&#9881;</span>
+            <div>
+              <strong>Settings</strong>
+              <span>Customize your desktop</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="welcome-hint">Click icons in the taskbar below to open apps.</p>
+
+        <label class="welcome-checkbox">
+          <input type="checkbox" id="welcome-hide">
+          <span>Don't show this again</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div id="mobile-notice">
+    <div class="mobile-notice-content">
+      <svg class="mobile-notice-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+        <line x1="8" y1="21" x2="16" y2="21"/>
+        <line x1="12" y1="17" x2="12" y2="21"/>
+      </svg>
+      <h1>Desktop Only</h1>
+      <p>DumbOS is a desktop experience. Please visit on a larger screen.</p>
+    </div>
+  </div>
+  <div id="desktop"></div>
+  <div id="taskbar">
+    <div class="taskbar-launchers"></div>
+    <div class="taskbar-tray"></div>
+  </div>
+
+  <script type="module" src="js/core/app.js"></script>
+</body>
+</html>

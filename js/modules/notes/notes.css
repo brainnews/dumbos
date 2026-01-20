@@ -1,0 +1,37 @@
+/* Notes Module Styles */
+.notes-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.notes-textarea {
+  flex: 1;
+  width: 100%;
+  padding: var(--spacing-md);
+  border: none;
+  background: var(--bg-window);
+  color: var(--text-primary);
+  font-family: var(--font-system);
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  resize: none;
+  outline: none;
+}
+
+.notes-textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.notes-status {
+  display: flex;
+  justify-content: flex-end;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-window-header);
+}
+
+.notes-status-text {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}

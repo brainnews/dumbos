@@ -1,0 +1,10 @@
+name = "rss-proxy"
+main = "rss-proxy.js"
+compatibility_date = "2024-01-01"
+
+# Workers route configuration
+# Uncomment and customize for production:
+# route = { pattern = "rss-proxy.dumbos.workers.dev/*", zone_name = "dumbos.workers.dev" }
+
+[vars]
+ENVIRONMENT = "production"
