@@ -1,6 +1,7 @@
 /**
  * RSS Module - RSS feed reader
  */
+import Storage from '../../core/storage.js';
 
 // Configure this to your deployed worker URL
 const RSS_PROXY_URL = 'https://rss-proxy.miles-gilbert.workers.dev';
@@ -253,9 +254,10 @@ const RSSModule = {
       li.className = 'rss-article-item';
 
       const date = article.pubDate ? new Date(article.pubDate).toLocaleDateString() : '';
+      const link = this._transformLink(article.link);
 
       li.innerHTML = `
-        <a href="${this._escapeHtml(article.link)}" target="_blank" rel="noopener noreferrer" class="rss-article-link">
+        <a href="${this._escapeHtml(link)}" target="_blank" rel="noopener noreferrer" class="rss-article-link">
           <h4 class="rss-article-title">${this._escapeHtml(article.title)}</h4>
           ${date ? `<time class="rss-article-date">${date}</time>` : ''}
           ${article.description ? `<p class="rss-article-desc">${this._escapeHtml(article.description)}</p>` : ''}
@@ -298,6 +300,18 @@ const RSSModule = {
    */
   _saveFeeds() {
     this.storage.set('feeds', this.feeds);
+  },
+
+  /**
+   * Transform article links (e.g., NPR text mode)
+   */
+  _transformLink(url) {
+    if (!url) return url;
+    const nprTextMode = Storage.get('rss', 'nprTextMode', true);
+    if (nprTextMode && url.includes('www.npr.org')) {
+      return url.replace('www.npr.org', 'text.npr.org');
+    }
+    return url;
   },
 
   /**

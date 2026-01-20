@@ -63,6 +63,17 @@ const SettingsModule = {
         </div>
 
         <div class="settings-section">
+          <h3 class="settings-section-title">RSS</h3>
+          <div class="settings-row">
+            <div>
+              <label class="settings-label">NPR Text Mode</label>
+              <p class="settings-description">Open NPR links in text-only version</p>
+            </div>
+            <input type="checkbox" class="settings-checkbox" data-setting="npr-text-mode" ${Storage.get('rss', 'nprTextMode', true) ? 'checked' : ''}>
+          </div>
+        </div>
+
+        <div class="settings-section">
           <h3 class="settings-section-title">Data</h3>
           <div class="settings-row settings-row-stack">
             <div class="settings-btn-group">
@@ -121,6 +132,10 @@ const SettingsModule = {
 
     this.container.querySelector('[data-action="clear-bg"]').addEventListener('click', () => {
       this._clearBackground();
+    });
+
+    this.container.querySelector('[data-setting="npr-text-mode"]').addEventListener('change', (e) => {
+      Storage.set('rss', 'nprTextMode', e.target.checked);
     });
 
     this.container.querySelector('[data-action="export-data"]').addEventListener('click', () => {

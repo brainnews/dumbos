@@ -149,3 +149,10 @@
 .settings-btn-group .settings-btn {
   flex: 1;
 }
+
+.settings-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--accent-primary);
+}
