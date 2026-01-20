@@ -53,7 +53,8 @@ Each module exports an object with:
 - **pomodoro** - Timer with work/break intervals, browser notifications
 - **bookmarks** - Links manager with optional desktop icon display
 - **sysinfo** - Browser/hardware info display
-- **settings** - Clock format (12/24h), background image (URL or upload), factory reset
+- **metmuseum** - Browse and search art from The Metropolitan Museum of Art API
+- **settings** - Clock format, background image, data export/import, factory reset
 
 ### Event System
 
@@ -70,6 +71,13 @@ Pattern: `dumbos:{namespace}:{key}`
 ### Theming
 
 CSS custom properties in `css/variables.css`. Light theme via `<html data-theme="light">`.
+
+## Deployment
+
+Hosted on Cloudflare Pages at os.dumbsoft.com. Deploy with:
+```bash
+wrangler pages deploy . --project-name=dumbos
+```
 
 ## RSS Proxy (Cloudflare Worker)
 
