@@ -74,9 +74,9 @@ CSS custom properties in `css/variables.css`. Light theme via `<html data-theme=
 
 ## Deployment
 
-Hosted on Cloudflare Pages at os.dumbsoft.com. Deploy with:
+Hosted on Cloudflare Pages at os.dumbsoft.com. Always deploy to production:
 ```bash
-wrangler pages deploy . --project-name=dumbos
+wrangler pages deploy . --project-name=dumbos --branch=production
 ```
 
 ## RSS Proxy (Cloudflare Worker)
