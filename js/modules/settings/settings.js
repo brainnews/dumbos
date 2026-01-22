@@ -3,11 +3,13 @@
  */
 import Storage from '../../core/storage.js';
 
+const DEFAULT_WALLPAPER = '/assets/wallpapers/dumbOS-wallpaper-01.jpg';
+
 const SettingsModule = {
   id: 'settings',
   title: 'Settings',
   icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
-  defaultSize: { width: 400, height: 420 },
+  defaultSize: { width: 400, height: 500 },
   minSize: { width: 350, height: 350 },
 
   container: null,
@@ -70,6 +72,13 @@ const SettingsModule = {
               <p class="settings-description">Open NPR links in text-only version</p>
             </div>
             <input type="checkbox" class="settings-checkbox" data-setting="npr-text-mode" ${Storage.get('rss', 'nprTextMode', true) ? 'checked' : ''}>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3 class="settings-section-title">Tips</h3>
+          <div class="settings-row settings-row-stack">
+            <p class="settings-description">Want DumbOS to open every time you create a new tab? Install the <a href="https://chromewebstore.google.com/detail/new-tab-redirect/icpgjfneehieebagbmdbhnlpiopdcmna" target="_blank" rel="noopener">New Tab Redirect</a> extension and set it to <code>https://os.dumbsoft.com</code></p>
           </div>
         </div>
 
@@ -211,18 +220,11 @@ const SettingsModule = {
     const desktop = document.getElementById('desktop');
     const url = Storage.get('desktop', 'background-url', '');
     const dataUrl = Storage.get('desktop', 'background-data', '');
+    const bgImage = dataUrl || url || DEFAULT_WALLPAPER;
 
-    if (dataUrl) {
-      desktop.style.backgroundImage = `url("${dataUrl}")`;
-      desktop.style.backgroundSize = 'cover';
-      desktop.style.backgroundPosition = 'center';
-    } else if (url) {
-      desktop.style.backgroundImage = `url("${url}")`;
-      desktop.style.backgroundSize = 'cover';
-      desktop.style.backgroundPosition = 'center';
-    } else {
-      desktop.style.backgroundImage = '';
-    }
+    desktop.style.backgroundImage = `url("${bgImage}")`;
+    desktop.style.backgroundSize = 'cover';
+    desktop.style.backgroundPosition = 'center';
   },
 
   /**
@@ -344,16 +346,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const desktop = document.getElementById('desktop');
   const url = Storage.get('desktop', 'background-url', '');
   const dataUrl = Storage.get('desktop', 'background-data', '');
+  const bgImage = dataUrl || url || DEFAULT_WALLPAPER;
 
-  if (dataUrl) {
-    desktop.style.backgroundImage = `url("${dataUrl}")`;
-    desktop.style.backgroundSize = 'cover';
-    desktop.style.backgroundPosition = 'center';
-  } else if (url) {
-    desktop.style.backgroundImage = `url("${url}")`;
-    desktop.style.backgroundSize = 'cover';
-    desktop.style.backgroundPosition = 'center';
-  }
+  desktop.style.backgroundImage = `url("${bgImage}")`;
+  desktop.style.backgroundSize = 'cover';
+  desktop.style.backgroundPosition = 'center';
 });
 
 export default SettingsModule;

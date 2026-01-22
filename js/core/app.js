@@ -14,6 +14,9 @@ import PomodoroModule from '../modules/pomodoro/pomodoro.js';
 import BookmarksModule from '../modules/bookmarks/bookmarks.js';
 import SysInfoModule from '../modules/sysinfo/sysinfo.js';
 import MetMuseumModule from '../modules/metmuseum/metmuseum.js';
+import BreakoutModule from '../modules/breakout/breakout.js';
+import SnakeModule from '../modules/snake/snake.js';
+import CodeEditorModule from '../modules/codeeditor/codeeditor.js';
 
 class App {
   constructor() {
@@ -76,6 +79,9 @@ class App {
     ModuleRegistry.register(BookmarksModule);
     ModuleRegistry.register(SysInfoModule);
     ModuleRegistry.register(MetMuseumModule);
+    ModuleRegistry.register(BreakoutModule);
+    ModuleRegistry.register(SnakeModule);
+    ModuleRegistry.register(CodeEditorModule);
     ModuleRegistry.register(SettingsModule);
   }
 
@@ -93,9 +99,13 @@ class App {
       }
     });
 
-    // If no windows were restored, open notes by default
+    // Only open notes by default on fresh install (no window state saved yet)
+    // If user closed all windows, respect that choice
     if (!anyRestored) {
-      this.openModule('notes');
+      const hasWindowState = Storage.keys('windows').length > 0;
+      if (!hasWindowState) {
+        this.openModule('notes');
+      }
     }
   }
 
