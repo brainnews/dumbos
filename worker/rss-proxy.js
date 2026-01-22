@@ -24,9 +24,16 @@ export default {
 
     const url = new URL(request.url);
     const feedUrl = url.searchParams.get('url');
+    const articleUrl = url.searchParams.get('article');
 
+    // Article extraction mode
+    if (articleUrl) {
+      return handleArticle(articleUrl, url, request, ctx);
+    }
+
+    // RSS feed mode
     if (!feedUrl) {
-      return jsonResponse({ error: 'Missing url parameter' }, 400);
+      return jsonResponse({ error: 'Missing url or article parameter' }, 400);
     }
 
     // Validate URL
@@ -74,6 +81,145 @@ export default {
     }
   },
 };
+
+/**
+ * Handle article extraction request
+ */
+async function handleArticle(articleUrl, url, request, ctx) {
+  // Validate URL
+  try {
+    new URL(articleUrl);
+  } catch {
+    return jsonResponse({ error: 'Invalid article URL' }, 400);
+  }
+
+  // Check cache
+  const cache = caches.default;
+  const cacheKey = new Request(url.toString(), request);
+  let response = await cache.match(cacheKey);
+
+  if (response) {
+    return response;
+  }
+
+  try {
+    const articleResponse = await fetch(articleUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; DumbOS Reader/1.0)',
+        'Accept': 'text/html',
+      },
+      redirect: 'follow',
+    });
+
+    if (!articleResponse.ok) {
+      return jsonResponse({ error: `Failed to fetch article: ${articleResponse.status}` }, 502);
+    }
+
+    const html = await articleResponse.text();
+    const extracted = extractArticle(html, articleUrl);
+
+    response = jsonResponse(extracted, 200, {
+      'Cache-Control': `public, max-age=${CACHE_TTL}`,
+    });
+
+    ctx.waitUntil(cache.put(cacheKey, response.clone()));
+
+    return response;
+  } catch (error) {
+    return jsonResponse({ error: error.message }, 500);
+  }
+}
+
+/**
+ * Extract article content from HTML
+ */
+function extractArticle(html, url) {
+  // Extract title
+  let title = '';
+  const ogTitle = html.match(/<meta[^>]*property=["']og:title["'][^>]*content=["']([^"']+)["']/i);
+  const titleTag = html.match(/<title[^>]*>([^<]+)<\/title>/i);
+  title = ogTitle ? ogTitle[1] : (titleTag ? titleTag[1] : '');
+  title = decodeHtmlEntities(title.trim());
+
+  // Remove unwanted elements
+  let content = html
+    // Remove scripts, styles, and other non-content
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replace(/<noscript[^>]*>[\s\S]*?<\/noscript>/gi, '')
+    .replace(/<iframe[^>]*>[\s\S]*?<\/iframe>/gi, '')
+    .replace(/<!--[\s\S]*?-->/g, '')
+    // Remove nav, header, footer, aside, forms
+    .replace(/<nav[^>]*>[\s\S]*?<\/nav>/gi, '')
+    .replace(/<header[^>]*>[\s\S]*?<\/header>/gi, '')
+    .replace(/<footer[^>]*>[\s\S]*?<\/footer>/gi, '')
+    .replace(/<aside[^>]*>[\s\S]*?<\/aside>/gi, '')
+    .replace(/<form[^>]*>[\s\S]*?<\/form>/gi, '')
+    // Remove common ad/social divs by class/id patterns
+    .replace(/<div[^>]*(class|id)=["'][^"']*(social|share|comment|sidebar|widget|ad-|ads-|advertisement|promo|newsletter|related|recommended)["'][^>]*>[\s\S]*?<\/div>/gi, '');
+
+  // Try to find article content
+  let articleContent = '';
+
+  // Look for article tag
+  const articleMatch = content.match(/<article[^>]*>([\s\S]*?)<\/article>/i);
+  if (articleMatch) {
+    articleContent = articleMatch[1];
+  }
+
+  // Or main tag
+  if (!articleContent) {
+    const mainMatch = content.match(/<main[^>]*>([\s\S]*?)<\/main>/i);
+    if (mainMatch) {
+      articleContent = mainMatch[1];
+    }
+  }
+
+  // Or common content div patterns
+  if (!articleContent) {
+    const contentDivMatch = content.match(/<div[^>]*(class|id)=["'][^"']*(article|post|entry|content|story|body)[-_]?(content|body|text)?["'][^>]*>([\s\S]*?)<\/div>/i);
+    if (contentDivMatch) {
+      articleContent = contentDivMatch[4] || contentDivMatch[0];
+    }
+  }
+
+  // Fallback: use body
+  if (!articleContent) {
+    const bodyMatch = content.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+    articleContent = bodyMatch ? bodyMatch[1] : content;
+  }
+
+  // Clean up the content
+  articleContent = articleContent
+    // Remove remaining unwanted tags but keep content
+    .replace(/<(button|input|select|textarea|label)[^>]*>[\s\S]*?<\/\1>/gi, '')
+    .replace(/<(button|input|select|textarea|label|img)[^>]*\/?>/gi, '')
+    // Keep only safe tags
+    .replace(/<(?!\/?(?:p|br|h[1-6]|ul|ol|li|blockquote|pre|code|em|strong|b|i|a|figure|figcaption|img)\b)[^>]+>/gi, '')
+    // Fix relative URLs for images and links
+    .replace(/(src|href)=["'](?!https?:\/\/)([^"']+)["']/gi, (match, attr, path) => {
+      try {
+        const absolute = new URL(path, url).href;
+        return `${attr}="${absolute}"`;
+      } catch {
+        return match;
+      }
+    })
+    // Clean up whitespace
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  // Wrap paragraphs if content is plain text
+  if (!articleContent.includes('<p') && !articleContent.includes('<h')) {
+    articleContent = '<p>' + articleContent.replace(/\n\n+/g, '</p><p>') + '</p>';
+  }
+
+  return {
+    title,
+    content: articleContent,
+    url,
+  };
+}
 
 /**
  * Create a JSON response with CORS headers

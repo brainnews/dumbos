@@ -62,6 +62,7 @@ class WindowManager {
     this.windows.set(module.id, windowData);
     this._applyState(windowData);
     this._bringToFront(module.id);
+    this._saveState(module.id);
 
     return windowData;
   }

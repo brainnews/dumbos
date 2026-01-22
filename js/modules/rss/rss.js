@@ -18,6 +18,7 @@ const RSSModule = {
   feeds: [],
   selectedFeed: null,
   articles: [],
+  selectedArticle: null,
 
   /**
    * Initialize the module
@@ -43,10 +44,21 @@ const RSSModule = {
           <ul class="rss-feed-list"></ul>
         </aside>
         <main class="rss-main">
+          <div class="rss-main-header" style="display: none;">
+            <span class="rss-main-title"></span>
+            <button class="rss-refresh-btn" title="Refresh">↻</button>
+          </div>
           <div class="rss-empty">
             <p>Select a feed or add one to get started</p>
           </div>
           <ul class="rss-article-list" style="display: none;"></ul>
+          <div class="rss-reader" style="display: none;">
+            <div class="rss-reader-header">
+              <button class="rss-reader-back">← Back</button>
+              <a class="rss-reader-link" href="#" target="_blank" rel="noopener noreferrer">Open in browser</a>
+            </div>
+            <article class="rss-reader-content"></article>
+          </div>
         </main>
       </div>
 
@@ -68,11 +80,17 @@ const RSSModule = {
     this.emptyEl = this.container.querySelector('.rss-empty');
     this.dialogEl = this.container.querySelector('.rss-dialog');
     this.urlInput = this.container.querySelector('.rss-url-input');
+    this.mainHeaderEl = this.container.querySelector('.rss-main-header');
+    this.mainTitleEl = this.container.querySelector('.rss-main-title');
+    this.readerEl = this.container.querySelector('.rss-reader');
+    this.readerContentEl = this.container.querySelector('.rss-reader-content');
 
     // Event listeners
     this.container.querySelector('.rss-add-btn').addEventListener('click', () => this._showAddDialog());
     this.container.querySelector('.rss-dialog-cancel').addEventListener('click', () => this._hideAddDialog());
     this.container.querySelector('.rss-dialog-add').addEventListener('click', () => this._addFeed());
+    this.container.querySelector('.rss-refresh-btn').addEventListener('click', () => this._refreshFeed());
+    this.container.querySelector('.rss-reader-back').addEventListener('click', () => this._closeReader());
     this.urlInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') this._addFeed();
     });
@@ -198,11 +216,15 @@ const RSSModule = {
    */
   async _selectFeed(index) {
     this.selectedFeed = index;
+    this.selectedArticle = null;
     this.storage.set('selectedFeed', index);
     this._renderFeeds();
     this._showLoading();
 
     const feed = this.feeds[index];
+    this.mainTitleEl.textContent = feed.title || feed.url;
+    this.mainHeaderEl.style.display = 'flex';
+    this.readerEl.style.display = 'none';
 
     try {
       const data = await this._fetchFeed(feed.url);
@@ -211,6 +233,7 @@ const RSSModule = {
       // Update feed title if we got a better one
       if (data.title && data.title !== feed.url) {
         this.feeds[index].title = data.title;
+        this.mainTitleEl.textContent = data.title;
         this._saveFeeds();
         this._renderFeeds();
       }
@@ -218,6 +241,15 @@ const RSSModule = {
       this._renderArticles();
     } catch (error) {
       this._showError(`Failed to load feed: ${error.message}`);
+    }
+  },
+
+  /**
+   * Refresh the current feed
+   */
+  _refreshFeed() {
+    if (this.selectedFeed !== null) {
+      this._selectFeed(this.selectedFeed);
     }
   },
 
@@ -247,25 +279,94 @@ const RSSModule = {
 
     this.emptyEl.style.display = 'none';
     this.articleListEl.style.display = 'block';
+    this.readerEl.style.display = 'none';
     this.articleListEl.innerHTML = '';
 
-    this.articles.forEach(article => {
+    this.articles.forEach((article, index) => {
       const li = document.createElement('li');
       li.className = 'rss-article-item';
 
       const date = article.pubDate ? new Date(article.pubDate).toLocaleDateString() : '';
-      const link = this._transformLink(article.link);
+      const hasContent = article.content || article.description;
 
       li.innerHTML = `
-        <a href="${this._escapeHtml(link)}" target="_blank" rel="noopener noreferrer" class="rss-article-link">
+        <div class="rss-article-link">
           <h4 class="rss-article-title">${this._escapeHtml(article.title)}</h4>
           ${date ? `<time class="rss-article-date">${date}</time>` : ''}
-          ${article.description ? `<p class="rss-article-desc">${this._escapeHtml(article.description)}</p>` : ''}
-        </a>
+          ${article.description ? `<p class="rss-article-desc">${this._escapeHtml(this._stripHtml(article.description))}</p>` : ''}
+        </div>
       `;
+
+      li.addEventListener('click', () => {
+        if (hasContent) {
+          this._openArticle(index);
+        } else if (article.link) {
+          window.open(this._transformLink(article.link), '_blank', 'noopener,noreferrer');
+        }
+      });
 
       this.articleListEl.appendChild(li);
     });
+  },
+
+  /**
+   * Open article in reader
+   */
+  _openArticle(index) {
+    const article = this.articles[index];
+    this.selectedArticle = index;
+
+    const link = this._transformLink(article.link);
+    const date = article.pubDate ? new Date(article.pubDate).toLocaleDateString() : '';
+    const content = article.content || article.description || '';
+
+    this.container.querySelector('.rss-reader-link').href = link || '#';
+    this.readerContentEl.innerHTML = `
+      <h1 class="rss-reader-title">${this._escapeHtml(article.title)}</h1>
+      ${date ? `<time class="rss-reader-date">${date}</time>` : ''}
+      <div class="rss-reader-body">${this._sanitizeHtml(content)}</div>
+    `;
+
+    this.articleListEl.style.display = 'none';
+    this.readerEl.style.display = 'flex';
+  },
+
+  /**
+   * Close reader and return to article list
+   */
+  _closeReader() {
+    this.selectedArticle = null;
+    this.readerEl.style.display = 'none';
+    this.articleListEl.style.display = 'block';
+  },
+
+  /**
+   * Strip HTML tags for preview
+   */
+  _stripHtml(html) {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+  },
+
+  /**
+   * Sanitize HTML for reader (allow basic formatting)
+   */
+  _sanitizeHtml(html) {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+
+    // Remove script tags and event handlers
+    tmp.querySelectorAll('script, style').forEach(el => el.remove());
+    tmp.querySelectorAll('*').forEach(el => {
+      [...el.attributes].forEach(attr => {
+        if (attr.name.startsWith('on') || attr.name === 'href' && attr.value.startsWith('javascript:')) {
+          el.removeAttribute(attr.name);
+        }
+      });
+    });
+
+    return tmp.innerHTML;
   },
 
   /**
@@ -282,6 +383,8 @@ const RSSModule = {
    */
   _showEmpty() {
     this.articleListEl.style.display = 'none';
+    this.readerEl.style.display = 'none';
+    this.mainHeaderEl.style.display = 'none';
     this.emptyEl.style.display = 'flex';
     this.emptyEl.innerHTML = '<p>Select a feed or add one to get started</p>';
   },

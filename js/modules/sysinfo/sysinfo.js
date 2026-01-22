@@ -5,7 +5,7 @@ const SysInfoModule = {
   id: 'sysinfo',
   title: 'System Info',
   icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`,
-  defaultSize: { width: 320, height: 380 },
+  defaultSize: { width: 320, height: 480 },
   minSize: { width: 280, height: 300 },
 
   container: null,
@@ -93,6 +93,18 @@ const SysInfoModule = {
               <span class="sysinfo-label">LocalStorage</span>
               <span class="sysinfo-value" data-info="localstorage"></span>
             </div>
+            <div class="sysinfo-item">
+              <span class="sysinfo-label">Quota</span>
+              <span class="sysinfo-value" data-info="quota"></span>
+            </div>
+            <div class="sysinfo-item">
+              <span class="sysinfo-label">DumbOS Usage</span>
+              <span class="sysinfo-value" data-info="dumbos-usage"></span>
+            </div>
+            <div class="sysinfo-item">
+              <span class="sysinfo-label">Largest</span>
+              <span class="sysinfo-value" data-info="largest-module"></span>
+            </div>
           </div>
         </div>
       </div>
@@ -101,6 +113,7 @@ const SysInfoModule = {
 
   render() {
     this._updateInfo();
+    this._updateStorageInfo();
     // Update window size on resize
     this.intervalId = setInterval(() => this._updateDynamicInfo(), 1000);
   },
@@ -134,6 +147,7 @@ const SysInfoModule = {
     this._setValue('window', `${window.innerWidth} × ${window.innerHeight}`);
     this._setValue('online', navigator.onLine ? 'Yes' : 'No');
     this._setValue('localstorage', this._getLocalStorageSize());
+    this._updateStorageInfo();
   },
 
   _setValue(key, value) {
@@ -213,6 +227,65 @@ const SysInfoModule = {
     }
     const kb = (total * 2 / 1024).toFixed(1);
     return `${kb} KB`;
+  },
+
+  _formatBytes(bytes) {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+  },
+
+  async _getStorageQuota() {
+    if (navigator.storage && navigator.storage.estimate) {
+      try {
+        const estimate = await navigator.storage.estimate();
+        return { usage: estimate.usage || 0, quota: estimate.quota || 0 };
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
+  },
+
+  _getDumbOSBreakdown() {
+    const breakdown = {};
+    for (let key in localStorage) {
+      if (localStorage.hasOwnProperty(key) && key.startsWith('dumbos:')) {
+        const parts = key.split(':');
+        const namespace = parts[1] || 'unknown';
+        const size = (localStorage[key].length + key.length) * 2; // UTF-16 chars = 2 bytes each
+        breakdown[namespace] = (breakdown[namespace] || 0) + size;
+      }
+    }
+    // Sort by size descending
+    return Object.entries(breakdown).sort((a, b) => b[1] - a[1]);
+  },
+
+  async _updateStorageInfo() {
+    // Update quota info
+    const quota = await this._getStorageQuota();
+    if (quota && quota.quota > 0) {
+      const usageStr = this._formatBytes(quota.usage);
+      const quotaStr = this._formatBytes(quota.quota);
+      this._setValue('quota', `${usageStr} / ${quotaStr}`);
+    } else {
+      this._setValue('quota', 'Unavailable');
+    }
+
+    // Update DumbOS breakdown
+    const breakdown = this._getDumbOSBreakdown();
+    const totalDumbOS = breakdown.reduce((sum, [, bytes]) => sum + bytes, 0);
+    this._setValue('dumbos-usage', this._formatBytes(totalDumbOS));
+
+    // Update largest module
+    if (breakdown.length > 0) {
+      const [largestNamespace, largestBytes] = breakdown[0];
+      this._setValue('largest-module', `${largestNamespace} (${this._formatBytes(largestBytes)})`);
+    } else {
+      this._setValue('largest-module', 'None');
+    }
   },
 
   destroy() {

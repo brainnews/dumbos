@@ -6,7 +6,7 @@ const API_BASE = 'https://collectionapi.metmuseum.org/public/collection/v1';
 
 const MetMuseumModule = {
   id: 'metmuseum',
-  title: 'Met Museum',
+  title: 'metitate.art portal',
   icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-8h6v8"/><path d="M10 9h4"/></svg>`,
   defaultSize: { width: 500, height: 550 },
   minSize: { width: 350, height: 400 },
@@ -233,7 +233,7 @@ const MetMuseumModule = {
     const date = obj.objectDate || 'Date unknown';
     const medium = obj.medium || '';
     const department = obj.department || '';
-    const metUrl = obj.objectURL || `https://www.metmuseum.org/art/collection/search/${obj.objectID}`;
+    const meditateUrl = `https://www.metitate.art/object?id=${obj.objectID}`;
 
     this.contentEl.innerHTML = `
       <div class="metmuseum-image-container">
@@ -248,8 +248,8 @@ const MetMuseumModule = {
         ${date ? `<p class="metmuseum-detail">${this._escapeHtml(date)}</p>` : ''}
         ${medium ? `<p class="metmuseum-detail"><span class="metmuseum-detail-label">Medium:</span> ${this._escapeHtml(medium)}</p>` : ''}
         ${department ? `<p class="metmuseum-detail"><span class="metmuseum-detail-label">Department:</span> ${this._escapeHtml(department)}</p>` : ''}
-        <a href="${this._escapeHtml(metUrl)}" target="_blank" rel="noopener noreferrer" class="metmuseum-link">
-          View on Met Website
+        <a href="${this._escapeHtml(meditateUrl)}" target="_blank" rel="noopener noreferrer" class="metmuseum-link">
+          Open on metitate.art
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
             <polyline points="15 3 21 3 21 9"/>
