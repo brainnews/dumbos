@@ -1,0 +1,93 @@
+/* Pixel Art Module Styles */
+.pixelart-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--spacing-sm);
+  gap: var(--spacing-sm);
+}
+
+.pixelart-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.pixelart-palette {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
+}
+
+.pixelart-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+.pixelart-swatch:hover {
+  transform: scale(1.15);
+}
+
+.pixelart-swatch.active {
+  border-color: white;
+  transform: scale(1.15);
+}
+
+.pixelart-tools {
+  display: flex;
+  gap: 3px;
+  margin-left: auto;
+}
+
+.pixelart-tool-btn {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.pixelart-tool-btn:hover {
+  background: var(--border-light);
+}
+
+.pixelart-tool-btn.active {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: white;
+}
+
+.pixelart-canvas-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.pixelart-grid {
+  display: grid;
+  gap: 1px;
+  background: var(--border-color);
+  border: 1px solid var(--border-color);
+  user-select: none;
+}
+
+.pixelart-cell {
+  aspect-ratio: 1;
+  background: var(--bg-primary);
+  cursor: crosshair;
+  transition: none;
+}
+
+.pixelart-cell:hover {
+  opacity: 0.8;
+}

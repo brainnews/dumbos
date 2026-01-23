@@ -1,0 +1,70 @@
+/* Bubble Wrap Module Styles */
+.bubblewrap-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--spacing-sm);
+  gap: var(--spacing-sm);
+}
+
+.bubblewrap-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bubblewrap-counter {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+.bubblewrap-reset {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.bubblewrap-reset:hover {
+  background: var(--border-light);
+}
+
+.bubblewrap-grid {
+  flex: 1;
+  display: grid;
+  gap: 4px;
+  align-content: start;
+  overflow-y: auto;
+}
+
+.bubblewrap-bubble {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.15), transparent 60%),
+              radial-gradient(circle at center, var(--bg-tertiary), var(--bg-secondary));
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: transform 0.1s ease, opacity 0.1s ease;
+  position: relative;
+}
+
+.bubblewrap-bubble:hover:not(.popped) {
+  transform: scale(1.05);
+  border-color: var(--text-muted);
+}
+
+.bubblewrap-bubble:active:not(.popped) {
+  transform: scale(0.9);
+}
+
+.bubblewrap-bubble.popped {
+  background: var(--bg-primary);
+  border: 1px dashed var(--border-color);
+  opacity: 0.4;
+  cursor: default;
+  transform: scale(0.85);
+}

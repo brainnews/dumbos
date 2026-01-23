@@ -1,0 +1,138 @@
+/* Nonogram Module Styles */
+.nonogram-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--spacing-sm);
+  gap: var(--spacing-sm);
+}
+
+.nonogram-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nonogram-status {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+.nonogram-status.solved {
+  color: #78e08f;
+  font-weight: 600;
+}
+
+.nonogram-controls {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.nonogram-btn {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.nonogram-btn:hover {
+  background: var(--border-light);
+}
+
+.nonogram-board {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nonogram-table {
+  border-collapse: collapse;
+  user-select: none;
+}
+
+.nonogram-table td,
+.nonogram-table th {
+  width: 28px;
+  height: 28px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.nonogram-corner {
+  /* empty top-left corner */
+}
+
+.nonogram-col-clues {
+  padding: 2px 0;
+  vertical-align: bottom !important;
+}
+
+.nonogram-col-clues .nonogram-clue-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+
+.nonogram-row-clues {
+  text-align: right !important;
+  padding: 0 4px;
+}
+
+.nonogram-row-clues .nonogram-clue-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 3px;
+}
+
+.nonogram-cell {
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  position: relative;
+}
+
+.nonogram-cell:hover {
+  background: var(--bg-tertiary);
+}
+
+.nonogram-cell.filled {
+  background: var(--text-primary);
+}
+
+.nonogram-cell.filled:hover {
+  opacity: 0.9;
+}
+
+.nonogram-cell.marked {
+  background: var(--bg-secondary);
+}
+
+.nonogram-cell.marked::after {
+  content: '×';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 16px;
+  color: var(--text-muted);
+  line-height: 1;
+}
+
+.nonogram-size-select {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+}

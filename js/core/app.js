@@ -17,6 +17,9 @@ import MetMuseumModule from '../modules/metmuseum/metmuseum.js';
 import BreakoutModule from '../modules/breakout/breakout.js';
 import SnakeModule from '../modules/snake/snake.js';
 import CodeEditorModule from '../modules/codeeditor/codeeditor.js';
+import BubbleWrapModule from '../modules/bubblewrap/bubblewrap.js';
+import PixelArtModule from '../modules/pixelart/pixelart.js';
+import NonogramModule from '../modules/nonogram/nonogram.js';
 
 class App {
   constructor() {
@@ -82,6 +85,9 @@ class App {
     ModuleRegistry.register(BreakoutModule);
     ModuleRegistry.register(SnakeModule);
     ModuleRegistry.register(CodeEditorModule);
+    ModuleRegistry.register(BubbleWrapModule);
+    ModuleRegistry.register(PixelArtModule);
+    ModuleRegistry.register(NonogramModule);
     ModuleRegistry.register(SettingsModule);
   }
 
