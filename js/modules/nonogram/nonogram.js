@@ -48,6 +48,10 @@ const NonogramModule = {
           </div>
         </div>
         <div class="nonogram-board"></div>
+        <div class="nonogram-help">
+          <p>Fill cells to match the clue numbers. Each number represents a consecutive group of filled cells in that row or column. Groups are separated by at least one empty cell.</p>
+          <p>Click to fill. Right-click to mark empty.</p>
+        </div>
       </div>
     `;
 

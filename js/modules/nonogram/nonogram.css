@@ -136,3 +136,18 @@
   font-size: var(--font-size-sm);
   cursor: pointer;
 }
+
+.nonogram-help {
+  padding: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.nonogram-help p {
+  margin: 0 0 4px 0;
+}
+
+.nonogram-help p:last-child {
+  margin-bottom: 0;
+}
