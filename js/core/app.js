@@ -20,6 +20,7 @@ import CodeEditorModule from '../modules/codeeditor/codeeditor.js';
 import BubbleWrapModule from '../modules/bubblewrap/bubblewrap.js';
 import PixelArtModule from '../modules/pixelart/pixelart.js';
 import NonogramModule from '../modules/nonogram/nonogram.js';
+import BrowserModule from '../modules/browser/browser.js';
 
 class App {
   constructor() {
@@ -85,6 +86,7 @@ class App {
     ModuleRegistry.register(BreakoutModule);
     ModuleRegistry.register(SnakeModule);
     ModuleRegistry.register(CodeEditorModule);
+    ModuleRegistry.register(BrowserModule);
     ModuleRegistry.register(BubbleWrapModule);
     ModuleRegistry.register(PixelArtModule);
     ModuleRegistry.register(NonogramModule);

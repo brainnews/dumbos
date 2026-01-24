@@ -1,6 +1,7 @@
 /**
  * Code Editor Module - Simple HTML/CSS/JS editor with live preview
  */
+import Storage from '../../core/storage.js';
 
 const CodeEditorModule = {
   id: 'codeeditor',
@@ -15,6 +16,7 @@ const CodeEditorModule = {
   currentTab: 'html',
   editorViews: {},
   autoRunEnabled: true,
+  _currentPageId: null,
 
   // Default starter code
   defaults: {
@@ -92,6 +94,8 @@ console.log('Hello from Code Editor!');`
             <button class="codeeditor-tab" data-tab="js">JS</button>
           </div>
           <div class="codeeditor-actions">
+            <button class="codeeditor-btn" data-action="save">Save</button>
+            <button class="codeeditor-btn codeeditor-btn-secondary" data-action="pages">Pages</button>
             <button class="codeeditor-btn" data-action="run">Run</button>
             <button class="codeeditor-btn codeeditor-btn-secondary" data-action="reset">Reset</button>
           </div>
@@ -107,6 +111,23 @@ console.log('Hello from Code Editor!');`
             <div class="codeeditor-preview-header">Preview</div>
             <iframe class="codeeditor-preview-frame" sandbox="allow-scripts"></iframe>
           </div>
+        </div>
+        <div class="codeeditor-save-dialog codeeditor-hidden">
+          <div class="codeeditor-save-dialog-content">
+            <h3>Save Page</h3>
+            <input type="text" class="codeeditor-save-input" placeholder="Page name" autocomplete="off" />
+            <div class="codeeditor-save-actions">
+              <button class="codeeditor-btn" data-save="confirm">Save</button>
+              <button class="codeeditor-btn codeeditor-btn-secondary" data-save="cancel">Cancel</button>
+            </div>
+          </div>
+        </div>
+        <div class="codeeditor-pages-panel codeeditor-hidden">
+          <div class="codeeditor-pages-header">
+            <span>Saved Pages</span>
+            <button class="codeeditor-pages-close">&times;</button>
+          </div>
+          <div class="codeeditor-pages-list"></div>
         </div>
       </div>
     `;
@@ -125,6 +146,47 @@ console.log('Hello from Code Editor!');`
       if (confirm('Reset all code to defaults?')) {
         this._resetCode();
       }
+    });
+
+    // Save button
+    this.container.querySelector('[data-action="save"]').addEventListener('click', () => {
+      this._showSaveDialog();
+    });
+
+    // Pages button
+    this.container.querySelector('[data-action="pages"]').addEventListener('click', () => {
+      this._showPagesPanel();
+    });
+
+    // Save dialog actions
+    this.container.querySelector('[data-save="confirm"]').addEventListener('click', () => {
+      const input = this.container.querySelector('.codeeditor-save-input');
+      const name = input.value.trim();
+      if (name) {
+        this._savePage(name);
+        this._hideSaveDialog();
+      }
+    });
+
+    this.container.querySelector('[data-save="cancel"]').addEventListener('click', () => {
+      this._hideSaveDialog();
+    });
+
+    this.container.querySelector('.codeeditor-save-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const name = e.target.value.trim();
+        if (name) {
+          this._savePage(name);
+          this._hideSaveDialog();
+        }
+      } else if (e.key === 'Escape') {
+        this._hideSaveDialog();
+      }
+    });
+
+    // Pages panel close
+    this.container.querySelector('.codeeditor-pages-close').addEventListener('click', () => {
+      this._hidePagesPanel();
     });
 
     // Divider drag to resize
@@ -247,6 +309,7 @@ console.log('Hello from Code Editor!');`
   },
 
   _resetCode() {
+    this._currentPageId = null;
     ['html', 'css', 'js'].forEach(type => {
       const view = this.editorViews[type];
       if (view) {
@@ -296,6 +359,153 @@ console.log('Hello from Code Editor!');`
         isDragging = false;
         document.body.style.cursor = '';
       }
+    });
+  },
+
+  _generateSlug(name) {
+    return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  },
+
+  _getPages() {
+    return Storage.get('pages', 'list', []);
+  },
+
+  _savePages(pages) {
+    Storage.set('pages', 'list', pages);
+    window.dispatchEvent(new CustomEvent('pages-changed'));
+  },
+
+  _savePage(name) {
+    const pages = this._getPages();
+    const now = Date.now();
+    const htmlCode = this.editorViews.html?.state.doc.toString() || '';
+    const cssCode = this.editorViews.css?.state.doc.toString() || '';
+    const jsCode = this.editorViews.js?.state.doc.toString() || '';
+
+    if (this._currentPageId) {
+      // Update existing page
+      const idx = pages.findIndex(p => p.id === this._currentPageId);
+      if (idx !== -1) {
+        pages[idx].name = name;
+        pages[idx].slug = this._generateSlug(name);
+        pages[idx].html = htmlCode;
+        pages[idx].css = cssCode;
+        pages[idx].js = jsCode;
+        pages[idx].updatedAt = now;
+      }
+    } else {
+      // Create new page
+      const slug = this._generateSlug(name);
+      const page = {
+        id: `${slug}-${now}`,
+        slug,
+        name,
+        html: htmlCode,
+        css: cssCode,
+        js: jsCode,
+        createdAt: now,
+        updatedAt: now
+      };
+      pages.push(page);
+      this._currentPageId = page.id;
+    }
+
+    this._savePages(pages);
+  },
+
+  _loadPage(pageId) {
+    const pages = this._getPages();
+    const page = pages.find(p => p.id === pageId);
+    if (!page) return;
+
+    this._currentPageId = page.id;
+
+    ['html', 'css', 'js'].forEach(type => {
+      const view = this.editorViews[type];
+      if (view) {
+        view.dispatch({
+          changes: { from: 0, to: view.state.doc.length, insert: page[type] || '' }
+        });
+      }
+      this.storage.set(type, page[type] || '');
+    });
+
+    this._runCode();
+    this._hidePagesPanel();
+  },
+
+  _deletePage(pageId) {
+    let pages = this._getPages();
+    pages = pages.filter(p => p.id !== pageId);
+    this._savePages(pages);
+
+    if (this._currentPageId === pageId) {
+      this._currentPageId = null;
+    }
+
+    this._renderPagesPanel();
+  },
+
+  _showSaveDialog() {
+    const dialog = this.container.querySelector('.codeeditor-save-dialog');
+    const input = this.container.querySelector('.codeeditor-save-input');
+    dialog.classList.remove('codeeditor-hidden');
+
+    // Pre-fill with current page name if editing
+    if (this._currentPageId) {
+      const pages = this._getPages();
+      const page = pages.find(p => p.id === this._currentPageId);
+      if (page) input.value = page.name;
+    } else {
+      input.value = '';
+    }
+
+    setTimeout(() => input.focus(), 50);
+  },
+
+  _hideSaveDialog() {
+    this.container.querySelector('.codeeditor-save-dialog').classList.add('codeeditor-hidden');
+  },
+
+  _showPagesPanel() {
+    const panel = this.container.querySelector('.codeeditor-pages-panel');
+    panel.classList.remove('codeeditor-hidden');
+    this._renderPagesPanel();
+  },
+
+  _hidePagesPanel() {
+    this.container.querySelector('.codeeditor-pages-panel').classList.add('codeeditor-hidden');
+  },
+
+  _renderPagesPanel() {
+    const list = this.container.querySelector('.codeeditor-pages-list');
+    const pages = this._getPages();
+
+    if (pages.length === 0) {
+      list.innerHTML = '<div class="codeeditor-pages-empty">No saved pages yet.</div>';
+      return;
+    }
+
+    list.innerHTML = pages.map(page => `
+      <div class="codeeditor-pages-item${page.id === this._currentPageId ? ' active' : ''}" data-page-id="${page.id}">
+        <span class="codeeditor-pages-item-name">${page.name}</span>
+        <div class="codeeditor-pages-item-actions">
+          <button class="codeeditor-pages-load" data-load="${page.id}" title="Load">Open</button>
+          <button class="codeeditor-pages-delete" data-delete="${page.id}" title="Delete">&times;</button>
+        </div>
+      </div>
+    `).join('');
+
+    list.querySelectorAll('.codeeditor-pages-load').forEach(btn => {
+      btn.addEventListener('click', () => this._loadPage(btn.dataset.load));
+    });
+
+    list.querySelectorAll('.codeeditor-pages-delete').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (confirm('Delete this page?')) {
+          this._deletePage(btn.dataset.delete);
+        }
+      });
     });
   },
 
