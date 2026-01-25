@@ -20,6 +20,8 @@ const YouTubeModule = {
   isSeeking: false,
   playlists: [],
   showingPlaylists: false,
+  savedTimes: {},
+  pendingSeek: null,
 
   init(container, storage) {
     this.container = container;
@@ -28,6 +30,7 @@ const YouTubeModule = {
     this.currentIndex = storage.get('currentIndex', -1);
     this.volume = storage.get('volume', 80);
     this.playlists = storage.get('playlists', []);
+    this.savedTimes = storage.get('savedTimes', {});
     this._buildUI();
     this._loadYouTubeAPI();
   },
@@ -35,6 +38,9 @@ const YouTubeModule = {
   render() {},
 
   destroy() {
+    // Save current playback position before closing
+    this._saveCurrentTime();
+
     if (this.progressInterval) {
       clearInterval(this.progressInterval);
       this.progressInterval = null;
@@ -267,7 +273,10 @@ const YouTubeModule = {
     this.player.setVolume(this.volume);
 
     if (this.currentIndex >= 0 && this.currentIndex < this.queue.length) {
-      this.player.cueVideoById(this.queue[this.currentIndex].videoId);
+      const track = this.queue[this.currentIndex];
+      // Set pending seek for saved position
+      this.pendingSeek = this.savedTimes[track.videoId] || null;
+      this.player.cueVideoById(track.videoId);
       this._updateTrackInfo();
     }
   },
@@ -276,14 +285,22 @@ const YouTubeModule = {
     const state = event.data;
 
     if (state === YT.PlayerState.PLAYING) {
+      // Restore saved position when video starts playing
+      if (this.pendingSeek !== null) {
+        this.player.seekTo(this.pendingSeek, true);
+        this.pendingSeek = null;
+      }
       this._updatePlayButton(true);
       this._startProgressUpdates();
     } else if (state === YT.PlayerState.PAUSED) {
       this._updatePlayButton(false);
       this._stopProgressUpdates();
+      this._saveCurrentTime();
     } else if (state === YT.PlayerState.ENDED) {
       this._updatePlayButton(false);
       this._stopProgressUpdates();
+      // Clear saved time when video ends
+      this._clearSavedTime();
       this._nextTrack();
     } else if (state === YT.PlayerState.BUFFERING) {
       this._updatePlayButton(true);
@@ -417,6 +434,9 @@ const YouTubeModule = {
     this._saveQueue();
 
     const track = this.queue[index];
+    // Check for saved position for this video
+    this.pendingSeek = this.savedTimes[track.videoId] || null;
+
     if (this.player && this.player.loadVideoById) {
       this.player.loadVideoById(track.videoId);
     }
@@ -473,6 +493,11 @@ const YouTubeModule = {
     seekBar.value = (current / duration) * 100;
     currentEl.textContent = this._formatTime(current);
     durationEl.textContent = this._formatTime(duration);
+
+    // Save position every 5 seconds
+    if (Math.floor(current) % 5 === 0) {
+      this._saveCurrentTime();
+    }
   },
 
   _updatePlayButton(playing) {
@@ -712,6 +737,28 @@ const YouTubeModule = {
     this._updateTrackInfo();
     this._updatePlayButton(false);
     this._stopProgressUpdates();
+  },
+
+  // Playback position persistence
+  _saveCurrentTime() {
+    if (!this.player || !this.player.getCurrentTime) return;
+    if (this.currentIndex < 0 || this.currentIndex >= this.queue.length) return;
+
+    const track = this.queue[this.currentIndex];
+    const time = this.player.getCurrentTime();
+
+    // Only save if we're past 5 seconds (to avoid saving at the very start)
+    if (time > 5) {
+      this.savedTimes[track.videoId] = time;
+      this.storage.set('savedTimes', this.savedTimes);
+    }
+  },
+
+  _clearSavedTime() {
+    if (this.currentIndex < 0 || this.currentIndex >= this.queue.length) return;
+    const track = this.queue[this.currentIndex];
+    delete this.savedTimes[track.videoId];
+    this.storage.set('savedTimes', this.savedTimes);
   }
 };
 
