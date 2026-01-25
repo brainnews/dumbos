@@ -21,6 +21,7 @@ import BubbleWrapModule from '../modules/bubblewrap/bubblewrap.js';
 import PixelArtModule from '../modules/pixelart/pixelart.js';
 import NonogramModule from '../modules/nonogram/nonogram.js';
 import BrowserModule from '../modules/browser/browser.js';
+import YouTubeModule from '../modules/youtube/youtube.js';
 
 class App {
   constructor() {
@@ -87,6 +88,7 @@ class App {
     ModuleRegistry.register(SnakeModule);
     ModuleRegistry.register(CodeEditorModule);
     ModuleRegistry.register(BrowserModule);
+    ModuleRegistry.register(YouTubeModule);
     ModuleRegistry.register(BubbleWrapModule);
     ModuleRegistry.register(PixelArtModule);
     ModuleRegistry.register(NonogramModule);
