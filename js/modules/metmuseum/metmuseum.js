@@ -7,6 +7,7 @@ const API_BASE = 'https://collectionapi.metmuseum.org/public/collection/v1';
 const MetMuseumModule = {
   id: 'metmuseum',
   title: 'metitate.art portal',
+  category: 'entertainment',
   icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-8h6v8"/><path d="M10 9h4"/></svg>`,
   defaultSize: { width: 500, height: 550 },
   minSize: { width: 350, height: 400 },

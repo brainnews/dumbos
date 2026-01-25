@@ -5,6 +5,9 @@ import Storage from './storage.js';
 import WindowManager from './window-manager.js';
 import ModuleRegistry from './module-registry.js';
 import Taskbar from './taskbar.js';
+import ContextMenu from './context-menu.js';
+import StartMenu from './start-menu.js';
+import DesktopShortcuts from './desktop-shortcuts.js';
 
 // Import modules
 import NotesModule from '../modules/notes/notes.js';
@@ -36,10 +39,15 @@ class App {
 
     // Initialize core systems
     WindowManager.init(this.desktop);
-    Taskbar.init();
+    ContextMenu.init();
 
-    // Register modules
+    // Register modules first (needed by other systems)
     this._registerModules();
+
+    // Initialize UI systems that depend on modules
+    StartMenu.init();
+    DesktopShortcuts.init(this.desktop);
+    Taskbar.init();
 
     // Restore previously open windows or show defaults
     this._restoreWindows();

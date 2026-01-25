@@ -1,12 +1,13 @@
 /**
- * YouTube Music Player Module - Play YouTube videos in a compact music player UI
+ * YouTube Module - Play YouTube videos with playlist support
  */
 const YouTubeModule = {
   id: 'youtube',
-  title: 'YouTube Music',
-  icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`,
-  defaultSize: { width: 320, height: 540 },
-  minSize: { width: 280, height: 440 },
+  title: 'YouTube',
+  category: 'entertainment',
+  icon: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.5 15.5v-7l6.3 3.5-6.3 3.5z"/></svg>`,
+  defaultSize: { width: 340, height: 580 },
+  minSize: { width: 300, height: 480 },
 
   container: null,
   storage: null,
@@ -17,6 +18,8 @@ const YouTubeModule = {
   progressInterval: null,
   apiReady: false,
   isSeeking: false,
+  playlists: [],
+  showingPlaylists: false,
 
   init(container, storage) {
     this.container = container;
@@ -24,6 +27,7 @@ const YouTubeModule = {
     this.queue = storage.get('queue', []);
     this.currentIndex = storage.get('currentIndex', -1);
     this.volume = storage.get('volume', 80);
+    this.playlists = storage.get('playlists', []);
     this._buildUI();
     this._loadYouTubeAPI();
   },
@@ -80,15 +84,38 @@ const YouTubeModule = {
           <button class="yt-btn yt-btn-add" title="Add to queue">+</button>
         </div>
         <div class="yt-error-msg"></div>
-        <div class="yt-queue">
-          <div class="yt-queue-header">Queue</div>
-          <div class="yt-queue-list"></div>
+        <div class="yt-tabs">
+          <button class="yt-tab active" data-tab="queue">Queue</button>
+          <button class="yt-tab" data-tab="playlists">Playlists</button>
+        </div>
+        <div class="yt-tab-content">
+          <div class="yt-queue yt-tab-panel active" data-panel="queue">
+            <div class="yt-queue-actions">
+              <button class="yt-btn-small yt-btn-save" title="Save as playlist">Save Playlist</button>
+              <button class="yt-btn-small yt-btn-clear" title="Clear queue">Clear</button>
+            </div>
+            <div class="yt-queue-list"></div>
+          </div>
+          <div class="yt-playlists yt-tab-panel" data-panel="playlists">
+            <div class="yt-playlists-list"></div>
+          </div>
+        </div>
+      </div>
+      <div class="yt-dialog" style="display: none;">
+        <div class="yt-dialog-content">
+          <div class="yt-dialog-title">Save Playlist</div>
+          <input type="text" class="yt-dialog-input" placeholder="Playlist name...">
+          <div class="yt-dialog-actions">
+            <button class="yt-btn-small yt-dialog-cancel">Cancel</button>
+            <button class="yt-btn-small yt-btn-primary yt-dialog-save">Save</button>
+          </div>
         </div>
       </div>
     `;
 
     this._bindEvents();
     this._renderQueue();
+    this._renderPlaylists();
   },
 
   _bindEvents() {
@@ -100,6 +127,9 @@ const YouTubeModule = {
     const seekBar = this.container.querySelector('.yt-seek-bar');
     const addBtn = this.container.querySelector('.yt-btn-add');
     const urlInput = this.container.querySelector('.yt-url-input');
+    const saveBtn = this.container.querySelector('.yt-btn-save');
+    const clearBtn = this.container.querySelector('.yt-btn-clear');
+    const tabs = this.container.querySelectorAll('.yt-tab');
 
     playBtn.addEventListener('click', () => this._togglePlay());
     prevBtn.addEventListener('click', () => this._prevTrack());
@@ -147,6 +177,38 @@ const YouTubeModule = {
     addBtn.addEventListener('click', () => this._addFromInput());
     urlInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') this._addFromInput();
+    });
+
+    // Playlist actions
+    saveBtn.addEventListener('click', () => this._showSaveDialog());
+    clearBtn.addEventListener('click', () => this._clearQueue());
+
+    // Tab switching
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const tabName = tab.dataset.tab;
+        this.container.querySelectorAll('.yt-tab-panel').forEach(p => {
+          p.classList.toggle('active', p.dataset.panel === tabName);
+        });
+      });
+    });
+
+    // Dialog events
+    const dialog = this.container.querySelector('.yt-dialog');
+    const dialogInput = this.container.querySelector('.yt-dialog-input');
+    const cancelBtn = this.container.querySelector('.yt-dialog-cancel');
+    const dialogSaveBtn = this.container.querySelector('.yt-dialog-save');
+
+    cancelBtn.addEventListener('click', () => this._hideDialog());
+    dialogSaveBtn.addEventListener('click', () => this._savePlaylist());
+    dialogInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') this._savePlaylist();
+      if (e.key === 'Escape') this._hideDialog();
+    });
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) this._hideDialog();
     });
   },
 
@@ -529,6 +591,122 @@ const YouTubeModule = {
     const div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
+  },
+
+  // Playlist management
+  _showSaveDialog() {
+    if (this.queue.length === 0) {
+      this._showError('Queue is empty');
+      return;
+    }
+    const dialog = this.container.querySelector('.yt-dialog');
+    const input = this.container.querySelector('.yt-dialog-input');
+    dialog.style.display = 'flex';
+    input.value = '';
+    input.focus();
+  },
+
+  _hideDialog() {
+    const dialog = this.container.querySelector('.yt-dialog');
+    dialog.style.display = 'none';
+  },
+
+  _savePlaylist() {
+    const input = this.container.querySelector('.yt-dialog-input');
+    const name = input.value.trim();
+    if (!name) {
+      input.focus();
+      return;
+    }
+
+    const playlist = {
+      id: Date.now().toString(),
+      name,
+      tracks: [...this.queue],
+      createdAt: Date.now()
+    };
+
+    this.playlists.push(playlist);
+    this._savePlaylists();
+    this._renderPlaylists();
+    this._hideDialog();
+  },
+
+  _savePlaylists() {
+    this.storage.set('playlists', this.playlists);
+  },
+
+  _loadPlaylist(playlistId) {
+    const playlist = this.playlists.find(p => p.id === playlistId);
+    if (!playlist) return;
+
+    this.queue = [...playlist.tracks];
+    this.currentIndex = -1;
+    this._saveQueue();
+    this._renderQueue();
+
+    // Switch to queue tab
+    this.container.querySelectorAll('.yt-tab').forEach(t => {
+      t.classList.toggle('active', t.dataset.tab === 'queue');
+    });
+    this.container.querySelectorAll('.yt-tab-panel').forEach(p => {
+      p.classList.toggle('active', p.dataset.panel === 'queue');
+    });
+
+    if (this.queue.length > 0) {
+      this._playTrack(0);
+    }
+  },
+
+  _deletePlaylist(playlistId) {
+    this.playlists = this.playlists.filter(p => p.id !== playlistId);
+    this._savePlaylists();
+    this._renderPlaylists();
+  },
+
+  _renderPlaylists() {
+    const list = this.container.querySelector('.yt-playlists-list');
+    if (!list) return;
+
+    if (this.playlists.length === 0) {
+      list.innerHTML = '<div class="yt-playlists-empty">No saved playlists</div>';
+      return;
+    }
+
+    list.innerHTML = this.playlists.map(playlist => `
+      <div class="yt-playlist-item" data-id="${playlist.id}">
+        <div class="yt-playlist-info">
+          <span class="yt-playlist-name">${this._escapeHTML(playlist.name)}</span>
+          <span class="yt-playlist-count">${playlist.tracks.length} tracks</span>
+        </div>
+        <div class="yt-playlist-actions">
+          <button class="yt-playlist-load" data-id="${playlist.id}" title="Load playlist">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </button>
+          <button class="yt-playlist-delete" data-id="${playlist.id}" title="Delete playlist">&times;</button>
+        </div>
+      </div>
+    `).join('');
+
+    list.querySelectorAll('.yt-playlist-load').forEach(btn => {
+      btn.addEventListener('click', () => this._loadPlaylist(btn.dataset.id));
+    });
+
+    list.querySelectorAll('.yt-playlist-delete').forEach(btn => {
+      btn.addEventListener('click', () => this._deletePlaylist(btn.dataset.id));
+    });
+  },
+
+  _clearQueue() {
+    if (this.queue.length === 0) return;
+    this.queue = [];
+    this.currentIndex = -1;
+    if (this.player) this.player.stopVideo();
+    this._saveQueue();
+    this._renderQueue();
+    this._updateTrackInfo();
+    this._updatePlayButton(false);
+    this._stopProgressUpdates();
   }
 };
 

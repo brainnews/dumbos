@@ -38,6 +38,31 @@ class ModuleRegistry {
   }
 
   /**
+   * Get modules by category
+   * @param {string} category - Category name
+   * @returns {Array} Modules in the category
+   */
+  getByCategory(category) {
+    return this.getAll().filter(m => m.category === category);
+  }
+
+  /**
+   * Get all categories with their modules
+   * @returns {Object} Map of category -> modules[]
+   */
+  getCategories() {
+    const categories = {};
+    this.getAll().forEach(module => {
+      const cat = module.category || 'other';
+      if (!categories[cat]) {
+        categories[cat] = [];
+      }
+      categories[cat].push(module);
+    });
+    return categories;
+  }
+
+  /**
    * Check if a module is registered
    */
   has(moduleId) {

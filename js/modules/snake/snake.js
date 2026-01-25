@@ -4,6 +4,7 @@
 const SnakeModule = {
   id: 'snake',
   title: 'Snake',
+  category: 'games',
   icon: '🐍',
   defaultSize: { width: 400, height: 420 },
   minSize: { width: 320, height: 360 },

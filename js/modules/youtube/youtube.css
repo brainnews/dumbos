@@ -238,14 +238,7 @@
   flex: 1;
   min-height: 0;
   overflow: hidden;
-}
-
-.yt-queue-header {
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
-  font-weight: 500;
-  margin-bottom: var(--spacing-xs);
-  flex-shrink: 0;
+  padding-top: var(--spacing-xs);
 }
 
 .yt-queue-list {
@@ -304,4 +297,232 @@
 
 .yt-queue-item-remove:hover {
   color: var(--accent-primary);
+}
+
+/* Tabs */
+.yt-tabs {
+  display: flex;
+  gap: 2px;
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.yt-tab {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+.yt-tab:hover {
+  color: var(--text-primary);
+}
+
+.yt-tab.active {
+  color: var(--text-primary);
+  border-bottom-color: var(--accent-primary);
+}
+
+.yt-tab-content {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.yt-tab-panel {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.yt-tab-panel.active {
+  display: flex;
+}
+
+/* Queue actions */
+.yt-queue-actions {
+  display: flex;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) 0;
+  flex-shrink: 0;
+}
+
+.yt-btn-small {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.yt-btn-small:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.yt-btn-primary {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: white;
+}
+
+.yt-btn-primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: white;
+}
+
+/* Playlists */
+.yt-playlists {
+  padding-top: var(--spacing-xs);
+}
+
+.yt-playlists-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.yt-playlists-empty {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  text-align: center;
+  padding: var(--spacing-md);
+}
+
+.yt-playlist-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-sm);
+  background: var(--bg-tertiary);
+  border-radius: 6px;
+  gap: var(--spacing-sm);
+}
+
+.yt-playlist-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.yt-playlist-name {
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.yt-playlist-count {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+.yt-playlist-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.yt-playlist-load,
+.yt-playlist-delete {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.yt-playlist-load:hover {
+  color: var(--accent-primary);
+  background: var(--bg-secondary);
+}
+
+.yt-playlist-delete {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.yt-playlist-delete:hover {
+  color: var(--accent-primary);
+  background: var(--bg-secondary);
+}
+
+.yt-playlist-load svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Dialog */
+.yt-dialog {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.yt-dialog-content {
+  background: var(--bg-window);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: var(--spacing-md);
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.yt-dialog-title {
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.yt-dialog-input {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-primary);
+  padding: var(--spacing-sm);
+  font-size: var(--font-size-base);
+  outline: none;
+}
+
+.yt-dialog-input:focus {
+  border-color: var(--accent-primary);
+}
+
+.yt-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-xs);
 }

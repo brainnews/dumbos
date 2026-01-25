@@ -4,6 +4,7 @@
 const BreakoutModule = {
   id: 'breakout',
   title: 'Breakout',
+  category: 'games',
   icon: '🧱',
   defaultSize: { width: 480, height: 400 },
   minSize: { width: 400, height: 350 },

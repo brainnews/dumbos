@@ -4,6 +4,7 @@
 const NonogramModule = {
   id: 'nonogram',
   title: 'Nonogram',
+  category: 'games',
   icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="1"/><rect x="7" y="7" width="4" height="4" fill="currentColor"/><rect x="13" y="7" width="4" height="4" fill="currentColor"/><rect x="7" y="13" width="4" height="4" fill="currentColor"/></svg>`,
   defaultSize: { width: 400, height: 450 },
   minSize: { width: 320, height: 360 },

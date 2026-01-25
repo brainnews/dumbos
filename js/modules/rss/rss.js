@@ -9,6 +9,7 @@ const RSS_PROXY_URL = 'https://rss-proxy.miles-gilbert.workers.dev';
 const RSSModule = {
   id: 'rss',
   title: 'RSS Reader',
+  category: 'productivity',
   icon: `<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="6" cy="18" r="3" fill="currentColor"/><path d="M4 4a16 16 0 0 1 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 10a10 10 0 0 1 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
   defaultSize: { width: 600, height: 450 },
   minSize: { width: 400, height: 300 },
