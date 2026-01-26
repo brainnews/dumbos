@@ -526,24 +526,30 @@ console.log('Hello from Code Editor!');`
   },
 
   _loadPage(pageId) {
+    if (!pageId) return;
+
     const pages = this._getPages();
     const page = pages.find(p => p.id === pageId);
-    if (!page) return;
+    if (!page) {
+      console.warn('Page not found:', pageId);
+      return;
+    }
 
     this._currentPageId = page.id;
 
     ['html', 'css', 'js'].forEach(type => {
       const view = this.editorViews[type];
+      const content = page[type] || '';
       if (view) {
         view.dispatch({
-          changes: { from: 0, to: view.state.doc.length, insert: page[type] || '' }
+          changes: { from: 0, to: view.state.doc.length, insert: content }
         });
       }
-      this.storage.set(type, page[type] || '');
+      this.storage.set(type, content);
     });
 
-    this._runCode();
     this._hidePagesPanel();
+    this._runCode();
   },
 
   _deletePage(pageId) {
@@ -600,7 +606,7 @@ console.log('Hello from Code Editor!');`
 
     list.innerHTML = pages.map(page => `
       <div class="codeeditor-pages-item${page.id === this._currentPageId ? ' active' : ''}" data-page-id="${page.id}">
-        <span class="codeeditor-pages-item-name">${page.name}</span>
+        <span class="codeeditor-pages-item-name">${this._escapeHtml(page.name)}</span>
         <div class="codeeditor-pages-item-actions">
           <button class="codeeditor-pages-load" data-load="${page.id}" title="Load">Open</button>
           <button class="codeeditor-pages-delete" data-delete="${page.id}" title="Delete">&times;</button>
@@ -608,17 +614,39 @@ console.log('Hello from Code Editor!');`
       </div>
     `).join('');
 
-    list.querySelectorAll('.codeeditor-pages-load').forEach(btn => {
-      btn.addEventListener('click', () => this._loadPage(btn.dataset.load));
-    });
-
-    list.querySelectorAll('.codeeditor-pages-delete').forEach(btn => {
-      btn.addEventListener('click', () => {
-        if (confirm('Delete this page?')) {
-          this._deletePage(btn.dataset.delete);
+    // Use event delegation on the list container
+    list.onclick = (e) => {
+      const loadBtn = e.target.closest('.codeeditor-pages-load');
+      if (loadBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const pageId = loadBtn.dataset.load;
+        if (pageId) {
+          this._loadPage(pageId);
         }
-      });
-    });
+        return;
+      }
+
+      const deleteBtn = e.target.closest('.codeeditor-pages-delete');
+      if (deleteBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const pageId = deleteBtn.dataset.delete;
+        if (pageId && confirm('Delete this page?')) {
+          this._deletePage(pageId);
+        }
+        return;
+      }
+    };
+  },
+
+  _escapeHtml(str) {
+    if (!str) return '';
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
   },
 
   render() {},
