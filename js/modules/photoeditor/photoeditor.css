@@ -1,0 +1,319 @@
+/* Photo Editor Module Styles */
+.photoeditor-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.photoeditor-toolbar {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-sm);
+  border-bottom: 1px solid var(--border-color);
+  gap: var(--spacing-sm);
+}
+
+.photoeditor-toolbar-spacer {
+  flex: 1;
+}
+
+.photoeditor-btn {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.photoeditor-btn:hover:not(:disabled) {
+  background: var(--border-light);
+}
+
+.photoeditor-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.photoeditor-download-btn:not(:disabled) {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: white;
+}
+
+.photoeditor-download-btn:not(:disabled):hover {
+  filter: brightness(1.1);
+}
+
+.photoeditor-main {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.photoeditor-hidden {
+  display: none !important;
+}
+
+/* Upload Area */
+.photoeditor-upload-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+}
+
+.photoeditor-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 400px;
+  height: 300px;
+  border: 2px dashed var(--border-color);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.photoeditor-dropzone:hover,
+.photoeditor-dropzone-active {
+  border-color: var(--accent-primary);
+  background: var(--bg-secondary);
+}
+
+.photoeditor-dropzone-icon {
+  width: 64px;
+  height: 64px;
+  color: var(--text-tertiary);
+  margin-bottom: var(--spacing-md);
+}
+
+.photoeditor-dropzone-text {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  color: var(--text-primary);
+}
+
+.photoeditor-dropzone-subtext {
+  margin: var(--spacing-xs) 0 0;
+  font-size: var(--font-size-sm);
+  color: var(--text-tertiary);
+}
+
+.photoeditor-file-input {
+  display: none;
+}
+
+/* Editor Area */
+.photoeditor-editor-area {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.photoeditor-canvas-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--bg-secondary);
+}
+
+.photoeditor-image {
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+}
+
+/* Sidebar */
+.photoeditor-sidebar {
+  width: 200px;
+  flex-shrink: 0;
+  padding: var(--spacing-sm);
+  border-left: 1px solid var(--border-color);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.photoeditor-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.photoeditor-section-title {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.photoeditor-aspect-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+}
+
+.photoeditor-aspect-btn {
+  padding: var(--spacing-xs);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.photoeditor-aspect-btn:hover {
+  background: var(--border-light);
+}
+
+.photoeditor-aspect-btn.active {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: white;
+}
+
+.photoeditor-apply-crop-btn {
+  margin-top: var(--spacing-xs);
+}
+
+.photoeditor-control {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.photoeditor-control label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.photoeditor-slider-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.photoeditor-border-slider {
+  flex: 1;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--border-color);
+  border-radius: 2px;
+  outline: none;
+}
+
+.photoeditor-border-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  background: var(--accent-primary);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.photoeditor-border-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  background: var(--accent-primary);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.photoeditor-border-value {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  min-width: 40px;
+  text-align: right;
+}
+
+.photoeditor-border-color {
+  width: 100%;
+  height: 32px;
+  padding: 2px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--bg-tertiary);
+  cursor: pointer;
+}
+
+.photoeditor-border-color::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.photoeditor-border-color::-webkit-color-swatch {
+  border: none;
+  border-radius: 2px;
+}
+
+.photoeditor-format-select {
+  width: 100%;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+}
+
+.photoeditor-format-select:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+}
+
+.photoeditor-preview-box {
+  margin-top: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80px;
+}
+
+.photoeditor-preview-canvas {
+  max-width: 100%;
+  max-height: 120px;
+  display: block;
+}
+
+/* Cropper.js overrides */
+.photoeditor-canvas-wrapper .cropper-container {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.photoeditor-canvas-wrapper .cropper-view-box {
+  outline: 1px solid var(--accent-primary);
+  outline-color: rgba(59, 130, 246, 0.75);
+}
+
+.photoeditor-canvas-wrapper .cropper-line {
+  background-color: var(--accent-primary);
+}
+
+.photoeditor-canvas-wrapper .cropper-point {
+  background-color: var(--accent-primary);
+  height: 10px;
+  width: 10px;
+}
+
+.photoeditor-canvas-wrapper .cropper-modal {
+  background-color: rgba(0, 0, 0, 0.5);
+}
