@@ -376,27 +376,44 @@ const YouTubeModule = {
       return;
     }
 
+    // Show loading state
+    this._showError('Loading playlist...');
+
+    // Store current state to restore later
+    const wasPlaying = this.currentIndex >= 0;
+    const currentVideoId = wasPlaying ? this.queue[this.currentIndex]?.videoId : null;
+
+    // Cue the playlist
     this.player.cuePlaylist({ list: playlistId, listType: 'playlist' });
 
-    await new Promise(resolve => {
-      const check = () => {
-        const list = this.player.getPlaylist();
-        if (list && list.length > 0) {
-          resolve();
-        } else {
-          setTimeout(check, 500);
-        }
-      };
-      setTimeout(check, 1000);
-    });
+    // Wait for playlist to load with timeout
+    let videoIds = null;
+    const maxAttempts = 20; // 10 seconds max
+    for (let i = 0; i < maxAttempts; i++) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      const list = this.player.getPlaylist();
+      if (list && list.length > 0) {
+        videoIds = list;
+        break;
+      }
+    }
 
-    const videoIds = this.player.getPlaylist();
     if (!videoIds || videoIds.length === 0) {
       this._showError('Could not load playlist');
+      // Restore previous video if we had one
+      if (currentVideoId) {
+        this.player.cueVideoById(currentVideoId);
+      }
       return;
     }
 
+    // Clear the loading message
+    this.container.querySelector('.yt-error-msg').style.display = 'none';
+
     const startIndex = this.queue.length;
+    let addedCount = 0;
+
+    // Add all videos from playlist
     for (const vid of videoIds) {
       if (!this.queue.find(t => t.videoId === vid)) {
         const info = await this._fetchOEmbed(vid);
@@ -406,15 +423,26 @@ const YouTubeModule = {
           author: info.author_name || '',
           url: `https://www.youtube.com/watch?v=${vid}`
         });
+        addedCount++;
+        // Update queue display periodically for large playlists
+        if (addedCount % 5 === 0) {
+          this._renderQueue();
+        }
       }
     }
 
     this._saveQueue();
     this._renderQueue();
 
-    if (this.currentIndex < 0) {
+    // Restore or start playback
+    if (currentVideoId) {
+      // Restore the video that was playing before
+      this.player.cueVideoById(currentVideoId);
+    } else if (this.currentIndex < 0 && this.queue.length > 0) {
       this._playTrack(startIndex);
     }
+
+    this._showError(`Added ${addedCount} videos from playlist`);
   },
 
   async _fetchOEmbed(videoId) {
