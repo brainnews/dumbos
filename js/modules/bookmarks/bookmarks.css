@@ -224,72 +224,74 @@
   accent-color: var(--accent-primary);
 }
 
-/* Desktop Icons */
-.desktop-icons {
+/* Desktop Bookmark Icons */
+.desktop-bookmark {
   position: absolute;
-  top: var(--spacing-md);
-  left: var(--spacing-md);
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  gap: var(--spacing-md);
-  max-height: calc(100% - var(--spacing-xl));
-  align-content: flex-start;
-  pointer-events: none;
-}
-
-.desktop-icon {
+  width: 80px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 80px;
-  padding: var(--spacing-sm);
-  text-decoration: none;
+  gap: 6px;
+  padding: 8px;
   border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
   transition: background var(--transition-fast);
-  pointer-events: auto;
 }
 
-.desktop-icon:hover {
+.desktop-bookmark:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 
-.desktop-icon:active {
-  background: rgba(255, 255, 255, 0.15);
+.desktop-bookmark.dragging {
+  opacity: 0.8;
+  z-index: 1000;
 }
 
-.desktop-icon-img {
+.desktop-bookmark-icon {
   width: 48px;
   height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: var(--spacing-xs);
-  background: var(--bg-secondary);
-  border-radius: 12px;
-  padding: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  background: var(--bg-window);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px var(--shadow-color);
 }
 
-.desktop-icon-img img {
-  width: 32px;
-  height: 32px;
+.desktop-bookmark-icon img {
+  width: 28px;
+  height: 28px;
   object-fit: contain;
 }
 
-.desktop-icon-img svg {
-  width: 32px;
-  height: 32px;
-  stroke: var(--text-secondary);
+.desktop-bookmark-icon svg {
+  width: 28px;
+  height: 28px;
+  color: var(--text-primary);
 }
 
-.desktop-icon-label {
+.desktop-bookmark-label {
+  font-family: var(--font-system);
   font-size: 11px;
-  color: var(--text-primary);
+  color: #fff;
   text-align: center;
-  width: 100%;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  line-height: 1.3;
+  max-width: 100%;
+  word-wrap: break-word;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* Light theme adjustments */
+[data-theme="light"] .desktop-bookmark:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .desktop-bookmark-label {
+  color: var(--text-primary);
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
 }

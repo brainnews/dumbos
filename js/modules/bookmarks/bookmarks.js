@@ -1,6 +1,8 @@
 /**
  * Bookmarks Module - Quick links manager
  */
+import ContextMenu from '../../core/context-menu.js';
+
 const BookmarksModule = {
   id: 'bookmarks',
   title: 'Bookmarks',
@@ -13,15 +15,32 @@ const BookmarksModule = {
   storage: null,
   bookmarks: [],
   showOnDesktop: false,
-  desktopIconsContainer: null,
+  dragging: null,
+  dragOffset: { x: 0, y: 0 },
 
   init(container, storage) {
     this.container = container;
     this.storage = storage;
     this.bookmarks = storage.get('list', []);
     this.showOnDesktop = storage.get('showOnDesktop', false);
+    this._migrateBookmarkPositions();
     this._buildUI();
     this._renderDesktopIcons();
+  },
+
+  _migrateBookmarkPositions() {
+    // Add default positions to bookmarks that don't have them
+    let needsSave = false;
+    this.bookmarks.forEach((bookmark, index) => {
+      if (bookmark.x === undefined || bookmark.y === undefined) {
+        bookmark.x = 20 + (index % 1) * 100;
+        bookmark.y = 20 + index * 90;
+        needsSave = true;
+      }
+    });
+    if (needsSave) {
+      this._save();
+    }
   },
 
   _buildUI() {
@@ -135,38 +154,148 @@ const BookmarksModule = {
   },
 
   _renderDesktopIcons() {
-    // Remove existing desktop icons
-    if (this.desktopIconsContainer) {
-      this.desktopIconsContainer.remove();
-      this.desktopIconsContainer = null;
-    }
+    // Remove existing desktop bookmark icons
+    const desktop = document.getElementById('desktop');
+    desktop.querySelectorAll('.desktop-bookmark').forEach(el => el.remove());
 
     if (!this.showOnDesktop || this.bookmarks.length === 0) return;
 
-    const desktop = document.getElementById('desktop');
-    this.desktopIconsContainer = document.createElement('div');
-    this.desktopIconsContainer.className = 'desktop-icons';
+    this.bookmarks.forEach((bookmark, index) => {
+      const el = this._createDesktopBookmark(bookmark, index);
+      desktop.appendChild(el);
+    });
+  },
 
-    this.bookmarks.forEach((bookmark) => {
-      const icon = document.createElement('a');
-      icon.className = 'desktop-icon';
-      icon.href = bookmark.url;
-      icon.target = '_blank';
-      icon.rel = 'noopener noreferrer';
+  _createDesktopBookmark(bookmark, index) {
+    const el = document.createElement('div');
+    el.className = 'desktop-bookmark';
+    el.dataset.bookmarkIndex = index;
+    el.style.left = `${bookmark.x || 20}px`;
+    el.style.top = `${bookmark.y || 20 + index * 90}px`;
 
-      const favicon = this._getFaviconUrl(bookmark.url);
+    const favicon = this._getFaviconUrl(bookmark.url);
 
-      icon.innerHTML = `
-        <div class="desktop-icon-img">
-          <img src="${favicon}" alt="" onerror="this.parentElement.innerHTML='<svg viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'2\\'><circle cx=\\'12\\' cy=\\'12\\' r=\\'10\\'/><line x1=\\'2\\' y1=\\'12\\' x2=\\'22\\' y2=\\'12\\'/><path d=\\'M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z\\'/></svg>'">
-        </div>
-        <span class="desktop-icon-label">${this._escapeHtml(bookmark.name)}</span>
-      `;
+    el.innerHTML = `
+      <div class="desktop-bookmark-icon">
+        <img src="${favicon}" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <svg style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      </div>
+      <div class="desktop-bookmark-label">${this._escapeHtml(bookmark.name)}</div>
+    `;
 
-      this.desktopIconsContainer.appendChild(icon);
+    // Double-click to open
+    el.addEventListener('dblclick', (e) => {
+      e.preventDefault();
+      window.open(bookmark.url, '_blank', 'noopener,noreferrer');
     });
 
-    desktop.appendChild(this.desktopIconsContainer);
+    // Right-click context menu
+    el.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      this._showBookmarkContextMenu(e, bookmark, index);
+    });
+
+    // Drag functionality
+    el.addEventListener('mousedown', (e) => {
+      if (e.button !== 0) return;
+      this._startDrag(e, el, bookmark, index);
+    });
+
+    return el;
+  },
+
+  _startDrag(e, el, bookmark, index) {
+    e.preventDefault();
+    this.dragging = { el, bookmark, index };
+
+    const rect = el.getBoundingClientRect();
+    this.dragOffset = {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    };
+
+    el.classList.add('dragging');
+
+    const desktop = document.getElementById('desktop');
+
+    const onMouseMove = (e) => {
+      if (!this.dragging) return;
+
+      const containerRect = desktop.getBoundingClientRect();
+      let newX = e.clientX - containerRect.left - this.dragOffset.x;
+      let newY = e.clientY - containerRect.top - this.dragOffset.y;
+
+      // Constrain to desktop bounds
+      newX = Math.max(0, Math.min(newX, containerRect.width - 80));
+      newY = Math.max(0, Math.min(newY, containerRect.height - 80));
+
+      el.style.left = `${newX}px`;
+      el.style.top = `${newY}px`;
+    };
+
+    const onMouseUp = (e) => {
+      if (!this.dragging) return;
+
+      const containerRect = desktop.getBoundingClientRect();
+      let newX = e.clientX - containerRect.left - this.dragOffset.x;
+      let newY = e.clientY - containerRect.top - this.dragOffset.y;
+
+      // Constrain to desktop bounds
+      newX = Math.max(0, Math.min(newX, containerRect.width - 80));
+      newY = Math.max(0, Math.min(newY, containerRect.height - 80));
+
+      // Update bookmark position
+      this.bookmarks[index].x = newX;
+      this.bookmarks[index].y = newY;
+      this._save();
+
+      el.classList.remove('dragging');
+      this.dragging = null;
+
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  },
+
+  _showBookmarkContextMenu(e, bookmark, index) {
+    const items = [
+      {
+        label: 'Open',
+        action: () => {
+          window.open(bookmark.url, '_blank', 'noopener,noreferrer');
+        }
+      },
+      { separator: true },
+      {
+        label: 'Edit',
+        action: () => {
+          this._editBookmark(index);
+          // Bring bookmarks window to front or open it
+          window.DumbOS.openModule('bookmarks');
+        }
+      },
+      {
+        label: 'Remove from Desktop',
+        action: () => {
+          this.bookmarks[index].x = undefined;
+          this.bookmarks[index].y = undefined;
+          this._save();
+          this._renderDesktopIcons();
+        }
+      },
+      { separator: true },
+      {
+        label: 'Delete Bookmark',
+        action: () => {
+          this._deleteBookmark(index);
+        }
+      }
+    ];
+
+    ContextMenu.show(e.clientX, e.clientY, items);
   },
 
   _getFaviconUrl(url) {
@@ -204,9 +333,15 @@ const BookmarksModule = {
     }
 
     if (this.editingIndex !== null) {
-      this.bookmarks[this.editingIndex] = { name, url };
+      // Preserve position when editing
+      const existing = this.bookmarks[this.editingIndex];
+      this.bookmarks[this.editingIndex] = { name, url, x: existing.x, y: existing.y };
     } else {
-      this.bookmarks.push({ name, url });
+      // Calculate position for new bookmark
+      const index = this.bookmarks.length;
+      const x = 20;
+      const y = 20 + index * 90;
+      this.bookmarks.push({ name, url, x, y });
     }
 
     this._save();
@@ -245,7 +380,7 @@ const BookmarksModule = {
   }
 };
 
-// Render desktop icons on page load if enabled
+// Render desktop bookmark icons on page load if enabled
 document.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => {
     const storage = {
@@ -261,33 +396,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (showOnDesktop && bookmarks.length > 0) {
       const desktop = document.getElementById('desktop');
-      const container = document.createElement('div');
-      container.className = 'desktop-icons';
+      const escapeHtml = (str) => str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-      bookmarks.forEach((bookmark) => {
-        const icon = document.createElement('a');
-        icon.className = 'desktop-icon';
-        icon.href = bookmark.url;
-        icon.target = '_blank';
-        icon.rel = 'noopener noreferrer';
+      bookmarks.forEach((bookmark, index) => {
+        const el = document.createElement('div');
+        el.className = 'desktop-bookmark';
+        el.dataset.bookmarkIndex = index;
+        el.style.left = `${bookmark.x || 20}px`;
+        el.style.top = `${bookmark.y || 20 + index * 90}px`;
 
         let domain = '';
         try { domain = new URL(bookmark.url).hostname; } catch {}
         const favicon = domain ? `https://www.google.com/s2/favicons?domain=${domain}&sz=64` : '';
 
-        const escapeHtml = (str) => str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-
-        icon.innerHTML = `
-          <div class="desktop-icon-img">
-            <img src="${favicon}" alt="" onerror="this.parentElement.innerHTML='<svg viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'2\\'><circle cx=\\'12\\' cy=\\'12\\' r=\\'10\\'/><line x1=\\'2\\' y1=\\'12\\' x2=\\'22\\' y2=\\'12\\'/><path d=\\'M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z\\'/></svg>'">
+        el.innerHTML = `
+          <div class="desktop-bookmark-icon">
+            <img src="${favicon}" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <svg style="display:none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
           </div>
-          <span class="desktop-icon-label">${escapeHtml(bookmark.name)}</span>
+          <div class="desktop-bookmark-label">${escapeHtml(bookmark.name)}</div>
         `;
 
-        container.appendChild(icon);
-      });
+        // Double-click to open (basic, no drag on initial load)
+        el.addEventListener('dblclick', () => {
+          window.open(bookmark.url, '_blank', 'noopener,noreferrer');
+        });
 
-      desktop.appendChild(container);
+        desktop.appendChild(el);
+      });
     }
   }, 0);
 });
