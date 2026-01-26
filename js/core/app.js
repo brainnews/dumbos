@@ -25,6 +25,7 @@ import PixelArtModule from '../modules/pixelart/pixelart.js';
 import NonogramModule from '../modules/nonogram/nonogram.js';
 import BrowserModule from '../modules/browser/browser.js';
 import YouTubeModule from '../modules/youtube/youtube.js';
+import WritingModule from '../modules/writing/writing.js';
 
 class App {
   constructor() {
@@ -100,6 +101,7 @@ class App {
     ModuleRegistry.register(BubbleWrapModule);
     ModuleRegistry.register(PixelArtModule);
     ModuleRegistry.register(NonogramModule);
+    ModuleRegistry.register(WritingModule);
     ModuleRegistry.register(SettingsModule);
   }
 
