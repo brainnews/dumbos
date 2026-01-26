@@ -224,7 +224,7 @@ console.log('Hello from Code Editor!');`
 
   _initEditors() {
     const { EditorState } = window.CM.state;
-    const { EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLineGutter, lineWrapping } = window.CM.view;
+    const { EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLineGutter } = window.CM.view;
     const { defaultKeymap, history, historyKeymap, indentWithTab } = window.CM.commands;
     const { syntaxHighlighting, defaultHighlightStyle, bracketMatching, indentOnInput } = window.CM.language;
     const { html } = window.CM.html;
@@ -246,7 +246,7 @@ console.log('Hello from Code Editor!');`
         doc: savedCode,
         extensions: [
           lineNumbers(),
-          lineWrapping,
+          EditorView.lineWrapping,
           highlightActiveLine(),
           highlightActiveLineGutter(),
           history(),
