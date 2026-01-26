@@ -27,6 +27,7 @@ import BrowserModule from '../modules/browser/browser.js';
 import YouTubeModule from '../modules/youtube/youtube.js';
 import WritingModule from '../modules/writing/writing.js';
 import PhotoEditorModule from '../modules/photoeditor/photoeditor.js';
+import HelpModule from '../modules/help/help.js';
 
 class App {
   constructor() {
@@ -69,6 +70,9 @@ class App {
     const closeBtn = modal.querySelector('.welcome-close');
     const checkbox = document.getElementById('welcome-hide');
 
+    // Populate categories dynamically
+    this._populateWelcomeCategories();
+
     modal.style.display = 'flex';
 
     const close = () => {
@@ -82,6 +86,42 @@ class App {
     modal.addEventListener('click', (e) => {
       if (e.target === modal) close();
     });
+  }
+
+  /**
+   * Populate welcome modal with app categories
+   */
+  _populateWelcomeCategories() {
+    const container = document.querySelector('.welcome-categories');
+    if (!container) return;
+
+    const modules = ModuleRegistry.getAll();
+    const categoryNames = {
+      productivity: 'Productivity',
+      entertainment: 'Entertainment',
+      games: 'Games',
+      tools: 'Tools',
+      system: 'System'
+    };
+
+    // Group modules by category
+    const categories = {};
+    modules.forEach(module => {
+      const cat = module.category || 'other';
+      if (!categories[cat]) categories[cat] = [];
+      categories[cat].push(module.title);
+    });
+
+    // Render categories in a specific order
+    const order = ['productivity', 'entertainment', 'games', 'tools', 'system'];
+    container.innerHTML = order
+      .filter(cat => categories[cat]?.length > 0)
+      .map(cat => `
+        <div class="welcome-category">
+          <div class="welcome-category-title">${categoryNames[cat] || cat}</div>
+          <div class="welcome-category-apps">${categories[cat].join(', ')}</div>
+        </div>
+      `).join('');
   }
 
   /**
@@ -104,6 +144,7 @@ class App {
     ModuleRegistry.register(NonogramModule);
     ModuleRegistry.register(WritingModule);
     ModuleRegistry.register(PhotoEditorModule);
+    ModuleRegistry.register(HelpModule);
     ModuleRegistry.register(SettingsModule);
   }
 

@@ -7,6 +7,7 @@ const CodeEditorModule = {
   id: 'codeeditor',
   title: 'Code Editor',
   category: 'productivity',
+  description: 'HTML/CSS/JS editor with live preview',
   icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>`,
   defaultSize: { width: 900, height: 600 },
   minSize: { width: 600, height: 400 },

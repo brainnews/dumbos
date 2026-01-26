@@ -1,0 +1,122 @@
+/* Help Module Styles */
+.help-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.help-header {
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.help-header h1 {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 var(--spacing-xs);
+}
+
+.help-header p {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.help-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-md);
+}
+
+.help-category {
+  margin-bottom: var(--spacing-lg);
+}
+
+.help-category:last-child {
+  margin-bottom: 0;
+}
+
+.help-category-header {
+  margin-bottom: var(--spacing-sm);
+}
+
+.help-category-header h2 {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.help-category-header span {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+.help-apps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.help-app {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  background: var(--bg-secondary);
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.help-app:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--border-color);
+}
+
+.help-app-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--text-secondary);
+}
+
+.help-app-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.help-app-emoji {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.help-app-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.help-app-info strong {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.help-app-info span {
+  display: block;
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

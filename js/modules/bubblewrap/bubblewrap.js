@@ -5,6 +5,7 @@ const BubbleWrapModule = {
   id: 'bubblewrap',
   title: 'Bubble Wrap',
   category: 'games',
+  description: 'Pop bubbles for stress relief',
   icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7" cy="7" r="3"/><circle cx="17" cy="7" r="3"/><circle cx="7" cy="17" r="3"/><circle cx="17" cy="17" r="3"/><circle cx="12" cy="12" r="3"/></svg>`,
   defaultSize: { width: 360, height: 400 },
   minSize: { width: 280, height: 300 },

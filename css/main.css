@@ -179,39 +179,31 @@ body {
   line-height: 1.5;
 }
 
-.welcome-features {
+.welcome-categories {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-md);
   margin-bottom: var(--spacing-lg);
 }
 
-.welcome-feature {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--spacing-sm);
+.welcome-category {
   padding: var(--spacing-sm);
   background: var(--bg-secondary);
   border-radius: 6px;
 }
 
-.welcome-feature-icon {
-  font-size: 20px;
-  line-height: 1;
-  flex-shrink: 0;
-}
-
-.welcome-feature strong {
-  display: block;
+.welcome-category-title {
   font-size: var(--font-size-sm);
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 2px;
+  margin-bottom: var(--spacing-xs);
+  text-transform: capitalize;
 }
 
-.welcome-feature span {
+.welcome-category-apps {
   font-size: var(--font-size-sm);
   color: var(--text-muted);
+  line-height: 1.5;
 }
 
 .welcome-hint {

@@ -33,6 +33,7 @@
   <link rel="stylesheet" href="js/modules/nonogram/nonogram.css">
   <link rel="stylesheet" href="js/modules/writing/writing.css">
   <link rel="stylesheet" href="js/modules/photoeditor/photoeditor.css">
+  <link rel="stylesheet" href="js/modules/help/help.css">
 </head>
 <body>
   <div id="welcome-modal" class="welcome-modal" style="display: none;">
@@ -43,54 +44,8 @@
       </div>
       <div class="welcome-content">
         <p class="welcome-intro">A simple, privacy-first desktop environment that runs in your browser. All your data stays local.</p>
-
-        <div class="welcome-features">
-          <div class="welcome-feature">
-            <span class="welcome-feature-icon">&#128221;</span>
-            <div>
-              <strong>Notes</strong>
-              <span>Quick notes with auto-save</span>
-            </div>
-          </div>
-          <div class="welcome-feature">
-            <span class="welcome-feature-icon">&#128240;</span>
-            <div>
-              <strong>RSS Reader</strong>
-              <span>Follow your favorite feeds</span>
-            </div>
-          </div>
-          <div class="welcome-feature">
-            <span class="welcome-feature-icon">&#9201;</span>
-            <div>
-              <strong>Pomodoro</strong>
-              <span>Focus timer with notifications</span>
-            </div>
-          </div>
-          <div class="welcome-feature">
-            <span class="welcome-feature-icon">&#128278;</span>
-            <div>
-              <strong>Bookmarks</strong>
-              <span>Save and organize links</span>
-            </div>
-          </div>
-          <div class="welcome-feature">
-            <span class="welcome-feature-icon">&#127912;</span>
-            <div>
-              <strong>Met Museum</strong>
-              <span>Explore art from The Met</span>
-            </div>
-          </div>
-          <div class="welcome-feature">
-            <span class="welcome-feature-icon">&#9881;</span>
-            <div>
-              <strong>Settings</strong>
-              <span>Customize your desktop</span>
-            </div>
-          </div>
-        </div>
-
-        <p class="welcome-hint">Click icons in the taskbar below to open apps.</p>
-
+        <div class="welcome-categories"></div>
+        <p class="welcome-hint">Click the Start button or taskbar icons to open apps.</p>
         <label class="welcome-checkbox">
           <input type="checkbox" id="welcome-hide">
           <span>Don't show this again</span>

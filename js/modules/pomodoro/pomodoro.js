@@ -5,6 +5,7 @@ const PomodoroModule = {
   id: 'pomodoro',
   title: 'Pomodoro',
   category: 'tools',
+  description: 'Focus timer with work/break intervals',
   icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
   defaultSize: { width: 300, height: 320 },
   minSize: { width: 250, height: 280 },

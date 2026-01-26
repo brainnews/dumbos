@@ -5,6 +5,7 @@ const BreakoutModule = {
   id: 'breakout',
   title: 'Breakout',
   category: 'games',
+  description: 'Classic brick breaker game',
   icon: '🧱',
   defaultSize: { width: 480, height: 400 },
   minSize: { width: 400, height: 350 },
