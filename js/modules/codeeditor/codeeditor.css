@@ -115,6 +115,23 @@
   background: rgba(255, 255, 255, 0.05);
 }
 
+/* Override CodeMirror syntax colors for better legibility */
+.codeeditor-editor-wrapper .cm-variableName {
+  color: #e06c75;
+}
+
+.codeeditor-editor-wrapper .cm-variableName.cm-definition {
+  color: #61afef;
+}
+
+.codeeditor-editor-wrapper .cm-propertyName {
+  color: #e5c07b;
+}
+
+.codeeditor-editor-wrapper .cm-variableName.cm-local {
+  color: #e06c75;
+}
+
 .codeeditor-divider {
   width: 4px;
   background: var(--border-color);
