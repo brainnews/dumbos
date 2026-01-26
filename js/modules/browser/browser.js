@@ -57,6 +57,9 @@ const BrowserModule = {
           <button class="browser-nav-btn" data-nav="home" title="Home">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
           </button>
+          <button class="browser-nav-btn" data-nav="refresh" title="Refresh">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          </button>
           <div class="browser-address-bar">
             <input type="text" class="browser-address-input" placeholder="dumbos://page-slug" spellcheck="false" />
           </div>
@@ -69,6 +72,7 @@ const BrowserModule = {
     this.container.querySelector('[data-nav="back"]').addEventListener('click', () => this._goBack());
     this.container.querySelector('[data-nav="forward"]').addEventListener('click', () => this._goForward());
     this.container.querySelector('[data-nav="home"]').addEventListener('click', () => this._navigate(null));
+    this.container.querySelector('[data-nav="refresh"]').addEventListener('click', () => this._refresh());
 
     // Address bar
     const input = this.container.querySelector('.browser-address-input');
@@ -124,6 +128,14 @@ const BrowserModule = {
         this._showPage(slug);
       }
       this._updateNavButtons();
+    }
+  },
+
+  _refresh() {
+    if (this._currentSlug === null) {
+      this._showHomepage();
+    } else {
+      this._showPage(this._currentSlug);
     }
   },
 

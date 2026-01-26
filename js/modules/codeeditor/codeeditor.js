@@ -20,6 +20,7 @@ const CodeEditorModule = {
   _currentPageId: null,
   _consoleMessages: [],
   _messageListener: null,
+  _autoSaveTimeout: null,
 
   // Default starter code
   defaults: {
@@ -163,9 +164,13 @@ console.log('Hello from Code Editor!');`
       }
     });
 
-    // Save button
+    // Save button - auto-save if editing existing page, else show dialog
     this.container.querySelector('[data-action="save"]').addEventListener('click', () => {
-      this._showSaveDialog();
+      if (this._currentPageId) {
+        this._autoSaveCurrentPage();
+      } else {
+        this._showSaveDialog();
+      }
     });
 
     // Pages button
@@ -219,7 +224,7 @@ console.log('Hello from Code Editor!');`
 
   _initEditors() {
     const { EditorState } = window.CM.state;
-    const { EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLineGutter } = window.CM.view;
+    const { EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLineGutter, lineWrapping } = window.CM.view;
     const { defaultKeymap, history, historyKeymap, indentWithTab } = window.CM.commands;
     const { syntaxHighlighting, defaultHighlightStyle, bracketMatching, indentOnInput } = window.CM.language;
     const { html } = window.CM.html;
@@ -241,6 +246,7 @@ console.log('Hello from Code Editor!');`
         doc: savedCode,
         extensions: [
           lineNumbers(),
+          lineWrapping,
           highlightActiveLine(),
           highlightActiveLineGutter(),
           history(),
@@ -296,6 +302,35 @@ console.log('Hello from Code Editor!');`
     this._autoRunTimeout = setTimeout(() => {
       this._runCode();
     }, 1000);
+
+    // Debounced auto-save for existing pages
+    if (this._currentPageId) {
+      if (this._autoSaveTimeout) {
+        clearTimeout(this._autoSaveTimeout);
+      }
+      this._autoSaveTimeout = setTimeout(() => {
+        this._autoSaveCurrentPage();
+      }, 2000);
+    }
+  },
+
+  _autoSaveCurrentPage() {
+    if (!this._currentPageId) return;
+
+    const pages = this._getPages();
+    const idx = pages.findIndex(p => p.id === this._currentPageId);
+    if (idx === -1) return;
+
+    const htmlCode = this.editorViews.html?.state.doc.toString() || '';
+    const cssCode = this.editorViews.css?.state.doc.toString() || '';
+    const jsCode = this.editorViews.js?.state.doc.toString() || '';
+
+    pages[idx].html = htmlCode;
+    pages[idx].css = cssCode;
+    pages[idx].js = jsCode;
+    pages[idx].updatedAt = Date.now();
+
+    this._savePages(pages);
   },
 
   _runCode() {
@@ -591,6 +626,9 @@ console.log('Hello from Code Editor!');`
   destroy() {
     if (this._autoRunTimeout) {
       clearTimeout(this._autoRunTimeout);
+    }
+    if (this._autoSaveTimeout) {
+      clearTimeout(this._autoSaveTimeout);
     }
     // Clean up message listener
     if (this._messageListener) {
