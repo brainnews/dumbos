@@ -135,11 +135,36 @@
 }
 
 .codeeditor-preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: var(--spacing-xs) var(--spacing-sm);
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--border-color);
   font-size: var(--font-size-sm);
   color: var(--text-muted);
+}
+
+.codeeditor-console-toggle {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  color: var(--text-muted);
+  font-size: 11px;
+  padding: 2px 8px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.codeeditor-console-toggle:hover {
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+}
+
+.codeeditor-console-toggle.active {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: white;
 }
 
 .codeeditor-preview-frame {
@@ -304,4 +329,101 @@
   background: var(--accent-danger, #e74c3c);
   color: white;
   border-color: var(--accent-danger, #e74c3c);
+}
+
+/* Console Panel */
+.codeeditor-console {
+  display: flex;
+  flex-direction: column;
+  height: 150px;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-primary);
+}
+
+.codeeditor-console.codeeditor-hidden {
+  display: none;
+}
+
+.codeeditor-console-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.codeeditor-console-clear {
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  color: var(--text-muted);
+  font-size: 11px;
+  padding: 2px 8px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.codeeditor-console-clear:hover {
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+}
+
+.codeeditor-console-output {
+  flex: 1;
+  overflow-y: auto;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: var(--spacing-xs);
+}
+
+.codeeditor-console-entry {
+  display: flex;
+  gap: var(--spacing-sm);
+  padding: 3px var(--spacing-xs);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.codeeditor-console-entry:last-child {
+  border-bottom: none;
+}
+
+.codeeditor-console-time {
+  color: var(--text-muted);
+  flex-shrink: 0;
+  font-size: 11px;
+}
+
+.codeeditor-console-msg {
+  color: var(--text-primary);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* Console message types */
+.codeeditor-console-log .codeeditor-console-msg {
+  color: var(--text-primary);
+}
+
+.codeeditor-console-info .codeeditor-console-msg {
+  color: #3498db;
+}
+
+.codeeditor-console-warn {
+  background: rgba(241, 196, 15, 0.1);
+}
+
+.codeeditor-console-warn .codeeditor-console-msg {
+  color: #f1c40f;
+}
+
+.codeeditor-console-error {
+  background: rgba(231, 76, 60, 0.1);
+}
+
+.codeeditor-console-error .codeeditor-console-msg {
+  color: #e74c3c;
 }

@@ -18,6 +18,8 @@ const CodeEditorModule = {
   editorViews: {},
   autoRunEnabled: true,
   _currentPageId: null,
+  _consoleMessages: [],
+  _messageListener: null,
 
   // Default starter code
   defaults: {
@@ -51,9 +53,11 @@ console.log('Hello from Code Editor!');`
   async init(container, storage) {
     this.container = container;
     this.storage = storage;
+    this._consoleMessages = [];
     await this._loadCodeMirror();
     this._buildUI();
     this._initEditors();
+    this._setupConsoleListener();
     this._runCode();
   },
 
@@ -109,8 +113,18 @@ console.log('Hello from Code Editor!');`
           </div>
           <div class="codeeditor-divider"></div>
           <div class="codeeditor-preview-pane">
-            <div class="codeeditor-preview-header">Preview</div>
+            <div class="codeeditor-preview-header">
+              <span>Preview</span>
+              <button class="codeeditor-console-toggle" title="Toggle Console">Console</button>
+            </div>
             <iframe class="codeeditor-preview-frame" sandbox="allow-scripts"></iframe>
+            <div class="codeeditor-console">
+              <div class="codeeditor-console-header">
+                <span>Console</span>
+                <button class="codeeditor-console-clear" title="Clear Console">Clear</button>
+              </div>
+              <div class="codeeditor-console-output"></div>
+            </div>
           </div>
         </div>
         <div class="codeeditor-save-dialog codeeditor-hidden">
@@ -192,6 +206,15 @@ console.log('Hello from Code Editor!');`
 
     // Divider drag to resize
     this._initDividerDrag();
+
+    // Console toggle and clear
+    this.container.querySelector('.codeeditor-console-toggle').addEventListener('click', () => {
+      this._toggleConsole();
+    });
+
+    this.container.querySelector('.codeeditor-console-clear').addEventListener('click', () => {
+      this._clearConsole();
+    });
   },
 
   _initEditors() {
@@ -280,8 +303,61 @@ console.log('Hello from Code Editor!');`
     const cssCode = this.editorViews.css?.state.doc.toString() || '';
     const jsCode = this.editorViews.js?.state.doc.toString() || '';
 
+    // Clear console on each run
+    this._clearConsole();
+
+    // Console interceptor script to inject into iframe
+    const consoleInterceptor = `<script>
+(function() {
+  const originalConsole = {
+    log: console.log,
+    error: console.error,
+    warn: console.warn,
+    info: console.info,
+    clear: console.clear
+  };
+
+  function sendToParent(type, args) {
+    const serialized = Array.from(args).map(arg => {
+      try {
+        if (arg instanceof Error) {
+          return arg.message + (arg.stack ? '\\n' + arg.stack : '');
+        }
+        if (typeof arg === 'object') {
+          return JSON.stringify(arg, null, 2);
+        }
+        return String(arg);
+      } catch (e) {
+        return String(arg);
+      }
+    });
+    parent.postMessage({ type: 'console', method: type, args: serialized }, '*');
+  }
+
+  console.log = function(...args) { sendToParent('log', args); originalConsole.log.apply(console, args); };
+  console.error = function(...args) { sendToParent('error', args); originalConsole.error.apply(console, args); };
+  console.warn = function(...args) { sendToParent('warn', args); originalConsole.warn.apply(console, args); };
+  console.info = function(...args) { sendToParent('info', args); originalConsole.info.apply(console, args); };
+  console.clear = function() { sendToParent('clear', []); originalConsole.clear.apply(console); };
+
+  window.onerror = function(msg, url, line, col, error) {
+    sendToParent('error', [msg + ' (line ' + line + ')']);
+    return false;
+  };
+})();
+<\/script>`;
+
     // Inject CSS and JS into HTML
     let finalHtml = htmlCode;
+
+    // Add console interceptor at the very beginning
+    if (finalHtml.includes('<head>')) {
+      finalHtml = finalHtml.replace('<head>', `<head>\n${consoleInterceptor}`);
+    } else if (finalHtml.includes('<html>')) {
+      finalHtml = finalHtml.replace('<html>', `<html>\n<head>${consoleInterceptor}</head>`);
+    } else {
+      finalHtml = consoleInterceptor + '\n' + finalHtml;
+    }
 
     // Add CSS before </head> or at the start
     if (cssCode.trim()) {
@@ -516,9 +592,84 @@ console.log('Hello from Code Editor!');`
     if (this._autoRunTimeout) {
       clearTimeout(this._autoRunTimeout);
     }
+    // Clean up message listener
+    if (this._messageListener) {
+      window.removeEventListener('message', this._messageListener);
+      this._messageListener = null;
+    }
     // Clean up editor views
     Object.values(this.editorViews).forEach(view => view?.destroy());
     this.editorViews = {};
+  },
+
+  // Console methods
+  _setupConsoleListener() {
+    this._messageListener = (event) => {
+      if (event.data && event.data.type === 'console') {
+        if (event.data.method === 'clear') {
+          this._clearConsole();
+        } else {
+          this._addConsoleMessage(event.data.method, event.data.args);
+        }
+      }
+    };
+    window.addEventListener('message', this._messageListener);
+  },
+
+  _addConsoleMessage(method, args) {
+    const timestamp = new Date().toLocaleTimeString('en-US', {
+      hour12: false,
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+
+    this._consoleMessages.push({ method, args, timestamp });
+    this._renderConsoleMessage(method, args, timestamp);
+
+    // Auto-scroll to bottom
+    const output = this.container.querySelector('.codeeditor-console-output');
+    if (output) {
+      output.scrollTop = output.scrollHeight;
+    }
+  },
+
+  _renderConsoleMessage(method, args, timestamp) {
+    const output = this.container.querySelector('.codeeditor-console-output');
+    if (!output) return;
+
+    const entry = document.createElement('div');
+    entry.className = `codeeditor-console-entry codeeditor-console-${method}`;
+
+    const timeSpan = document.createElement('span');
+    timeSpan.className = 'codeeditor-console-time';
+    timeSpan.textContent = timestamp;
+
+    const msgSpan = document.createElement('span');
+    msgSpan.className = 'codeeditor-console-msg';
+    msgSpan.textContent = args.join(' ');
+
+    entry.appendChild(timeSpan);
+    entry.appendChild(msgSpan);
+    output.appendChild(entry);
+  },
+
+  _clearConsole() {
+    this._consoleMessages = [];
+    const output = this.container.querySelector('.codeeditor-console-output');
+    if (output) {
+      output.innerHTML = '';
+    }
+  },
+
+  _toggleConsole() {
+    const console = this.container.querySelector('.codeeditor-console');
+    const btn = this.container.querySelector('.codeeditor-console-toggle');
+    if (console) {
+      const isVisible = !console.classList.contains('codeeditor-hidden');
+      console.classList.toggle('codeeditor-hidden', isVisible);
+      btn.classList.toggle('active', !isVisible);
+    }
   }
 };
 
