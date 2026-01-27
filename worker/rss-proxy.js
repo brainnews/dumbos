@@ -25,6 +25,12 @@ export default {
     const url = new URL(request.url);
     const feedUrl = url.searchParams.get('url');
     const articleUrl = url.searchParams.get('article');
+    const stockSymbols = url.searchParams.get('stocks');
+
+    // Stock quotes mode
+    if (stockSymbols) {
+      return handleStocks(stockSymbols, url, request, ctx);
+    }
 
     // Article extraction mode
     if (articleUrl) {
@@ -33,7 +39,7 @@ export default {
 
     // RSS feed mode
     if (!feedUrl) {
-      return jsonResponse({ error: 'Missing url or article parameter' }, 400);
+      return jsonResponse({ error: 'Missing url, article, or stocks parameter' }, 400);
     }
 
     // Validate URL
@@ -81,6 +87,90 @@ export default {
     }
   },
 };
+
+/**
+ * Handle stock quotes request
+ */
+async function handleStocks(symbols, url, request, ctx) {
+  const symbolList = symbols.split(',').map(s => s.trim().toUpperCase()).filter(Boolean);
+
+  if (symbolList.length === 0) {
+    return jsonResponse({ error: 'No valid symbols provided' }, 400);
+  }
+
+  if (symbolList.length > 20) {
+    return jsonResponse({ error: 'Maximum 20 symbols allowed' }, 400);
+  }
+
+  // Check cache
+  const cache = caches.default;
+  const cacheKey = new Request(url.toString(), request);
+  let response = await cache.match(cacheKey);
+
+  if (response) {
+    return response;
+  }
+
+  try {
+    // Fetch each symbol from Yahoo Finance chart endpoint
+    const quotes = await Promise.all(
+      symbolList.map(async (symbol) => {
+        try {
+          const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=1d`;
+          const yahooResponse = await fetch(yahooUrl, {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (compatible; DumbOS StockTracker/1.0)',
+            },
+          });
+
+          if (!yahooResponse.ok) {
+            return { symbol, error: `HTTP ${yahooResponse.status}` };
+          }
+
+          const data = await yahooResponse.json();
+
+          if (data.chart?.result?.[0]?.meta) {
+            const meta = data.chart.result[0].meta;
+            const prevClose = meta.chartPreviousClose || meta.previousClose;
+            const price = meta.regularMarketPrice;
+            const change = price - prevClose;
+            const changePercent = prevClose ? (change / prevClose) * 100 : 0;
+
+            return {
+              symbol: meta.symbol,
+              shortName: meta.shortName || meta.longName || symbol,
+              longName: meta.longName,
+              regularMarketPrice: price,
+              regularMarketChange: change,
+              regularMarketChangePercent: changePercent,
+              regularMarketOpen: meta.regularMarketOpen || prevClose,
+              regularMarketDayHigh: meta.regularMarketDayHigh,
+              regularMarketDayLow: meta.regularMarketDayLow,
+              regularMarketPreviousClose: prevClose,
+              regularMarketVolume: meta.regularMarketVolume,
+              marketCap: meta.marketCap,
+              currency: meta.currency || 'USD',
+            };
+          }
+
+          return { symbol, error: 'No data returned' };
+        } catch (e) {
+          return { symbol, error: e.message };
+        }
+      })
+    );
+
+    response = jsonResponse({ quotes }, 200, {
+      'Cache-Control': 'public, max-age=60', // 1 minute cache for stocks
+    });
+
+    ctx.waitUntil(cache.put(cacheKey, response.clone()));
+
+    return response;
+  } catch (error) {
+    return jsonResponse({ error: error.message }, 500);
+  }
+}
 
 /**
  * Handle article extraction request

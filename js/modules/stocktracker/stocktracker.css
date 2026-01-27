@@ -1,0 +1,275 @@
+/* Stock Tracker Module Styles */
+.stocktracker-layout {
+  display: flex;
+  height: 100%;
+}
+
+/* Sidebar */
+.stocktracker-sidebar {
+  width: 180px;
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.stocktracker-sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+  font-weight: 500;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.stocktracker-add-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: 16px;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.stocktracker-add-btn:hover {
+  background: var(--accent-primary);
+}
+
+/* Stock List */
+.stocktracker-list {
+  list-style: none;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.stocktracker-item {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-sm) var(--spacing-md);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.stocktracker-item:hover {
+  background: var(--bg-secondary);
+}
+
+.stocktracker-item.active {
+  background: var(--bg-tertiary);
+  border-left: 2px solid var(--accent-primary);
+}
+
+.stocktracker-item-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stocktracker-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stocktracker-item-symbol {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.stocktracker-item-price {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+}
+
+.stocktracker-item-change {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.stocktracker-item-change.positive {
+  color: #22c55e;
+}
+
+.stocktracker-item-change.negative {
+  color: #ef4444;
+}
+
+.stocktracker-remove-btn {
+  width: 20px;
+  height: 20px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.stocktracker-item:hover .stocktracker-remove-btn {
+  display: flex;
+}
+
+.stocktracker-remove-btn:hover {
+  background: var(--control-close);
+  color: white;
+}
+
+/* Main Content */
+.stocktracker-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.stocktracker-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  text-align: center;
+  padding: var(--spacing-lg);
+  gap: var(--spacing-xs);
+}
+
+.stocktracker-hint {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+/* Details Panel */
+.stocktracker-details {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--spacing-md);
+}
+
+.stocktracker-details-header {
+  margin-bottom: var(--spacing-sm);
+}
+
+.stocktracker-symbol {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.stocktracker-name {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.stocktracker-price-section {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.stocktracker-price {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.stocktracker-change {
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+}
+
+.stocktracker-change.positive {
+  color: #22c55e;
+}
+
+.stocktracker-change.negative {
+  color: #ef4444;
+}
+
+/* Stats Grid */
+.stocktracker-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-sm) var(--spacing-lg);
+  flex: 1;
+}
+
+.stocktracker-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-xs) 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.stocktracker-stat-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.stocktracker-stat-value {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.stocktracker-loading {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--text-muted);
+  padding: var(--spacing-lg);
+}
+
+/* Footer */
+.stocktracker-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--border-color);
+}
+
+.stocktracker-updated {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+.stocktracker-refresh-btn {
+  padding: var(--spacing-xs) var(--spacing-md);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.stocktracker-refresh-btn:hover:not(:disabled) {
+  background: var(--accent-primary);
+}
+
+.stocktracker-refresh-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

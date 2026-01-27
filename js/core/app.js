@@ -28,6 +28,9 @@ import YouTubeModule from '../modules/youtube/youtube.js';
 import WritingModule from '../modules/writing/writing.js';
 import PhotoEditorModule from '../modules/photoeditor/photoeditor.js';
 import HelpModule from '../modules/help/help.js';
+import SynthModule from '../modules/synth/synth.js';
+import StockTrackerModule from '../modules/stocktracker/stocktracker.js';
+import Screensaver from './screensaver.js';
 
 class App {
   constructor() {
@@ -51,6 +54,9 @@ class App {
     StartMenu.init();
     DesktopShortcuts.init(this.desktop);
     Taskbar.init();
+
+    // Initialize screensaver system
+    Screensaver.init();
 
     // Restore previously open windows or show defaults
     this._restoreWindows();
@@ -145,6 +151,8 @@ class App {
     ModuleRegistry.register(WritingModule);
     ModuleRegistry.register(PhotoEditorModule);
     ModuleRegistry.register(HelpModule);
+    ModuleRegistry.register(SynthModule);
+    ModuleRegistry.register(StockTrackerModule);
     ModuleRegistry.register(SettingsModule);
   }
 
