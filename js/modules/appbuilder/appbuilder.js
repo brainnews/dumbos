@@ -114,13 +114,38 @@ const AppBuilderModule = {
         <main class="appbuilder-main">
           <div class="appbuilder-api-setup" style="display:none">
             <div class="appbuilder-api-setup-content">
-              <h2>API Key Required</h2>
-              <p>Enter your Anthropic API key to use App Builder. Your key is stored locally and never sent to any server except Anthropic's API.</p>
+              <h2>Connect to Claude</h2>
+              <p class="appbuilder-api-intro">App Builder uses Claude to generate apps from your descriptions. You'll need an Anthropic API key to get started.</p>
+
+              <div class="appbuilder-api-steps">
+                <div class="appbuilder-api-step">
+                  <span class="appbuilder-step-number">1</span>
+                  <div class="appbuilder-step-content">
+                    <strong>Create an Anthropic account</strong>
+                    <p>Go to <a href="https://console.anthropic.com/" target="_blank" rel="noopener">console.anthropic.com</a> and sign up (or log in)</p>
+                  </div>
+                </div>
+                <div class="appbuilder-api-step">
+                  <span class="appbuilder-step-number">2</span>
+                  <div class="appbuilder-step-content">
+                    <strong>Add billing</strong>
+                    <p>Go to Settings &rarr; Billing and add a payment method. API usage is pay-as-you-go (typically pennies per app).</p>
+                  </div>
+                </div>
+                <div class="appbuilder-api-step">
+                  <span class="appbuilder-step-number">3</span>
+                  <div class="appbuilder-step-content">
+                    <strong>Generate an API key</strong>
+                    <p>Go to Settings &rarr; API Keys, click "Create Key", and copy the key that starts with <code>sk-ant-</code></p>
+                  </div>
+                </div>
+              </div>
+
               <div class="appbuilder-api-input-group">
-                <input type="password" class="appbuilder-api-input" placeholder="sk-ant-...">
+                <input type="password" class="appbuilder-api-input" placeholder="Paste your API key here...">
                 <button class="appbuilder-api-save-btn">Save Key</button>
               </div>
-              <p class="appbuilder-api-hint">Get your API key from <a href="https://console.anthropic.com/" target="_blank" rel="noopener">console.anthropic.com</a></p>
+              <p class="appbuilder-api-privacy">Your key is stored locally in your browser and only sent to Anthropic's API.</p>
               <p class="appbuilder-api-error" style="display:none"></p>
             </div>
           </div>
