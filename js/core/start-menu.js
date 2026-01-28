@@ -11,7 +11,8 @@ const CATEGORY_CONFIG = {
   tools: { name: 'Tools', order: 2 },
   games: { name: 'Games', order: 3 },
   entertainment: { name: 'Entertainment', order: 4 },
-  system: { name: 'System', order: 5 }
+  system: { name: 'System', order: 5 },
+  custom: { name: 'Custom Apps', order: 6 }
 };
 
 class StartMenu {
@@ -62,6 +63,19 @@ class StartMenu {
    */
   _setupEventListeners() {
     document.addEventListener('keydown', this._onKeyDown);
+
+    // Listen for module registration changes to update menu dynamically
+    window.addEventListener('module-registered', () => {
+      if (this.isOpen) {
+        this._buildContent();
+      }
+    });
+
+    window.addEventListener('module-unregistered', () => {
+      if (this.isOpen) {
+        this._buildContent();
+      }
+    });
   }
 
   /**

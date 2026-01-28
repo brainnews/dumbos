@@ -30,6 +30,7 @@ import PhotoEditorModule from '../modules/photoeditor/photoeditor.js';
 import HelpModule from '../modules/help/help.js';
 import SynthModule from '../modules/synth/synth.js';
 import StockTrackerModule from '../modules/stocktracker/stocktracker.js';
+import AppBuilderModule, { registerCustomApps } from '../modules/appbuilder/appbuilder.js';
 import Screensaver from './screensaver.js';
 
 class App {
@@ -107,7 +108,8 @@ class App {
       entertainment: 'Entertainment',
       games: 'Games',
       tools: 'Tools',
-      system: 'System'
+      system: 'System',
+      custom: 'Custom Apps'
     };
 
     // Group modules by category
@@ -119,7 +121,7 @@ class App {
     });
 
     // Render categories in a specific order
-    const order = ['productivity', 'entertainment', 'games', 'tools', 'system'];
+    const order = ['productivity', 'entertainment', 'games', 'tools', 'system', 'custom'];
     container.innerHTML = order
       .filter(cat => categories[cat]?.length > 0)
       .map(cat => `
@@ -153,7 +155,11 @@ class App {
     ModuleRegistry.register(HelpModule);
     ModuleRegistry.register(SynthModule);
     ModuleRegistry.register(StockTrackerModule);
+    ModuleRegistry.register(AppBuilderModule);
     ModuleRegistry.register(SettingsModule);
+
+    // Register user-created apps from App Builder
+    registerCustomApps();
   }
 
   /**
