@@ -401,7 +401,11 @@ const AppBuilderModule = {
       } else {
         // For assistant messages, show description but hide code blocks
         const description = this._extractDescription(msg.content);
-        msgEl.innerHTML = `<div class="appbuilder-message-content">${this._escapeHtml(description)}</div>`;
+        let costHtml = '';
+        if (msg.usage && msg.usage.cost !== undefined) {
+          costHtml = `<div class="appbuilder-message-cost">${this._formatCost(msg.usage.cost)}</div>`;
+        }
+        msgEl.innerHTML = `<div class="appbuilder-message-content">${this._escapeHtml(description)}</div>${costHtml}`;
       }
 
       messagesEl.appendChild(msgEl);
@@ -417,6 +421,24 @@ const AppBuilderModule = {
       .replace(/```css[\s\S]*?```/g, '')
       .replace(/```(?:js|javascript)[\s\S]*?```/g, '')
       .trim() || 'Code generated successfully.';
+  },
+
+  _calculateCost(inputTokens, outputTokens) {
+    // Claude Sonnet pricing (per million tokens)
+    const INPUT_COST_PER_M = 3.00;
+    const OUTPUT_COST_PER_M = 15.00;
+
+    const inputCost = (inputTokens / 1_000_000) * INPUT_COST_PER_M;
+    const outputCost = (outputTokens / 1_000_000) * OUTPUT_COST_PER_M;
+
+    return inputCost + outputCost;
+  },
+
+  _formatCost(cost) {
+    if (cost < 0.01) {
+      return `$${cost.toFixed(4)}`;
+    }
+    return `$${cost.toFixed(3)}`;
   },
 
   async _sendMessage() {
@@ -447,6 +469,10 @@ const AppBuilderModule = {
 
       const assistantContent = response.content[0].text;
 
+      // Calculate cost from usage (Claude Sonnet pricing)
+      const usage = response.usage || {};
+      const cost = this._calculateCost(usage.input_tokens || 0, usage.output_tokens || 0);
+
       // Parse code blocks and merge with current code
       const newCode = this._parseCodeBlocks(assistantContent);
       if (newCode.html) this.currentCode.html = newCode.html;
@@ -458,7 +484,8 @@ const AppBuilderModule = {
         role: 'assistant',
         content: assistantContent,
         timestamp: Date.now(),
-        code: { ...this.currentCode }
+        code: { ...this.currentCode },
+        usage: { ...usage, cost }
       });
 
       this._renderChat();

@@ -388,6 +388,15 @@
   word-break: break-word;
 }
 
+.appbuilder-message-cost {
+  margin-top: var(--spacing-xs);
+  padding-top: var(--spacing-xs);
+  border-top: 1px solid var(--border-color);
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
 /* Loading Animation */
 .appbuilder-chat-loading {
   align-self: flex-start;
