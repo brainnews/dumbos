@@ -61,6 +61,17 @@ Style notes:
 - Low contrast borders (subtle separation)
 - Interactive elements have clear hover/active states using the accent color
 
+CRITICAL - CODE COMPLETENESS:
+- Every button, link, and interactive element in the HTML MUST have working JavaScript
+- Never create UI elements without implementing their functionality
+- If you add an "Export" button, implement the full export logic
+- If you add a modal, implement open/close/action handlers
+- Test mentally: "If a user clicks this, what happens?" - if nothing, you forgot to implement it
+- Common patterns to always implement fully:
+  - Export/Download: canvas.toDataURL() → create link → trigger download
+  - Modals: show/hide logic, close button, overlay click to close
+  - Forms: validation, submission handling, success/error states
+
 For refinements, only include code blocks that changed.`;
 
 const DEFAULT_APP_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg>`;
