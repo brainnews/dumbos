@@ -167,7 +167,7 @@ const AppBuilderModule = {
                   <button class="appbuilder-export-btn" style="display:none">Export</button>
                 </div>
               </div>
-              <iframe class="appbuilder-preview-frame" sandbox="allow-scripts allow-same-origin allow-downloads"></iframe>
+              <iframe class="appbuilder-preview-frame" sandbox="allow-scripts allow-same-origin allow-downloads allow-modals allow-forms"></iframe>
             </div>
           </div>
         </main>
@@ -716,7 +716,7 @@ const AppBuilderModule = {
 
       init(container) {
         const iframe = document.createElement('iframe');
-        iframe.sandbox = 'allow-scripts allow-same-origin allow-downloads';
+        iframe.sandbox = 'allow-scripts allow-same-origin allow-downloads allow-modals allow-forms';
         iframe.style.cssText = 'width:100%;height:100%;border:none;';
 
         let html = this._appCode.html || '<!DOCTYPE html><html><head></head><body></body></html>';
@@ -843,7 +843,7 @@ export function registerCustomApps() {
 
       init(container) {
         const iframe = document.createElement('iframe');
-        iframe.sandbox = 'allow-scripts allow-same-origin allow-downloads';
+        iframe.sandbox = 'allow-scripts allow-same-origin allow-downloads allow-modals allow-forms';
         iframe.style.cssText = 'width:100%;height:100%;border:none;';
 
         let html = this._appCode.html || '<!DOCTYPE html><html><head></head><body></body></html>';
