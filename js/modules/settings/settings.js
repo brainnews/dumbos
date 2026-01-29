@@ -2,6 +2,7 @@
  * Settings Module - System preferences
  */
 import Storage from '../../core/storage.js';
+import Screensaver from '../../core/screensaver.js';
 
 const DEFAULT_WALLPAPER = '/assets/wallpapers/dumbOS-wallpaper-01.jpg';
 
@@ -38,6 +39,10 @@ const SettingsModule = {
       <div class="settings-container">
         <div class="settings-section">
           <h3 class="settings-section-title">Background</h3>
+          <div class="settings-row">
+            <label class="settings-label">Solid Color</label>
+            <input type="color" class="settings-color" data-setting="bg-color" value="${Storage.get('desktop', 'background-color', '#1a1a2e')}">
+          </div>
           <div class="settings-row settings-row-stack">
             <label class="settings-label">Image URL</label>
             <div class="settings-input-group">
@@ -74,6 +79,37 @@ const SettingsModule = {
               <p class="settings-description">Open NPR links in text-only version</p>
             </div>
             <input type="checkbox" class="settings-checkbox" data-setting="npr-text-mode" ${Storage.get('rss', 'nprTextMode', true) ? 'checked' : ''}>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h3 class="settings-section-title">Screensaver</h3>
+          <div class="settings-row">
+            <div>
+              <label class="settings-label">Enable Screensaver</label>
+              <p class="settings-description">Activate after a period of inactivity</p>
+            </div>
+            <input type="checkbox" class="settings-checkbox" data-setting="screensaver-enabled" ${Storage.get('screensaver', 'enabled', false) ? 'checked' : ''}>
+          </div>
+          <div class="settings-row">
+            <label class="settings-label">Idle Time</label>
+            <select class="settings-select" data-setting="screensaver-idle">
+              ${[1, 2, 3, 5, 10, 15, 30].map(min => `
+                <option value="${min}" ${Storage.get('screensaver', 'idleMinutes', 5) === min ? 'selected' : ''}>${min} minute${min > 1 ? 's' : ''}</option>
+              `).join('')}
+            </select>
+          </div>
+          <div class="settings-row">
+            <label class="settings-label">Style</label>
+            <select class="settings-select" data-setting="screensaver-type">
+              <option value="starfield" ${Storage.get('screensaver', 'type', 'starfield') === 'starfield' ? 'selected' : ''}>Starfield</option>
+              <option value="matrix" ${Storage.get('screensaver', 'type', 'starfield') === 'matrix' ? 'selected' : ''}>Matrix</option>
+              <option value="bouncing" ${Storage.get('screensaver', 'type', 'starfield') === 'bouncing' ? 'selected' : ''}>Bouncing Logo</option>
+            </select>
+          </div>
+          <div class="settings-row">
+            <label class="settings-label">Preview</label>
+            <button class="settings-btn" data-action="preview-screensaver">Preview</button>
           </div>
         </div>
 
@@ -145,8 +181,30 @@ const SettingsModule = {
       this._clearBackground();
     });
 
+    this.container.querySelector('[data-setting="bg-color"]').addEventListener('input', (e) => {
+      this._setBackgroundColor(e.target.value);
+    });
+
     this.container.querySelector('[data-setting="npr-text-mode"]').addEventListener('change', (e) => {
       Storage.set('rss', 'nprTextMode', e.target.checked);
+    });
+
+    // Screensaver settings
+    this.container.querySelector('[data-setting="screensaver-enabled"]').addEventListener('change', (e) => {
+      Storage.set('screensaver', 'enabled', e.target.checked);
+    });
+
+    this.container.querySelector('[data-setting="screensaver-idle"]').addEventListener('change', (e) => {
+      Storage.set('screensaver', 'idleMinutes', parseInt(e.target.value));
+    });
+
+    this.container.querySelector('[data-setting="screensaver-type"]').addEventListener('change', (e) => {
+      Storage.set('screensaver', 'type', e.target.value);
+    });
+
+    this.container.querySelector('[data-action="preview-screensaver"]').addEventListener('click', () => {
+      const type = Storage.get('screensaver', 'type', 'starfield');
+      Screensaver.preview(type);
     });
 
     this.container.querySelector('[data-action="export-data"]').addEventListener('click', () => {
@@ -182,6 +240,19 @@ const SettingsModule = {
   _setBackgroundUrl(url) {
     Storage.set('desktop', 'background-url', url);
     Storage.remove('desktop', 'background-data');
+    Storage.remove('desktop', 'background-color-active');
+    this._applyBackground();
+  },
+
+  /**
+   * Set background from solid color
+   */
+  _setBackgroundColor(color) {
+    Storage.set('desktop', 'background-color', color);
+    Storage.set('desktop', 'background-color-active', 'true');
+    Storage.remove('desktop', 'background-url');
+    Storage.remove('desktop', 'background-data');
+    this.container.querySelector('[data-setting="bg-url"]').value = '';
     this._applyBackground();
   },
 
@@ -199,6 +270,7 @@ const SettingsModule = {
       const dataUrl = e.target.result;
       Storage.set('desktop', 'background-data', dataUrl);
       Storage.remove('desktop', 'background-url');
+      Storage.remove('desktop', 'background-color-active');
       this.container.querySelector('[data-setting="bg-url"]').value = '';
       this._applyBackground();
     };
@@ -211,6 +283,7 @@ const SettingsModule = {
   _clearBackground() {
     Storage.remove('desktop', 'background-url');
     Storage.remove('desktop', 'background-data');
+    Storage.remove('desktop', 'background-color-active');
     this.container.querySelector('[data-setting="bg-url"]').value = '';
     this._applyBackground();
   },
@@ -222,9 +295,19 @@ const SettingsModule = {
     const desktop = document.getElementById('desktop');
     const url = Storage.get('desktop', 'background-url', '');
     const dataUrl = Storage.get('desktop', 'background-data', '');
-    const bgImage = dataUrl || url || DEFAULT_WALLPAPER;
+    const bgColor = Storage.get('desktop', 'background-color', '#1a1a2e');
+    const colorActive = Storage.get('desktop', 'background-color-active', '');
 
-    desktop.style.backgroundImage = `url("${bgImage}")`;
+    if (colorActive && !url && !dataUrl) {
+      // Solid color background
+      desktop.style.backgroundImage = 'none';
+      desktop.style.backgroundColor = bgColor;
+    } else {
+      // Image background
+      const bgImage = dataUrl || url || DEFAULT_WALLPAPER;
+      desktop.style.backgroundImage = `url("${bgImage}")`;
+      desktop.style.backgroundColor = '';
+    }
     desktop.style.backgroundSize = 'cover';
     desktop.style.backgroundPosition = 'center';
   },
@@ -348,9 +431,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const desktop = document.getElementById('desktop');
   const url = Storage.get('desktop', 'background-url', '');
   const dataUrl = Storage.get('desktop', 'background-data', '');
-  const bgImage = dataUrl || url || DEFAULT_WALLPAPER;
+  const bgColor = Storage.get('desktop', 'background-color', '#1a1a2e');
+  const colorActive = Storage.get('desktop', 'background-color-active', '');
 
-  desktop.style.backgroundImage = `url("${bgImage}")`;
+  if (colorActive && !url && !dataUrl) {
+    desktop.style.backgroundImage = 'none';
+    desktop.style.backgroundColor = bgColor;
+  } else {
+    const bgImage = dataUrl || url || DEFAULT_WALLPAPER;
+    desktop.style.backgroundImage = `url("${bgImage}")`;
+    desktop.style.backgroundColor = '';
+  }
   desktop.style.backgroundSize = 'cover';
   desktop.style.backgroundPosition = 'center';
 });

@@ -5,6 +5,11 @@ import ModuleRegistry from './module-registry.js';
 import Storage from './storage.js';
 import ContextMenu from './context-menu.js';
 
+const GRID_SPACING_X = 90;
+const GRID_SPACING_Y = 100;
+const GRID_START_X = 20;
+const GRID_START_Y = 20;
+
 class DesktopShortcuts {
   constructor() {
     this.container = null;
@@ -23,6 +28,7 @@ class DesktopShortcuts {
     this._loadShortcuts();
     this._render();
     this._setupEventListeners();
+    this._setupDesktopContextMenu();
   }
 
   /**
@@ -211,12 +217,14 @@ class DesktopShortcuts {
   /**
    * Add a shortcut for a module
    */
-  addShortcut(moduleId, x = 20, y = 20) {
+  addShortcut(moduleId) {
     const module = ModuleRegistry.get(moduleId);
     if (!module) return;
 
     // Check if shortcut already exists
     if (this.shortcuts.some(s => s.moduleId === moduleId)) return;
+
+    const { x, y } = this.getNextGridPosition();
 
     const shortcut = {
       id: Date.now().toString(),
@@ -231,12 +239,163 @@ class DesktopShortcuts {
   }
 
   /**
+   * Get all occupied grid positions from shortcuts and bookmarks
+   */
+  _getOccupiedPositions() {
+    const occupied = new Set();
+
+    // Add shortcut positions
+    this.shortcuts.forEach(s => {
+      const col = Math.round((s.x - GRID_START_X) / GRID_SPACING_X);
+      const row = Math.round((s.y - GRID_START_Y) / GRID_SPACING_Y);
+      occupied.add(`${col},${row}`);
+    });
+
+    // Add bookmark positions
+    const bookmarks = Storage.get('bookmarks', 'list', []);
+    const showOnDesktop = Storage.get('bookmarks', 'showOnDesktop', false);
+    if (showOnDesktop) {
+      bookmarks.forEach(b => {
+        if (b.x !== undefined && b.y !== undefined) {
+          const col = Math.round((b.x - GRID_START_X) / GRID_SPACING_X);
+          const row = Math.round((b.y - GRID_START_Y) / GRID_SPACING_Y);
+          occupied.add(`${col},${row}`);
+        }
+      });
+    }
+
+    return occupied;
+  }
+
+  /**
+   * Find the next available grid position
+   */
+  getNextGridPosition() {
+    const containerRect = this.container.getBoundingClientRect();
+    const maxRows = Math.floor((containerRect.height - 60) / GRID_SPACING_Y);
+    const occupied = this._getOccupiedPositions();
+
+    // Search for first available position (column by column, top to bottom)
+    for (let col = 0; col < 100; col++) {
+      for (let row = 0; row < maxRows; row++) {
+        if (!occupied.has(`${col},${row}`)) {
+          return {
+            x: GRID_START_X + (col * GRID_SPACING_X),
+            y: GRID_START_Y + (row * GRID_SPACING_Y)
+          };
+        }
+      }
+    }
+
+    // Fallback if somehow all positions are taken
+    return { x: GRID_START_X, y: GRID_START_Y };
+  }
+
+  /**
    * Remove a shortcut by module ID
    */
   removeShortcut(moduleId) {
     this.shortcuts = this.shortcuts.filter(s => s.moduleId !== moduleId);
     this._saveShortcuts();
     this._render();
+  }
+
+  /**
+   * Setup context menu for desktop background
+   */
+  _setupDesktopContextMenu() {
+    this.container.addEventListener('contextmenu', (e) => {
+      // Only show desktop menu if clicking on the desktop background, not on shortcuts or windows
+      if (!e.target.closest('.desktop-shortcut') && !e.target.closest('.window')) {
+        e.preventDefault();
+        this._showDesktopContextMenu(e);
+      }
+    });
+  }
+
+  /**
+   * Show desktop context menu
+   */
+  _showDesktopContextMenu(e) {
+    const items = [
+      {
+        label: 'Change Wallpaper',
+        action: () => {
+          window.DumbOS.openModule('settings');
+        }
+      },
+      { separator: true },
+      {
+        label: 'Clean Up Desktop',
+        action: () => {
+          this.cleanUpShortcuts();
+        }
+      }
+    ];
+
+    ContextMenu.show(e.clientX, e.clientY, items);
+  }
+
+  /**
+   * Realign all desktop icons (shortcuts and bookmarks) to a grid
+   */
+  cleanUpShortcuts() {
+    const containerRect = this.container.getBoundingClientRect();
+    const maxRows = Math.floor((containerRect.height - 60) / GRID_SPACING_Y); // Leave room for taskbar
+    let index = 0;
+
+    // Clean up module shortcuts
+    this.shortcuts.forEach((shortcut) => {
+      const col = Math.floor(index / maxRows);
+      const row = index % maxRows;
+      shortcut.x = GRID_START_X + (col * GRID_SPACING_X);
+      shortcut.y = GRID_START_Y + (row * GRID_SPACING_Y);
+      index++;
+    });
+
+    this._saveShortcuts();
+    this._render();
+
+    // Clean up desktop bookmarks
+    this._cleanUpBookmarks(index, maxRows);
+  }
+
+  /**
+   * Realign desktop bookmarks to the grid, continuing from a given index
+   */
+  _cleanUpBookmarks(startIndex, maxRows) {
+    const bookmarks = Storage.get('bookmarks', 'list', []);
+    const showOnDesktop = Storage.get('bookmarks', 'showOnDesktop', false);
+
+    if (!showOnDesktop || bookmarks.length === 0) return;
+
+    let index = startIndex;
+    bookmarks.forEach((bookmark) => {
+      const col = Math.floor(index / maxRows);
+      const row = index % maxRows;
+      bookmark.x = GRID_START_X + (col * GRID_SPACING_X);
+      bookmark.y = GRID_START_Y + (row * GRID_SPACING_Y);
+      index++;
+    });
+
+    // Save updated bookmark positions
+    Storage.set('bookmarks', 'list', bookmarks);
+
+    // Re-render desktop bookmarks
+    this._rerenderDesktopBookmarks(bookmarks);
+  }
+
+  /**
+   * Re-render desktop bookmark elements with updated positions
+   */
+  _rerenderDesktopBookmarks(bookmarks) {
+    const existingBookmarks = this.container.querySelectorAll('.desktop-bookmark');
+    existingBookmarks.forEach((el, i) => {
+      if (bookmarks[i]) {
+        el.style.left = `${bookmarks[i].x}px`;
+        el.style.top = `${bookmarks[i].y}px`;
+      }
+    });
   }
 }
 

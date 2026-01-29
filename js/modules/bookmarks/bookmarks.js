@@ -2,6 +2,7 @@
  * Bookmarks Module - Quick links manager
  */
 import ContextMenu from '../../core/context-menu.js';
+import DesktopShortcuts from '../../core/desktop-shortcuts.js';
 
 const BookmarksModule = {
   id: 'bookmarks',
@@ -31,14 +32,27 @@ const BookmarksModule = {
 
   _migrateBookmarkPositions() {
     // Add default positions to bookmarks that don't have them
+    // Uses simple index-based positioning for migration only
+    const GRID_SPACING_X = 90;
+    const GRID_SPACING_Y = 100;
+    const GRID_START_X = 20;
+    const GRID_START_Y = 20;
+    const maxRows = Math.floor((window.innerHeight - 60) / GRID_SPACING_Y);
+
     let needsSave = false;
-    this.bookmarks.forEach((bookmark, index) => {
+    let positionIndex = 0;
+
+    this.bookmarks.forEach((bookmark) => {
       if (bookmark.x === undefined || bookmark.y === undefined) {
-        bookmark.x = 20 + (index % 1) * 100;
-        bookmark.y = 20 + index * 90;
+        const col = Math.floor(positionIndex / maxRows);
+        const row = positionIndex % maxRows;
+        bookmark.x = GRID_START_X + (col * GRID_SPACING_X);
+        bookmark.y = GRID_START_Y + (row * GRID_SPACING_Y);
         needsSave = true;
       }
+      positionIndex++;
     });
+
     if (needsSave) {
       this._save();
     }
@@ -338,10 +352,8 @@ const BookmarksModule = {
       const existing = this.bookmarks[this.editingIndex];
       this.bookmarks[this.editingIndex] = { name, url, x: existing.x, y: existing.y };
     } else {
-      // Calculate position for new bookmark
-      const index = this.bookmarks.length;
-      const x = 20;
-      const y = 20 + index * 90;
+      // Find next available grid position
+      const { x, y } = DesktopShortcuts.getNextGridPosition();
       this.bookmarks.push({ name, url, x, y });
     }
 

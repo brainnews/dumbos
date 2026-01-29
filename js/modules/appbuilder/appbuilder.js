@@ -4,7 +4,14 @@
 import Storage from '../../core/storage.js';
 import ModuleRegistry from '../../core/module-registry.js';
 
-const SYSTEM_PROMPT = `You are an app builder for DumbOS, a retro-inspired desktop environment. Create simple, self-contained web apps that match the DumbOS aesthetic.
+const SYSTEM_PROMPT = `You are a friendly app builder for DumbOS. Create simple, self-contained web apps.
+
+RESPONSE STYLE:
+- Start with a warm 1-2 sentence summary of what you built or changed
+- Use simple everyday language (no jargon like "function", "event listener", "DOM", "variable")
+- Explain WHAT the app does, not HOW the code works
+- Good examples: "I've made you a...", "Done! Your app now...", "Here's a little..."
+- Keep apps simple - aim for under 100 lines total when possible
 
 CONSTRAINTS:
 - Generate HTML, CSS, and JavaScript only
@@ -14,7 +21,7 @@ CONSTRAINTS:
 - Use vanilla JavaScript (ES6+)
 
 OUTPUT FORMAT:
-Brief description, then code blocks:
+Friendly description first, then code blocks (which are hidden from the user):
 
 \`\`\`html
 <!-- HTML here -->
@@ -173,6 +180,12 @@ const AppBuilderModule = {
             <div class="appbuilder-preview-pane">
               <div class="appbuilder-preview-header">
                 <span>Preview</span>
+                <div class="appbuilder-complexity-meter">
+                  <div class="appbuilder-complexity-bar">
+                    <div class="appbuilder-complexity-fill"></div>
+                  </div>
+                  <span class="appbuilder-complexity-count">0</span>
+                </div>
                 <div class="appbuilder-preview-actions">
                   <button class="appbuilder-save-app-btn" disabled>Save as App</button>
                   <button class="appbuilder-export-btn" style="display:none">Export</button>
@@ -307,6 +320,7 @@ const AppBuilderModule = {
     this._renderAppsList();
     this._renderChat();
     this._updatePreview();
+    this._updateComplexityMeter();
 
     this.container.querySelector('.appbuilder-save-app-btn').disabled = true;
     this.container.querySelector('.appbuilder-export-btn').style.display = 'none';
@@ -324,6 +338,7 @@ const AppBuilderModule = {
     this._renderAppsList();
     this._renderChat();
     this._updatePreview();
+    this._updateComplexityMeter();
 
     this.container.querySelector('.appbuilder-save-app-btn').disabled = false;
     this.container.querySelector('.appbuilder-export-btn').style.display = 'inline-block';
@@ -501,6 +516,7 @@ const AppBuilderModule = {
 
       this._renderChat();
       this._updatePreview();
+      this._updateComplexityMeter();
 
       // Enable save button if we have code
       if (this.currentCode.html || this.currentCode.css || this.currentCode.js) {
@@ -599,6 +615,39 @@ const AppBuilderModule = {
     }
 
     iframe.srcdoc = html;
+  },
+
+  _getLineCount() {
+    const html = this.currentCode.html || '';
+    const css = this.currentCode.css || '';
+    const js = this.currentCode.js || '';
+    return (html + '\n' + css + '\n' + js).split('\n').length;
+  },
+
+  _updateComplexityMeter() {
+    const lines = this._getLineCount();
+    const meter = this.container.querySelector('.appbuilder-complexity-meter');
+    const fill = this.container.querySelector('.appbuilder-complexity-fill');
+    const count = this.container.querySelector('.appbuilder-complexity-count');
+
+    if (!meter || !fill || !count) return;
+
+    count.textContent = lines;
+
+    // Calculate fill percentage (max out at 1000 lines for visual)
+    const maxLines = 1000;
+    const percentage = Math.min((lines / maxLines) * 100, 100);
+    fill.style.width = `${percentage}%`;
+
+    // Set color based on thresholds
+    meter.classList.remove('simple', 'moderate', 'complex');
+    if (lines <= 300) {
+      meter.classList.add('simple');
+    } else if (lines <= 600) {
+      meter.classList.add('moderate');
+    } else {
+      meter.classList.add('complex');
+    }
   },
 
   _setLoading(loading) {

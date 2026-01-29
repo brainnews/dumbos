@@ -538,6 +538,64 @@
   background: var(--bg-window-header);
   font-size: var(--font-size-sm);
   color: var(--text-secondary);
+  gap: var(--spacing-sm);
+}
+
+/* Complexity Meter */
+.appbuilder-complexity-meter {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex: 1;
+  justify-content: center;
+}
+
+.appbuilder-complexity-bar {
+  width: 60px;
+  height: 6px;
+  background: var(--bg-tertiary);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.appbuilder-complexity-fill {
+  height: 100%;
+  width: 0;
+  background: #4ade80;
+  border-radius: 3px;
+  transition: width 0.3s ease, background 0.3s ease;
+}
+
+.appbuilder-complexity-count {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  min-width: 28px;
+}
+
+/* Complexity states */
+.appbuilder-complexity-meter.simple .appbuilder-complexity-fill {
+  background: #4ade80;
+}
+
+.appbuilder-complexity-meter.simple .appbuilder-complexity-count {
+  color: #4ade80;
+}
+
+.appbuilder-complexity-meter.moderate .appbuilder-complexity-fill {
+  background: #facc15;
+}
+
+.appbuilder-complexity-meter.moderate .appbuilder-complexity-count {
+  color: #facc15;
+}
+
+.appbuilder-complexity-meter.complex .appbuilder-complexity-fill {
+  background: #f87171;
+}
+
+.appbuilder-complexity-meter.complex .appbuilder-complexity-count {
+  color: #f87171;
 }
 
 .appbuilder-preview-actions {
