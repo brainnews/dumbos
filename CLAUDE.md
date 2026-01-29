@@ -13,15 +13,26 @@ npx serve
 ```
 Opens at `http://localhost:3000`
 
+## Deployment
+
+Hosted on Cloudflare Pages at os.dumbsoft.com. Always deploy to production:
+```bash
+wrangler pages deploy . --project-name=dumbos --branch=production
+```
+
 ## Architecture
 
 ### Core Systems (`js/core/`)
 
-- **app.js** - Bootstrap, module registration, window restoration. Exposes `window.DumbOS.openModule(id)` globally.
+- **app.js** - Bootstrap, module registration, window restoration. Exposes `window.DumbOS.openModule(id)` and `window.DumbOS.getModules()` globally.
 - **window-manager.js** - Singleton managing window lifecycle: create, drag, resize, minimize, maximize, close. Persists window state to localStorage.
 - **module-registry.js** - Singleton Map storing registered modules by ID.
 - **storage.js** - Namespaced localStorage wrapper. Modules receive a scoped interface via `Storage.module(moduleId)`.
 - **taskbar.js** - Renders module icons, handles open/minimize/restore states, displays system clock.
+- **start-menu.js** - Application launcher with categorized module listing.
+- **context-menu.js** - Right-click context menus. Use `ContextMenu.show(x, y, items)` where items are `[{label, action, disabled, separator}]`.
+- **desktop-shortcuts.js** - Desktop icon management with grid positioning. Use `DesktopShortcuts.getNextGridPosition()` for new icons.
+- **screensaver.js** - Idle detection and screensaver activation.
 
 ### Module Interface
 
@@ -30,6 +41,7 @@ Each module exports an object with:
 {
   id: 'moduleid',           // Unique identifier
   title: 'Display Name',
+  category: 'productivity', // productivity, entertainment, games, tools, system
   icon: '<svg>...</svg>',   // Inline SVG for taskbar
   defaultSize: { width, height },
   minSize: { width, height },
@@ -46,43 +58,39 @@ Each module exports an object with:
 2. Import and register in `app.js` `_registerModules()`
 3. Add CSS `<link>` to `index.html`
 
-### Current Modules
+### Storage API
 
-- **notes** - Textarea with 500ms debounced auto-save
-- **rss** - Feed reader using Cloudflare Worker proxy at `worker/rss-proxy.js`
-- **pomodoro** - Timer with work/break intervals, browser notifications
-- **bookmarks** - Links manager with optional desktop icon display
-- **sysinfo** - Browser/hardware info display
-- **metmuseum** - Browse and search art from The Metropolitan Museum of Art API
-- **settings** - Clock format, background image, data export/import, factory reset
+Global access: `Storage.get(namespace, key, default)`, `Storage.set(namespace, key, value)`
+
+Scoped module storage (passed to `init`): `storage.get(key, default)`, `storage.set(key, value)`
+
+Pattern: `dumbos:{namespace}:{key}`
 
 ### Event System
 
 Window events dispatched on `window`:
 - `window-opened`, `window-closed`, `window-minimized`, `window-restored` (detail: `{ windowId }`)
 - `settings-changed` (detail: `{ key, value }`)
+- `desktop-shortcuts-changed`, `taskbar-pins-changed`
 
-### Storage Keys
+### Desktop Icons
 
-Pattern: `dumbos:{namespace}:{key}`
-- Window state: `dumbos:windows:{moduleId}`
-- Module data: `dumbos:{moduleId}:{key}`
+Two types: `.desktop-shortcut` (module shortcuts) and `.desktop-bookmark` (bookmark links). Grid constants: 90px horizontal, 100px vertical spacing, starting at (20, 20).
 
 ### Theming
 
 CSS custom properties in `css/variables.css`. Light theme via `<html data-theme="light">`.
 
-## Deployment
+## Cloudflare Worker (Proxy)
 
-Hosted on Cloudflare Pages at os.dumbsoft.com. Always deploy to production:
-```bash
-wrangler pages deploy . --project-name=dumbos --branch=production
-```
+Located in `worker/rss-proxy.js`. Handles:
+- `?url=` - RSS/Atom feed fetching and parsing
+- `?article=` - Article content extraction
+- `?stocks=` - Yahoo Finance stock quotes
 
-## RSS Proxy (Cloudflare Worker)
-
-Located in `worker/`. Deploy with:
+Deploy with:
 ```bash
 cd worker && wrangler deploy
 ```
-Update `RSS_PROXY_URL` in `js/modules/rss/rss.js` after deployment.
+
+Referenced in `js/modules/rss/rss.js` and `js/modules/stocktracker/stocktracker.js`.

@@ -1,0 +1,371 @@
+/* Synth Module Styles */
+.synth-layout {
+  display: flex;
+  height: 100%;
+}
+
+/* Sidebar */
+.synth-sidebar {
+  width: 160px;
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.synth-sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+  font-weight: 500;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.synth-add-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: 16px;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.synth-add-btn:hover {
+  background: var(--accent-primary);
+}
+
+/* Patterns List */
+.synth-patterns-list {
+  list-style: none;
+  overflow-y: auto;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+}
+
+.synth-patterns-empty {
+  padding: var(--spacing-md);
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+.synth-pattern-item {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-sm) var(--spacing-md);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.synth-pattern-item:hover {
+  background: var(--bg-secondary);
+}
+
+.synth-pattern-item.active {
+  background: var(--bg-tertiary);
+  border-left: 2px solid var(--accent-primary);
+}
+
+.synth-pattern-name {
+  flex: 1;
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.synth-pattern-delete {
+  width: 20px;
+  height: 20px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.synth-pattern-item:hover .synth-pattern-delete {
+  display: flex;
+}
+
+.synth-pattern-delete:hover {
+  background: var(--control-close);
+  color: white;
+}
+
+.synth-sidebar-footer {
+  display: flex;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm);
+  border-top: 1px solid var(--border-color);
+}
+
+.synth-btn-sm {
+  flex: 1;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: 11px;
+}
+
+/* Main Content */
+.synth-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-md);
+  gap: var(--spacing-md);
+  overflow: hidden;
+}
+
+.synth-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.synth-transport {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.synth-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.synth-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.synth-btn svg {
+  width: 12px;
+  height: 12px;
+}
+
+.synth-btn-play {
+  background: var(--control-maximize);
+  border-color: var(--control-maximize);
+  color: white;
+}
+
+.synth-btn-play:hover {
+  background: #22b438;
+}
+
+.synth-btn-play.playing {
+  background: var(--control-minimize);
+  border-color: var(--control-minimize);
+}
+
+.synth-btn-stop {
+  background: var(--control-close);
+  border-color: var(--control-close);
+  color: white;
+}
+
+.synth-btn-stop:hover {
+  background: #e04a3f;
+}
+
+.synth-settings {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.synth-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.synth-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 80px;
+  height: 6px;
+  background: var(--bg-tertiary);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+}
+
+.synth-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  background: var(--accent-primary);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.synth-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  background: var(--accent-primary);
+  border-radius: 50%;
+  border: none;
+}
+
+.synth-tempo-value {
+  min-width: 30px;
+  text-align: right;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+}
+
+.synth-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.synth-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-sm);
+}
+
+.synth-section-title {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.synth-select {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+}
+
+.synth-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow-y: auto;
+}
+
+.synth-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.synth-note-label {
+  width: 40px;
+  font-size: var(--font-size-sm);
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  text-align: right;
+  padding-right: var(--spacing-sm);
+  flex-shrink: 0;
+}
+
+.synth-cell {
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 4px;
+  background: var(--bg-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.synth-cell:hover {
+  background: var(--bg-tertiary);
+}
+
+.synth-cell.active {
+  background: var(--accent-primary);
+}
+
+.synth-cell.active:hover {
+  background: var(--accent-hover);
+}
+
+.synth-cell-drum.active {
+  background: var(--control-minimize);
+}
+
+.synth-cell-drum.active:hover {
+  background: #e6a520;
+}
+
+/* Beat grouping - subtle visual separation every 4 steps */
+.synth-cell:nth-child(4n + 2) {
+  margin-left: 4px;
+}
+
+.synth-step-indicator {
+  display: flex;
+  gap: 2px;
+  justify-content: flex-end;
+  padding-right: 0;
+  padding-left: 48px;
+}
+
+.synth-step-dot {
+  width: 24px;
+  height: 6px;
+  background: var(--bg-tertiary);
+  border-radius: 3px;
+  transition: background var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.synth-step-dot.active {
+  background: var(--accent-primary);
+}
+
+/* Match the beat grouping */
+.synth-step-dot:nth-child(4n + 1) {
+  margin-left: 4px;
+}
+
+.synth-step-dot:first-child {
+  margin-left: 0;
+}
+
+/* Drum section styling */
+.synth-drum-grid {
+  flex: none;
+}
