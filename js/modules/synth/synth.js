@@ -45,6 +45,7 @@ const SynthModule = {
   isPlaying: false,
   currentStep: 0,
   intervalId: null,
+  isAILoading: false,
 
   // Note frequencies (C4 to C5)
   notes: [
@@ -691,6 +692,7 @@ const SynthModule = {
   },
 
   _setAILoading(loading) {
+    this.isAILoading = loading;
     const btns = this.container.querySelectorAll('.synth-ai-actions button');
     const prompt = this.container.querySelector('.synth-ai-prompt');
     const status = this.container.querySelector('.synth-ai-status');
@@ -714,6 +716,8 @@ const SynthModule = {
   },
 
   async _aiGenerate() {
+    if (this.isAILoading) return;
+
     const prompt = this.container.querySelector('.synth-ai-prompt').value.trim();
     if (!prompt) {
       this._showAIError('Please describe a pattern');
@@ -728,6 +732,7 @@ const SynthModule = {
       this._applyPattern(pattern);
       this.container.querySelector('.synth-ai-prompt').value = '';
       this.container.querySelector('.synth-ai-popover').style.display = 'none';
+      this._promptSavePattern();
     } catch (error) {
       this._showAIError(error.message);
     } finally {
@@ -736,6 +741,8 @@ const SynthModule = {
   },
 
   async _aiVary() {
+    if (this.isAILoading) return;
+
     const currentMelodic = this.storage.get('melodicPattern', this._emptyMelodicPattern());
     const currentDrum = this.storage.get('drumPattern', this._emptyDrumPattern());
 
@@ -756,6 +763,7 @@ const SynthModule = {
       const pattern = await this._callClaudeAPI(userMessage);
       this._applyPattern(pattern);
       this.container.querySelector('.synth-ai-popover').style.display = 'none';
+      this._promptSavePattern();
     } catch (error) {
       this._showAIError(error.message);
     } finally {
@@ -764,6 +772,8 @@ const SynthModule = {
   },
 
   async _aiHumanize() {
+    if (this.isAILoading) return;
+
     const currentMelodic = this.storage.get('melodicPattern', this._emptyMelodicPattern());
     const currentDrum = this.storage.get('drumPattern', this._emptyDrumPattern());
 
@@ -784,11 +794,30 @@ const SynthModule = {
       const pattern = await this._callClaudeAPI(userMessage);
       this._applyPattern(pattern);
       this.container.querySelector('.synth-ai-popover').style.display = 'none';
+      this._promptSavePattern();
     } catch (error) {
       this._showAIError(error.message);
     } finally {
       this._setAILoading(false);
     }
+  },
+
+  _promptSavePattern() {
+    const name = prompt('Save this pattern as:');
+    if (!name) return;
+
+    const patterns = this.storage.get('savedPatterns', []);
+    const pattern = {
+      name,
+      tempo: this.storage.get('tempo', 120),
+      waveform: this.storage.get('waveform', 'sawtooth'),
+      melodicPattern: this.storage.get('melodicPattern', this._emptyMelodicPattern()),
+      drumPattern: this.storage.get('drumPattern', this._emptyDrumPattern())
+    };
+    patterns.push(pattern);
+    this.storage.set('savedPatterns', patterns);
+    this.storage.set('selectedPatternIndex', patterns.length - 1);
+    this._renderPatternsList();
   },
 
   async _callClaudeAPI(userMessage) {
