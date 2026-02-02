@@ -83,6 +83,19 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  cursor: text;
+}
+
+.synth-pattern-name-input {
+  flex: 1;
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--accent-primary);
+  border-radius: 3px;
+  padding: 2px 4px;
+  outline: none;
+  min-width: 0;
 }
 
 .synth-pattern-delete {

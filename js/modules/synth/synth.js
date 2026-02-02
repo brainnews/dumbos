@@ -586,7 +586,7 @@ const SynthModule = {
       ? '<li class="synth-patterns-empty">No saved patterns</li>'
       : patterns.map((p, i) => `
           <li class="synth-pattern-item ${selectedIndex === i ? 'active' : ''}" data-pattern-index="${i}">
-            <span class="synth-pattern-name">${this._escapeHtml(p.name)}</span>
+            <span class="synth-pattern-name" data-name-index="${i}">${this._escapeHtml(p.name)}</span>
             <button class="synth-pattern-delete" data-delete-index="${i}" title="Delete">&times;</button>
           </li>
         `).join('');
@@ -595,8 +595,18 @@ const SynthModule = {
     listEl.querySelectorAll('.synth-pattern-item').forEach(item => {
       item.addEventListener('click', (e) => {
         if (e.target.classList.contains('synth-pattern-delete')) return;
+        if (e.target.classList.contains('synth-pattern-name-input')) return;
         const index = parseInt(item.dataset.patternIndex);
         this._loadPattern(index);
+      });
+    });
+
+    // Double-click to rename
+    listEl.querySelectorAll('.synth-pattern-name').forEach(nameEl => {
+      nameEl.addEventListener('dblclick', (e) => {
+        e.stopPropagation();
+        const index = parseInt(nameEl.dataset.nameIndex);
+        this._startRename(index, nameEl);
       });
     });
 
@@ -607,6 +617,42 @@ const SynthModule = {
         this._deletePattern(index);
       });
     });
+  },
+
+  _startRename(index, nameEl) {
+    const patterns = this.storage.get('savedPatterns', []);
+    const currentName = patterns[index]?.name || '';
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'synth-pattern-name-input';
+    input.value = currentName;
+
+    const finishRename = () => {
+      const newName = input.value.trim();
+      if (newName && newName !== currentName) {
+        patterns[index].name = newName;
+        this.storage.set('savedPatterns', patterns);
+      }
+      this._renderPatternsList();
+    };
+
+    input.addEventListener('blur', finishRename);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        input.blur();
+      }
+      if (e.key === 'Escape') {
+        input.value = currentName;
+        input.blur();
+      }
+    });
+    input.addEventListener('click', (e) => e.stopPropagation());
+
+    nameEl.replaceWith(input);
+    input.focus();
+    input.select();
   },
 
   // Save pattern to localStorage presets
@@ -732,7 +778,7 @@ const SynthModule = {
       this._applyPattern(pattern);
       this.container.querySelector('.synth-ai-prompt').value = '';
       this.container.querySelector('.synth-ai-popover').style.display = 'none';
-      this._promptSavePattern();
+      this._autoSavePattern();
     } catch (error) {
       this._showAIError(error.message);
     } finally {
@@ -763,7 +809,7 @@ const SynthModule = {
       const pattern = await this._callClaudeAPI(userMessage);
       this._applyPattern(pattern);
       this.container.querySelector('.synth-ai-popover').style.display = 'none';
-      this._promptSavePattern();
+      this._autoSavePattern();
     } catch (error) {
       this._showAIError(error.message);
     } finally {
@@ -794,7 +840,7 @@ const SynthModule = {
       const pattern = await this._callClaudeAPI(userMessage);
       this._applyPattern(pattern);
       this.container.querySelector('.synth-ai-popover').style.display = 'none';
-      this._promptSavePattern();
+      this._autoSavePattern();
     } catch (error) {
       this._showAIError(error.message);
     } finally {
@@ -802,13 +848,18 @@ const SynthModule = {
     }
   },
 
-  _promptSavePattern() {
-    const name = prompt('Save this pattern as:');
-    if (!name) return;
+  _generateRandomName() {
+    const adjectives = ['Cosmic', 'Neon', 'Chill', 'Dark', 'Bright', 'Deep', 'Wild', 'Soft', 'Raw', 'Hazy'];
+    const nouns = ['Wave', 'Beat', 'Pulse', 'Vibe', 'Flow', 'Dream', 'Rush', 'Drift', 'Glow', 'Echo'];
+    const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
+    const noun = nouns[Math.floor(Math.random() * nouns.length)];
+    return `${adj} ${noun}`;
+  },
 
+  _autoSavePattern() {
     const patterns = this.storage.get('savedPatterns', []);
     const pattern = {
-      name,
+      name: this._generateRandomName(),
       tempo: this.storage.get('tempo', 120),
       waveform: this.storage.get('waveform', 'sawtooth'),
       melodicPattern: this.storage.get('melodicPattern', this._emptyMelodicPattern()),
