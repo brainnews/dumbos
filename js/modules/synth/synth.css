@@ -369,3 +369,103 @@
 .synth-drum-grid {
   flex: none;
 }
+
+/* AI Button and Popover */
+.synth-ai-wrapper {
+  position: relative;
+}
+
+.synth-btn-ai {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  border-color: #6366f1;
+  color: white;
+}
+
+.synth-btn-ai:hover {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  color: white;
+}
+
+.synth-ai-popover {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: var(--spacing-sm);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+  min-width: 280px;
+}
+
+.synth-ai-popover-content {
+  padding: var(--spacing-md);
+}
+
+.synth-ai-no-key {
+  text-align: center;
+}
+
+.synth-ai-no-key p {
+  margin: 0 0 var(--spacing-md);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.synth-ai-prompt {
+  width: 100%;
+  padding: var(--spacing-sm);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+  resize: none;
+  margin-bottom: var(--spacing-sm);
+}
+
+.synth-ai-prompt:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+}
+
+.synth-ai-prompt::placeholder {
+  color: var(--text-muted);
+}
+
+.synth-ai-actions {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.synth-ai-actions button {
+  flex: 1;
+}
+
+.synth-btn-primary {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: white;
+}
+
+.synth-btn-primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: white;
+}
+
+.synth-ai-status {
+  margin-top: var(--spacing-sm);
+  min-height: 20px;
+  font-size: var(--font-size-sm);
+}
+
+.synth-ai-loading {
+  color: var(--text-muted);
+}
+
+.synth-ai-error {
+  color: var(--control-close);
+}

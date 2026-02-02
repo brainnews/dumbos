@@ -197,3 +197,23 @@
   border: none;
   border-radius: 2px;
 }
+
+/* API Key Status */
+.settings-api-status {
+  font-size: var(--font-size-sm);
+  margin-top: var(--spacing-xs);
+  min-height: 18px;
+}
+
+.settings-api-status-success {
+  color: var(--control-maximize);
+}
+
+.settings-api-status-error {
+  color: var(--control-close);
+}
+
+.settings-api-key-input {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+}

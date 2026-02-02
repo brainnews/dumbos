@@ -114,6 +114,21 @@ const SettingsModule = {
         </div>
 
         <div class="settings-section">
+          <h3 class="settings-section-title">AI</h3>
+          <div class="settings-row settings-row-stack">
+            <div>
+              <label class="settings-label">Anthropic API Key</label>
+              <p class="settings-description">Required for AI features in App Builder and Synth. Get a key from <a href="https://console.anthropic.com/" target="_blank" rel="noopener">console.anthropic.com</a></p>
+            </div>
+            <div class="settings-input-group">
+              <input type="password" class="settings-input settings-api-key-input" data-setting="api-key" placeholder="sk-ant-..." value="${this._escapeHtml(Storage.get('claude-api', 'apiKey', ''))}">
+              <button class="settings-btn settings-btn-small" data-action="toggle-api-key">Show</button>
+            </div>
+            <p class="settings-api-status"></p>
+          </div>
+        </div>
+
+        <div class="settings-section">
           <h3 class="settings-section-title">Tips</h3>
           <div class="settings-row settings-row-stack">
             <p class="settings-description">Want DumbOS to open every time you create a new tab? Install the <a href="https://chromewebstore.google.com/detail/new-tab-redirect/icpgjfneehieebagbmdbhnlpiopdcmna" target="_blank" rel="noopener">New Tab Redirect</a> extension and set it to <code>https://os.dumbsoft.com</code></p>
@@ -222,6 +237,71 @@ const SettingsModule = {
         e.target.value = '';
       }
     });
+
+    // API key handling
+    const apiKeyInput = this.container.querySelector('[data-setting="api-key"]');
+    const toggleBtn = this.container.querySelector('[data-action="toggle-api-key"]');
+    const statusEl = this.container.querySelector('.settings-api-status');
+
+    // Show/hide toggle
+    toggleBtn.addEventListener('click', () => {
+      if (apiKeyInput.type === 'password') {
+        apiKeyInput.type = 'text';
+        toggleBtn.textContent = 'Hide';
+      } else {
+        apiKeyInput.type = 'password';
+        toggleBtn.textContent = 'Show';
+      }
+    });
+
+    // Save on blur with validation
+    apiKeyInput.addEventListener('blur', () => {
+      this._saveApiKey(apiKeyInput, statusEl);
+    });
+
+    // Also save on Enter
+    apiKeyInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        apiKeyInput.blur();
+      }
+    });
+
+    // Show initial status if key exists
+    const existingKey = Storage.get('claude-api', 'apiKey', '');
+    if (existingKey) {
+      statusEl.textContent = 'Key saved';
+      statusEl.className = 'settings-api-status settings-api-status-success';
+    }
+  },
+
+  /**
+   * Save and validate API key
+   */
+  _saveApiKey(input, statusEl) {
+    const key = input.value.trim();
+
+    if (!key) {
+      Storage.remove('claude-api', 'apiKey');
+      statusEl.textContent = '';
+      statusEl.className = 'settings-api-status';
+      window.dispatchEvent(new CustomEvent('settings-changed', {
+        detail: { key: 'api-key', value: false }
+      }));
+      return;
+    }
+
+    if (!key.startsWith('sk-ant-')) {
+      statusEl.textContent = 'Invalid format - key should start with sk-ant-';
+      statusEl.className = 'settings-api-status settings-api-status-error';
+      return;
+    }
+
+    Storage.set('claude-api', 'apiKey', key);
+    statusEl.textContent = 'Key saved';
+    statusEl.className = 'settings-api-status settings-api-status-success';
+    window.dispatchEvent(new CustomEvent('settings-changed', {
+      detail: { key: 'api-key', value: true }
+    }));
   },
 
   /**

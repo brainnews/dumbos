@@ -132,39 +132,9 @@ const AppBuilderModule = {
         <main class="appbuilder-main">
           <div class="appbuilder-api-setup" style="display:none">
             <div class="appbuilder-api-setup-content">
-              <h2>Connect to Claude</h2>
-              <p class="appbuilder-api-intro">App Builder uses Claude to generate apps from your descriptions. You'll need an Anthropic API key to get started.</p>
-
-              <div class="appbuilder-api-steps">
-                <div class="appbuilder-api-step">
-                  <span class="appbuilder-step-number">1</span>
-                  <div class="appbuilder-step-content">
-                    <strong>Create an Anthropic account</strong>
-                    <p>Go to <a href="https://console.anthropic.com/" target="_blank" rel="noopener">console.anthropic.com</a> and sign up (or log in)</p>
-                  </div>
-                </div>
-                <div class="appbuilder-api-step">
-                  <span class="appbuilder-step-number">2</span>
-                  <div class="appbuilder-step-content">
-                    <strong>Add billing</strong>
-                    <p>Go to Settings &rarr; Billing and add a payment method. API usage is pay-as-you-go (typically pennies per app).</p>
-                  </div>
-                </div>
-                <div class="appbuilder-api-step">
-                  <span class="appbuilder-step-number">3</span>
-                  <div class="appbuilder-step-content">
-                    <strong>Generate an API key</strong>
-                    <p>Go to Settings &rarr; API Keys, click "Create Key", and copy the key that starts with <code>sk-ant-</code></p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="appbuilder-api-input-group">
-                <input type="password" class="appbuilder-api-input" placeholder="Paste your API key here...">
-                <button class="appbuilder-api-save-btn">Save Key</button>
-              </div>
-              <p class="appbuilder-api-privacy">Your key is stored locally in your browser and only sent to Anthropic's API.</p>
-              <p class="appbuilder-api-error" style="display:none"></p>
+              <h2>API Key Required</h2>
+              <p class="appbuilder-api-intro">App Builder uses Claude to generate apps from your descriptions. Configure your Anthropic API key in Settings to get started.</p>
+              <button class="appbuilder-open-settings-btn">Open Settings</button>
             </div>
           </div>
           <div class="appbuilder-workspace" style="display:none">
@@ -231,14 +201,18 @@ const AppBuilderModule = {
       }
     });
 
-    // API key setup
-    this.container.querySelector('.appbuilder-api-save-btn').addEventListener('click', () => {
-      this._saveApiKey();
+    // Open Settings button
+    this.container.querySelector('.appbuilder-open-settings-btn').addEventListener('click', () => {
+      window.DumbOS.openModule('settings');
     });
 
-    this.container.querySelector('.appbuilder-api-input').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') this._saveApiKey();
-    });
+    // Listen for API key changes from Settings
+    this._onSettingsChanged = (e) => {
+      if (e.detail.key === 'api-key') {
+        this._checkApiKey();
+      }
+    };
+    window.addEventListener('settings-changed', this._onSettingsChanged);
 
     // Chat input
     const chatInput = this.container.querySelector('.appbuilder-chat-input');
@@ -294,22 +268,6 @@ const AppBuilderModule = {
     apiSetup.style.display = 'none';
     workspace.style.display = 'flex';
     return true;
-  },
-
-  _saveApiKey() {
-    const input = this.container.querySelector('.appbuilder-api-input');
-    const errorEl = this.container.querySelector('.appbuilder-api-error');
-    const key = input.value.trim();
-
-    if (!key.startsWith('sk-ant-')) {
-      errorEl.textContent = 'Invalid API key format. Key should start with "sk-ant-"';
-      errorEl.style.display = 'block';
-      return;
-    }
-
-    Storage.set('claude-api', 'apiKey', key);
-    errorEl.style.display = 'none';
-    this._checkApiKey();
   },
 
   _newApp() {
@@ -880,7 +838,9 @@ const AppBuilderModule = {
   },
 
   destroy() {
-    // Nothing to clean up
+    if (this._onSettingsChanged) {
+      window.removeEventListener('settings-changed', this._onSettingsChanged);
+    }
   }
 };
 
