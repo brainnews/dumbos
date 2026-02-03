@@ -47,6 +47,11 @@ const SynthModule = {
   intervalId: null,
   isAILoading: false,
 
+  // Pattern state
+  selectedPatternId: null,
+  saveTimeout: null,
+  SAVE_DELAY: 500,
+
   // Note frequencies (C4 to C5)
   notes: [
     { name: 'C5', freq: 523.25 },
@@ -64,7 +69,13 @@ const SynthModule = {
   init(container, storage) {
     this.container = container;
     this.storage = storage;
+    this.selectedPatternId = null;
+    this.saveTimeout = null;
     this._buildUI();
+  },
+
+  _generateId() {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
   },
 
   _buildUI() {
@@ -78,7 +89,7 @@ const SynthModule = {
         <aside class="synth-sidebar">
           <div class="synth-sidebar-header">
             <span>Patterns</span>
-            <button class="synth-add-btn" data-action="save" title="Save Pattern">+</button>
+            <button class="synth-add-btn" data-action="new-pattern" title="New Pattern">+</button>
           </div>
           <ul class="synth-patterns-list"></ul>
           <div class="synth-sidebar-footer">
@@ -88,100 +99,119 @@ const SynthModule = {
           </div>
         </aside>
         <main class="synth-main">
-          <div class="synth-controls">
-            <div class="synth-transport">
-              <button class="synth-btn synth-btn-play" data-action="play">
-                <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><polygon points="5,3 19,12 5,21"/></svg>
-                Play
-              </button>
-              <button class="synth-btn synth-btn-stop" data-action="stop">
-                <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><rect x="5" y="5" width="14" height="14"/></svg>
-                Stop
-              </button>
-              <button class="synth-btn" data-action="clear">Clear</button>
-              <div class="synth-ai-wrapper">
-                <button class="synth-btn synth-btn-ai" data-action="ai">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7.5 13A1.5 1.5 0 0 0 6 14.5A1.5 1.5 0 0 0 7.5 16A1.5 1.5 0 0 0 9 14.5A1.5 1.5 0 0 0 7.5 13m9 0a1.5 1.5 0 0 0-1.5 1.5a1.5 1.5 0 0 0 1.5 1.5a1.5 1.5 0 0 0 1.5-1.5a1.5 1.5 0 0 0-1.5-1.5"/></svg>
-                  AI
+          <div class="synth-empty">
+            <p>Create a pattern to get started</p>
+          </div>
+          <div class="synth-editor" style="display:none">
+            <div class="synth-pattern-header">
+              <input type="text" class="synth-pattern-title" placeholder="Pattern name...">
+              <span class="synth-pattern-status"></span>
+            </div>
+            <div class="synth-controls">
+              <div class="synth-transport">
+                <button class="synth-btn synth-btn-play" data-action="play">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><polygon points="5,3 19,12 5,21"/></svg>
+                  Play
                 </button>
-                <div class="synth-ai-popover" style="display:none">
-                  <div class="synth-ai-popover-content synth-ai-no-key" style="display:none">
-                    <p>AI features require an API key.</p>
-                    <button class="synth-btn synth-btn-sm" data-action="open-settings">Configure in Settings</button>
-                  </div>
-                  <div class="synth-ai-popover-content synth-ai-has-key" style="display:none">
-                    <textarea class="synth-ai-prompt" placeholder="Describe a pattern... e.g. 'funky drum beat' or 'chill melody'" rows="2"></textarea>
-                    <div class="synth-ai-actions">
-                      <button class="synth-btn synth-btn-sm synth-btn-primary" data-action="ai-generate">Generate</button>
-                      <button class="synth-btn synth-btn-sm" data-action="ai-vary">Vary</button>
-                      <button class="synth-btn synth-btn-sm" data-action="ai-humanize">Humanize</button>
+                <button class="synth-btn synth-btn-stop" data-action="stop">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><rect x="5" y="5" width="14" height="14"/></svg>
+                  Stop
+                </button>
+                <button class="synth-btn" data-action="clear">Clear</button>
+                <div class="synth-ai-wrapper">
+                  <button class="synth-btn synth-btn-ai" data-action="ai">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7.5 13A1.5 1.5 0 0 0 6 14.5A1.5 1.5 0 0 0 7.5 16A1.5 1.5 0 0 0 9 14.5A1.5 1.5 0 0 0 7.5 13m9 0a1.5 1.5 0 0 0-1.5 1.5a1.5 1.5 0 0 0 1.5 1.5a1.5 1.5 0 0 0 1.5-1.5a1.5 1.5 0 0 0-1.5-1.5"/></svg>
+                    AI
+                  </button>
+                  <div class="synth-ai-popover" style="display:none">
+                    <div class="synth-ai-popover-content synth-ai-no-key" style="display:none">
+                      <p>AI features require an API key.</p>
+                      <button class="synth-btn synth-btn-sm" data-action="open-settings">Configure in Settings</button>
                     </div>
-                    <div class="synth-ai-status"></div>
+                    <div class="synth-ai-popover-content synth-ai-has-key" style="display:none">
+                      <textarea class="synth-ai-prompt" placeholder="Describe a pattern... e.g. 'funky drum beat' or 'chill melody'" rows="2"></textarea>
+                      <div class="synth-ai-actions">
+                        <button class="synth-btn synth-btn-sm synth-btn-primary" data-action="ai-generate">Generate</button>
+                        <button class="synth-btn synth-btn-sm" data-action="ai-vary">Vary</button>
+                        <button class="synth-btn synth-btn-sm" data-action="ai-humanize">Humanize</button>
+                      </div>
+                      <div class="synth-ai-status"></div>
+                    </div>
                   </div>
                 </div>
               </div>
+              <div class="synth-settings">
+                <label class="synth-label">
+                  BPM
+                  <input type="range" class="synth-slider" min="60" max="200" value="${tempo}" data-control="tempo">
+                  <span class="synth-tempo-value">${tempo}</span>
+                </label>
+              </div>
             </div>
-            <div class="synth-settings">
-              <label class="synth-label">
-                BPM
-                <input type="range" class="synth-slider" min="60" max="200" value="${tempo}" data-control="tempo">
-                <span class="synth-tempo-value">${tempo}</span>
-              </label>
-            </div>
-          </div>
 
-          <div class="synth-section">
-            <div class="synth-section-header">
-              <span class="synth-section-title">Synth</span>
-              <select class="synth-select" data-control="waveform">
-                <option value="sine" ${waveform === 'sine' ? 'selected' : ''}>Sine</option>
-                <option value="square" ${waveform === 'square' ? 'selected' : ''}>Square</option>
-                <option value="sawtooth" ${waveform === 'sawtooth' ? 'selected' : ''}>Sawtooth</option>
-                <option value="triangle" ${waveform === 'triangle' ? 'selected' : ''}>Triangle</option>
-              </select>
+            <div class="synth-section">
+              <div class="synth-section-header">
+                <span class="synth-section-title">Synth</span>
+                <select class="synth-select" data-control="waveform">
+                  <option value="sine" ${waveform === 'sine' ? 'selected' : ''}>Sine</option>
+                  <option value="square" ${waveform === 'square' ? 'selected' : ''}>Square</option>
+                  <option value="sawtooth" ${waveform === 'sawtooth' ? 'selected' : ''}>Sawtooth</option>
+                  <option value="triangle" ${waveform === 'triangle' ? 'selected' : ''}>Triangle</option>
+                </select>
+              </div>
+              <div class="synth-grid synth-melodic-grid">
+                ${this.notes.map((note, noteIdx) => `
+                  <div class="synth-row">
+                    <span class="synth-note-label">${note.name}</span>
+                    ${Array(16).fill(0).map((_, step) => `
+                      <button class="synth-cell ${melodicPattern[noteIdx][step] ? 'active' : ''}"
+                              data-note="${noteIdx}" data-step="${step}"></button>
+                    `).join('')}
+                  </div>
+                `).join('')}
+              </div>
             </div>
-            <div class="synth-grid synth-melodic-grid">
-              ${this.notes.map((note, noteIdx) => `
-                <div class="synth-row">
-                  <span class="synth-note-label">${note.name}</span>
-                  ${Array(16).fill(0).map((_, step) => `
-                    <button class="synth-cell ${melodicPattern[noteIdx][step] ? 'active' : ''}"
-                            data-note="${noteIdx}" data-step="${step}"></button>
-                  `).join('')}
-                </div>
+
+            <div class="synth-section">
+              <div class="synth-section-header">
+                <span class="synth-section-title">Drums</span>
+              </div>
+              <div class="synth-grid synth-drum-grid">
+                ${this.drums.map((drum, drumIdx) => `
+                  <div class="synth-row">
+                    <span class="synth-note-label">${drum.charAt(0).toUpperCase() + drum.slice(1)}</span>
+                    ${Array(16).fill(0).map((_, step) => `
+                      <button class="synth-cell synth-cell-drum ${drumPattern[drumIdx][step] ? 'active' : ''}"
+                              data-drum="${drumIdx}" data-step="${step}"></button>
+                    `).join('')}
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <div class="synth-step-indicator">
+              ${Array(16).fill(0).map((_, step) => `
+                <div class="synth-step-dot" data-step-indicator="${step}"></div>
               `).join('')}
             </div>
-          </div>
-
-          <div class="synth-section">
-            <div class="synth-section-header">
-              <span class="synth-section-title">Drums</span>
-            </div>
-            <div class="synth-grid synth-drum-grid">
-              ${this.drums.map((drum, drumIdx) => `
-                <div class="synth-row">
-                  <span class="synth-note-label">${drum.charAt(0).toUpperCase() + drum.slice(1)}</span>
-                  ${Array(16).fill(0).map((_, step) => `
-                    <button class="synth-cell synth-cell-drum ${drumPattern[drumIdx][step] ? 'active' : ''}"
-                            data-drum="${drumIdx}" data-step="${step}"></button>
-                  `).join('')}
-                </div>
-              `).join('')}
-            </div>
-          </div>
-
-          <div class="synth-step-indicator">
-            ${Array(16).fill(0).map((_, step) => `
-              <div class="synth-step-dot" data-step-indicator="${step}"></div>
-            `).join('')}
           </div>
         </main>
       </div>
     `;
 
     this._renderPatternsList();
-
     this._attachEvents();
+  },
+
+  _showEmpty() {
+    this.container.querySelector('.synth-empty').style.display = 'flex';
+    this.container.querySelector('.synth-editor').style.display = 'none';
+    this.selectedPatternId = null;
+  },
+
+  _showEditor() {
+    this.container.querySelector('.synth-empty').style.display = 'none';
+    this.container.querySelector('.synth-editor').style.display = 'flex';
   },
 
   _emptyMelodicPattern() {
@@ -193,6 +223,9 @@ const SynthModule = {
   },
 
   _attachEvents() {
+    // New pattern button
+    this.container.querySelector('[data-action="new-pattern"]').addEventListener('click', () => this._newPattern());
+
     // Transport controls
     this.container.querySelector('[data-action="play"]').addEventListener('click', () => this._play());
     this.container.querySelector('[data-action="stop"]').addEventListener('click', () => this._stop());
@@ -244,8 +277,9 @@ const SynthModule = {
       }
     });
 
-    // Save pattern
-    this.container.querySelector('[data-action="save"]').addEventListener('click', () => this._savePattern());
+    // Pattern title input - auto-save on change
+    const titleInput = this.container.querySelector('.synth-pattern-title');
+    titleInput.addEventListener('input', () => this._scheduleAutoSave());
 
     // Tempo slider
     const tempoSlider = this.container.querySelector('[data-control="tempo"]');
@@ -257,11 +291,13 @@ const SynthModule = {
         this._stop();
         this._play();
       }
+      this._scheduleAutoSave();
     });
 
     // Waveform select
     this.container.querySelector('[data-control="waveform"]').addEventListener('change', (e) => {
       this.storage.set('waveform', e.target.value);
+      this._scheduleAutoSave();
     });
 
     // Melodic grid clicks
@@ -271,6 +307,7 @@ const SynthModule = {
         const step = parseInt(e.target.dataset.step);
         e.target.classList.toggle('active');
         this._saveMelodicPattern();
+        this._scheduleAutoSave();
       });
     });
 
@@ -281,6 +318,7 @@ const SynthModule = {
         const step = parseInt(e.target.dataset.step);
         e.target.classList.toggle('active');
         this._saveDrumPattern();
+        this._scheduleAutoSave();
       });
     });
   },
@@ -511,11 +549,9 @@ const SynthModule = {
   // Export pattern to JSON file
   _exportPattern() {
     // Get pattern name from selected pattern or prompt for one
-    const selectedIndex = this.storage.get('selectedPatternIndex', null);
     const patterns = this.storage.get('savedPatterns', []);
-    let name = selectedIndex !== null && patterns[selectedIndex]
-      ? patterns[selectedIndex].name
-      : prompt('Pattern name for export:');
+    const selectedPattern = patterns.find(p => p.id === this.selectedPatternId);
+    let name = selectedPattern?.name || prompt('Pattern name for export:');
 
     if (!name) return;
 
@@ -545,27 +581,23 @@ const SynthModule = {
       try {
         const data = JSON.parse(e.target.result);
         if (data.melodicPattern && data.drumPattern) {
-          this._stop();
-          this.storage.set('tempo', data.tempo || 120);
-          this.storage.set('waveform', data.waveform || 'sawtooth');
-          this.storage.set('melodicPattern', data.melodicPattern);
-          this.storage.set('drumPattern', data.drumPattern);
+          // Create a new pattern from import
+          const pattern = {
+            id: this._generateId(),
+            name: data.name || 'Imported Pattern',
+            tempo: data.tempo || 120,
+            waveform: data.waveform || 'sawtooth',
+            melodicPattern: data.melodicPattern,
+            drumPattern: data.drumPattern,
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+          };
 
-          // If the file has a name, save it as a pattern
-          if (data.name) {
-            const patterns = this.storage.get('savedPatterns', []);
-            patterns.push({
-              name: data.name,
-              tempo: data.tempo || 120,
-              waveform: data.waveform || 'sawtooth',
-              melodicPattern: data.melodicPattern,
-              drumPattern: data.drumPattern
-            });
-            this.storage.set('savedPatterns', patterns);
-            this.storage.set('selectedPatternIndex', patterns.length - 1);
-          }
-
-          this._buildUI();
+          const patterns = this.storage.get('savedPatterns', []);
+          patterns.push(pattern);
+          this.storage.set('savedPatterns', patterns);
+          this._selectPattern(pattern.id);
+          this._renderPatternsList();
         }
       } catch (err) {
         alert('Invalid pattern file');
@@ -574,20 +606,130 @@ const SynthModule = {
     reader.readAsText(file);
   },
 
+  // Create a new empty pattern
+  _newPattern() {
+    const pattern = {
+      id: this._generateId(),
+      name: 'New Pattern',
+      tempo: 120,
+      waveform: 'sawtooth',
+      melodicPattern: this._emptyMelodicPattern(),
+      drumPattern: this._emptyDrumPattern(),
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    };
+    const patterns = this.storage.get('savedPatterns', []);
+    patterns.push(pattern);
+    this.storage.set('savedPatterns', patterns);
+    this._selectPattern(pattern.id);
+    this._renderPatternsList();
+    // Focus title input for immediate naming
+    const titleInput = this.container.querySelector('.synth-pattern-title');
+    if (titleInput) {
+      titleInput.focus();
+      titleInput.select();
+    }
+  },
+
+  // Select and load a pattern by ID
+  _selectPattern(id) {
+    const patterns = this.storage.get('savedPatterns', []);
+    const pattern = patterns.find(p => p.id === id);
+    if (!pattern) return;
+
+    this._stop();
+    this.selectedPatternId = id;
+    this.storage.set('selectedPatternId', id);
+
+    // Load into storage
+    this.storage.set('tempo', pattern.tempo || 120);
+    this.storage.set('waveform', pattern.waveform || 'sawtooth');
+    this.storage.set('melodicPattern', pattern.melodicPattern || this._emptyMelodicPattern());
+    this.storage.set('drumPattern', pattern.drumPattern || this._emptyDrumPattern());
+
+    // Show editor
+    this._showEditor();
+
+    // Update UI elements
+    const titleInput = this.container.querySelector('.synth-pattern-title');
+    if (titleInput) titleInput.value = pattern.name || '';
+
+    const tempoSlider = this.container.querySelector('[data-control="tempo"]');
+    const tempoValue = this.container.querySelector('.synth-tempo-value');
+    if (tempoSlider) tempoSlider.value = pattern.tempo || 120;
+    if (tempoValue) tempoValue.textContent = pattern.tempo || 120;
+
+    const waveformSelect = this.container.querySelector('[data-control="waveform"]');
+    if (waveformSelect) waveformSelect.value = pattern.waveform || 'sawtooth';
+
+    // Update grid
+    const melodicPattern = pattern.melodicPattern || this._emptyMelodicPattern();
+    const drumPattern = pattern.drumPattern || this._emptyDrumPattern();
+
+    this.container.querySelectorAll('[data-note]').forEach(cell => {
+      const noteIdx = parseInt(cell.dataset.note);
+      const step = parseInt(cell.dataset.step);
+      cell.classList.toggle('active', melodicPattern[noteIdx]?.[step] || false);
+    });
+
+    this.container.querySelectorAll('[data-drum]').forEach(cell => {
+      const drumIdx = parseInt(cell.dataset.drum);
+      const step = parseInt(cell.dataset.step);
+      cell.classList.toggle('active', drumPattern[drumIdx]?.[step] || false);
+    });
+
+    this._renderPatternsList();
+    this._updateStatus('');
+  },
+
+  // Schedule auto-save with debounce
+  _scheduleAutoSave() {
+    if (!this.selectedPatternId) return;
+    this._updateStatus('Editing...');
+    if (this.saveTimeout) clearTimeout(this.saveTimeout);
+    this.saveTimeout = setTimeout(() => this._saveCurrentPattern(), this.SAVE_DELAY);
+  },
+
+  // Save the current pattern state
+  _saveCurrentPattern() {
+    if (!this.selectedPatternId) return;
+
+    const patterns = this.storage.get('savedPatterns', []);
+    const pattern = patterns.find(p => p.id === this.selectedPatternId);
+    if (!pattern) return;
+
+    const titleInput = this.container.querySelector('.synth-pattern-title');
+    pattern.name = titleInput?.value?.trim() || 'Untitled';
+    pattern.tempo = this.storage.get('tempo', 120);
+    pattern.waveform = this.storage.get('waveform', 'sawtooth');
+    pattern.melodicPattern = this.storage.get('melodicPattern', this._emptyMelodicPattern());
+    pattern.drumPattern = this.storage.get('drumPattern', this._emptyDrumPattern());
+    pattern.updatedAt = Date.now();
+
+    this.storage.set('savedPatterns', patterns);
+    this._renderPatternsList();
+    this._updateStatus('Saved');
+  },
+
+  // Update status indicator
+  _updateStatus(text) {
+    const status = this.container.querySelector('.synth-pattern-status');
+    if (status) status.textContent = text;
+  },
+
   // Render the saved patterns list in sidebar
   _renderPatternsList() {
     const listEl = this.container.querySelector('.synth-patterns-list');
     if (!listEl) return;
 
     const patterns = this.storage.get('savedPatterns', []);
-    const selectedIndex = this.storage.get('selectedPatternIndex', null);
 
     listEl.innerHTML = patterns.length === 0
       ? '<li class="synth-patterns-empty">No saved patterns</li>'
-      : patterns.map((p, i) => `
-          <li class="synth-pattern-item ${selectedIndex === i ? 'active' : ''}" data-pattern-index="${i}">
-            <span class="synth-pattern-name" data-name-index="${i}">${this._escapeHtml(p.name)}</span>
-            <button class="synth-pattern-delete" data-delete-index="${i}" title="Delete">&times;</button>
+      : patterns.map(p => `
+          <li class="synth-pattern-item ${this.selectedPatternId === p.id ? 'active' : ''}" data-pattern-id="${p.id}">
+            <span class="synth-pattern-name">${this._escapeHtml(p.name)}</span>
+            <button class="synth-pattern-delete" data-delete-id="${p.id}" title="Delete">&times;</button>
           </li>
         `).join('');
 
@@ -595,111 +737,40 @@ const SynthModule = {
     listEl.querySelectorAll('.synth-pattern-item').forEach(item => {
       item.addEventListener('click', (e) => {
         if (e.target.classList.contains('synth-pattern-delete')) return;
-        if (e.target.classList.contains('synth-pattern-name-input')) return;
-        const index = parseInt(item.dataset.patternIndex);
-        this._loadPattern(index);
-      });
-    });
-
-    // Double-click to rename
-    listEl.querySelectorAll('.synth-pattern-name').forEach(nameEl => {
-      nameEl.addEventListener('dblclick', (e) => {
-        e.stopPropagation();
-        const index = parseInt(nameEl.dataset.nameIndex);
-        this._startRename(index, nameEl);
+        const id = item.dataset.patternId;
+        this._selectPattern(id);
       });
     });
 
     listEl.querySelectorAll('.synth-pattern-delete').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const index = parseInt(btn.dataset.deleteIndex);
-        this._deletePattern(index);
+        const id = btn.dataset.deleteId;
+        this._deletePattern(id);
       });
     });
   },
 
-  _startRename(index, nameEl) {
+  // Delete saved pattern by ID
+  _deletePattern(id) {
     const patterns = this.storage.get('savedPatterns', []);
-    const currentName = patterns[index]?.name || '';
+    const index = patterns.findIndex(p => p.id === id);
+    if (index === -1) return;
 
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.className = 'synth-pattern-name-input';
-    input.value = currentName;
-
-    const finishRename = () => {
-      const newName = input.value.trim();
-      if (newName && newName !== currentName) {
-        patterns[index].name = newName;
-        this.storage.set('savedPatterns', patterns);
-      }
-      this._renderPatternsList();
-    };
-
-    input.addEventListener('blur', finishRename);
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        input.blur();
-      }
-      if (e.key === 'Escape') {
-        input.value = currentName;
-        input.blur();
-      }
-    });
-    input.addEventListener('click', (e) => e.stopPropagation());
-
-    nameEl.replaceWith(input);
-    input.focus();
-    input.select();
-  },
-
-  // Save pattern to localStorage presets
-  _savePattern() {
-    const name = prompt('Pattern name:');
-    if (!name) return;
-
-    const patterns = this.storage.get('savedPatterns', []);
-    const pattern = {
-      name,
-      tempo: this.storage.get('tempo', 120),
-      waveform: this.storage.get('waveform', 'sawtooth'),
-      melodicPattern: this.storage.get('melodicPattern', this._emptyMelodicPattern()),
-      drumPattern: this.storage.get('drumPattern', this._emptyDrumPattern())
-    };
-    patterns.push(pattern);
-    this.storage.set('savedPatterns', patterns);
-    this.storage.set('selectedPatternIndex', patterns.length - 1);
-    this._renderPatternsList();
-  },
-
-  // Load pattern from localStorage presets
-  _loadPattern(index) {
-    const patterns = this.storage.get('savedPatterns', []);
-    if (patterns[index]) {
-      this._stop();
-      const p = patterns[index];
-      this.storage.set('tempo', p.tempo);
-      this.storage.set('waveform', p.waveform);
-      this.storage.set('melodicPattern', p.melodicPattern);
-      this.storage.set('drumPattern', p.drumPattern);
-      this.storage.set('selectedPatternIndex', index);
-      this._buildUI();
-    }
-  },
-
-  // Delete saved pattern
-  _deletePattern(index) {
-    const patterns = this.storage.get('savedPatterns', []);
     patterns.splice(index, 1);
     this.storage.set('savedPatterns', patterns);
 
-    const selectedIndex = this.storage.get('selectedPatternIndex', null);
-    if (selectedIndex === index) {
-      this.storage.remove('selectedPatternIndex');
-    } else if (selectedIndex !== null && selectedIndex > index) {
-      this.storage.set('selectedPatternIndex', selectedIndex - 1);
+    // If we deleted the selected pattern, select another or show empty
+    if (this.selectedPatternId === id) {
+      if (patterns.length > 0) {
+        // Select the most recently updated pattern
+        const sorted = [...patterns].sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+        this._selectPattern(sorted[0].id);
+      } else {
+        this.selectedPatternId = null;
+        this.storage.remove('selectedPatternId');
+        this._showEmpty();
+      }
     }
 
     this._renderPatternsList();
@@ -857,17 +928,25 @@ const SynthModule = {
   },
 
   _autoSavePattern() {
-    const patterns = this.storage.get('savedPatterns', []);
+    const name = this._generateRandomName();
     const pattern = {
-      name: this._generateRandomName(),
+      id: this._generateId(),
+      name,
       tempo: this.storage.get('tempo', 120),
       waveform: this.storage.get('waveform', 'sawtooth'),
       melodicPattern: this.storage.get('melodicPattern', this._emptyMelodicPattern()),
-      drumPattern: this.storage.get('drumPattern', this._emptyDrumPattern())
+      drumPattern: this.storage.get('drumPattern', this._emptyDrumPattern()),
+      createdAt: Date.now(),
+      updatedAt: Date.now()
     };
+    const patterns = this.storage.get('savedPatterns', []);
     patterns.push(pattern);
     this.storage.set('savedPatterns', patterns);
-    this.storage.set('selectedPatternIndex', patterns.length - 1);
+    this.selectedPatternId = pattern.id;
+    this.storage.set('selectedPatternId', pattern.id);
+    this._showEditor();
+    const titleInput = this.container.querySelector('.synth-pattern-title');
+    if (titleInput) titleInput.value = name;
     this._renderPatternsList();
   },
 
@@ -946,10 +1025,48 @@ const SynthModule = {
     });
   },
 
-  render() {},
+  render() {
+    let patterns = this.storage.get('savedPatterns', []);
+
+    // Migrate old patterns without IDs
+    let needsSave = false;
+    patterns = patterns.map(p => {
+      if (!p.id) {
+        needsSave = true;
+        return {
+          ...p,
+          id: this._generateId(),
+          createdAt: p.createdAt || Date.now(),
+          updatedAt: p.updatedAt || Date.now()
+        };
+      }
+      return p;
+    });
+    if (needsSave) {
+      this.storage.set('savedPatterns', patterns);
+    }
+
+    if (patterns.length === 0) {
+      this._showEmpty();
+    } else {
+      // Load last selected, or most recently updated
+      const lastId = this.storage.get('selectedPatternId', null);
+      const sortedPatterns = [...patterns].sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+      const patternToLoad = patterns.find(p => p.id === lastId) || sortedPatterns[0];
+      if (patternToLoad) {
+        this._selectPattern(patternToLoad.id);
+      } else {
+        this._showEmpty();
+      }
+    }
+  },
 
   destroy() {
     this._stop();
+    if (this.saveTimeout) {
+      clearTimeout(this.saveTimeout);
+      this.saveTimeout = null;
+    }
     if (this.audioContext) {
       this.audioContext.close();
       this.audioContext = null;
