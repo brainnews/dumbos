@@ -1,0 +1,225 @@
+/* Story Mode Module */
+
+.storymode-app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Launcher UI */
+.storymode-launcher {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  gap: 4px;
+  text-align: center;
+}
+
+.storymode-icon {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 12px;
+  opacity: 0.6;
+  color: var(--text-primary);
+  animation: storymode-pulse 4s ease-in-out infinite;
+}
+
+@keyframes storymode-pulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+
+.storymode-tagline {
+  font-size: 16px;
+  color: var(--text-primary);
+  margin: 0;
+  font-style: italic;
+}
+
+.storymode-tagline-sub {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0 0 20px 0;
+  font-style: italic;
+}
+
+.storymode-enter-btn {
+  padding: 10px 32px;
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.storymode-enter-btn:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+
+.storymode-enter-btn:active {
+  transform: translateY(0);
+}
+
+.storymode-enter-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.storymode-disclaimer {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin: 16px 0 0 0;
+  opacity: 0.7;
+}
+
+/* Active Story Mode UI */
+.storymode-active {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  gap: 6px;
+  text-align: center;
+}
+
+.storymode-active-icon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+  opacity: 0.5;
+  animation: storymode-pulse 3s ease-in-out infinite;
+}
+
+.storymode-active-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.storymode-active-char {
+  font-size: 13px;
+  color: var(--text-primary);
+  margin: 8px 0 0 0;
+  line-height: 1.5;
+}
+
+.storymode-active-hint {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 4px 0 16px 0;
+  font-style: italic;
+}
+
+.storymode-exit-btn {
+  padding: 8px 24px;
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.storymode-exit-btn:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--text-secondary);
+}
+
+.storymode-exit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.storymode-exit-note {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin: 10px 0 0 0;
+  opacity: 0.6;
+}
+
+/* Fullscreen Overlay */
+.storymode-overlay {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  pointer-events: all;
+}
+
+.storymode-overlay.visible {
+  opacity: 1;
+}
+
+.storymode-overlay.fading-out {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.storymode-static {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.storymode-status-text {
+  position: relative;
+  z-index: 1;
+  color: #888;
+  font-size: 13px;
+  font-family: monospace;
+  letter-spacing: 1px;
+  animation: storymode-flicker 2s ease-in-out infinite;
+}
+
+@keyframes storymode-flicker {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+  73% { opacity: 0.4; }
+  77% { opacity: 0.9; }
+}
+
+/* Glitch intensification */
+.storymode-overlay.glitch-intense .storymode-static {
+  animation: storymode-glitch 0.15s steps(2) infinite;
+}
+
+.storymode-overlay.glitch-intense .storymode-status-text {
+  animation: storymode-text-glitch 0.1s steps(3) infinite;
+}
+
+@keyframes storymode-glitch {
+  0% { filter: brightness(1) contrast(1); }
+  25% { filter: brightness(2) contrast(1.5); transform: translateX(-2px); }
+  50% { filter: brightness(0.5) contrast(2); transform: translateX(3px) translateY(1px); }
+  75% { filter: brightness(1.5) contrast(0.8); transform: translateX(-1px) translateY(-2px); }
+  100% { filter: brightness(1) contrast(1); }
+}
+
+@keyframes storymode-text-glitch {
+  0% { transform: translate(0); color: #888; }
+  33% { transform: translate(-3px, 1px); color: #f00; }
+  66% { transform: translate(2px, -1px); color: #0ff; }
+  100% { transform: translate(0); color: #888; }
+}

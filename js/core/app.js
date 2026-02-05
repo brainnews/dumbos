@@ -31,6 +31,7 @@ import HelpModule from '../modules/help/help.js';
 import SynthModule from '../modules/synth/synth.js';
 import StockTrackerModule from '../modules/stocktracker/stocktracker.js';
 import AppBuilderModule, { registerCustomApps } from '../modules/appbuilder/appbuilder.js';
+import StoryModeModule from '../modules/storymode/storymode.js';
 import Screensaver from './screensaver.js';
 
 class App {
@@ -156,6 +157,7 @@ class App {
     ModuleRegistry.register(SynthModule);
     ModuleRegistry.register(StockTrackerModule);
     ModuleRegistry.register(AppBuilderModule);
+    ModuleRegistry.register(StoryModeModule);
     ModuleRegistry.register(SettingsModule);
 
     // Register user-created apps from App Builder
@@ -176,14 +178,6 @@ class App {
       }
     });
 
-    // Only open notes by default on fresh install (no window state saved yet)
-    // If user closed all windows, respect that choice
-    if (!anyRestored) {
-      const hasWindowState = Storage.keys('windows').length > 0;
-      if (!hasWindowState) {
-        this.openModule('notes');
-      }
-    }
   }
 
   /**
