@@ -66,6 +66,16 @@ Scoped module storage (passed to `init`): `storage.get(key, default)`, `storage.
 
 Pattern: `dumbos:{namespace}:{key}`
 
+### Claude API Integration
+
+Modules with AI features (Synth, App Builder) use a shared API key stored in Settings:
+```javascript
+import Storage from '../../core/storage.js';
+const apiKey = Storage.get('claude-api', 'apiKey', null);
+```
+
+Direct browser access requires the header: `'anthropic-dangerous-direct-browser-access': 'true'`
+
 ### Event System
 
 Window events dispatched on `window`:

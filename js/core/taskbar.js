@@ -33,6 +33,7 @@ class Taskbar {
     this._setupEventListeners();
     this._buildStartButton();
     this._buildLaunchers();
+    this._buildLauncherInput();
     this._buildTray();
   }
 
@@ -269,6 +270,203 @@ class Taskbar {
       launcher.classList.add('active');
       launcher.classList.remove('minimized');
     }
+  }
+
+  /**
+   * Build the launcher input (URL bar / search)
+   */
+  _buildLauncherInput() {
+    this.launcherWrapperEl = document.createElement('div');
+    this.launcherWrapperEl.className = 'taskbar-launcher-input';
+
+    this.launcherInputEl = document.createElement('input');
+    this.launcherInputEl.type = 'text';
+    this.launcherInputEl.placeholder = 'Search or enter URL...';
+
+    this.launcherDropdownEl = document.createElement('div');
+    this.launcherDropdownEl.className = 'taskbar-launcher-dropdown';
+
+    this.launcherWrapperEl.appendChild(this.launcherInputEl);
+    this.launcherWrapperEl.appendChild(this.launcherDropdownEl);
+    this.taskbarEl.insertBefore(this.launcherWrapperEl, this.trayEl);
+
+    this.dropdownSelectedIndex = -1;
+
+    this.launcherInputEl.addEventListener('focus', () => {
+      this._renderDropdown(this.launcherInputEl.value);
+    });
+
+    this.launcherInputEl.addEventListener('input', () => {
+      this.dropdownSelectedIndex = -1;
+      this._renderDropdown(this.launcherInputEl.value);
+    });
+
+    this.launcherInputEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (this.dropdownSelectedIndex >= 0) {
+          const items = this.launcherDropdownEl.querySelectorAll('.taskbar-launcher-dropdown-item');
+          if (items[this.dropdownSelectedIndex]) {
+            items[this.dropdownSelectedIndex].click();
+            return;
+          }
+        }
+        const query = this.launcherInputEl.value.trim();
+        if (query) {
+          this._launch(query);
+        }
+      } else if (e.key === 'Escape') {
+        this.launcherInputEl.value = '';
+        this.launcherInputEl.blur();
+        this._hideDropdown();
+      } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        const items = this.launcherDropdownEl.querySelectorAll('.taskbar-launcher-dropdown-item');
+        if (items.length === 0) return;
+        if (e.key === 'ArrowUp') {
+          // Move up into dropdown (start from bottom item, closest to input)
+          if (this.dropdownSelectedIndex === -1) {
+            this.dropdownSelectedIndex = items.length - 1;
+          } else {
+            this.dropdownSelectedIndex = Math.max(this.dropdownSelectedIndex - 1, 0);
+          }
+        } else {
+          // ArrowDown moves back toward input
+          if (this.dropdownSelectedIndex === -1) return;
+          this.dropdownSelectedIndex++;
+          if (this.dropdownSelectedIndex >= items.length) {
+            this.dropdownSelectedIndex = -1;
+          }
+        }
+        items.forEach((item, i) => {
+          item.classList.toggle('selected', i === this.dropdownSelectedIndex);
+        });
+      }
+    });
+
+    document.addEventListener('mousedown', (e) => {
+      if (!this.launcherWrapperEl.contains(e.target)) {
+        this._hideDropdown();
+      }
+    });
+  }
+
+  /**
+   * Check if input looks like a URL
+   */
+  _isUrl(input) {
+    return /^(https?:\/\/)?[^\s]+\.[a-z]{2,}/i.test(input.trim());
+  }
+
+  /**
+   * Launch a query as URL or search
+   */
+  _launch(query) {
+    const isUrl = this._isUrl(query);
+    if (isUrl) {
+      let url = query.trim();
+      if (!/^https?:\/\//i.test(url)) {
+        url = 'https://' + url;
+      }
+      window.open(url, '_blank');
+      this._addToHistory(query.trim(), 'url');
+    } else {
+      window.open('https://www.google.com/search?q=' + encodeURIComponent(query), '_blank');
+      this._addToHistory(query.trim(), 'search');
+    }
+    this.launcherInputEl.value = '';
+    this.launcherInputEl.blur();
+    this._hideDropdown();
+  }
+
+  /**
+   * Add entry to launcher history
+   */
+  _addToHistory(query, type) {
+    let history = Storage.get('launcher', 'history', []);
+    history = history.filter(h => h.query.toLowerCase() !== query.toLowerCase());
+    history.unshift({ query, type, timestamp: Date.now() });
+    if (history.length > 50) history = history.slice(0, 50);
+    Storage.set('launcher', 'history', history);
+  }
+
+  /**
+   * Render the dropdown with filtered history
+   */
+  _renderDropdown(filter) {
+    const history = Storage.get('launcher', 'history', []);
+    const filterText = (filter || '').trim().toLowerCase();
+    const filtered = filterText
+      ? history.filter(h => h.query.toLowerCase().includes(filterText))
+      : history;
+
+    if (filtered.length === 0) {
+      this._hideDropdown();
+      return;
+    }
+
+    this.launcherDropdownEl.innerHTML = '';
+    this.dropdownSelectedIndex = -1;
+
+    filtered.forEach(item => {
+      const el = document.createElement('div');
+      el.className = 'taskbar-launcher-dropdown-item';
+      const icon = item.type === 'url' ? '🌐' : '🔍';
+      el.innerHTML = `<span class="launcher-type-icon">${icon}</span><span class="launcher-query">${this._escapeHtml(item.query)}</span><span class="launcher-remove">&times;</span>`;
+      el.querySelector('.launcher-remove').addEventListener('click', (e) => {
+        e.stopPropagation();
+        this._removeHistoryItem(item.query);
+        this._renderDropdown(this.launcherInputEl.value);
+      });
+      el.addEventListener('click', () => {
+        this._launch(item.query);
+      });
+      this.launcherDropdownEl.appendChild(el);
+    });
+
+    const clearEl = document.createElement('div');
+    clearEl.className = 'taskbar-launcher-dropdown-clear';
+    clearEl.textContent = 'Clear history';
+    clearEl.addEventListener('click', () => {
+      this._clearHistory();
+    });
+    this.launcherDropdownEl.appendChild(clearEl);
+
+    this.launcherDropdownEl.classList.add('visible');
+  }
+
+  /**
+   * Hide the dropdown
+   */
+  _hideDropdown() {
+    this.launcherDropdownEl.classList.remove('visible');
+  }
+
+  /**
+   * Remove a single item from launcher history
+   */
+  _removeHistoryItem(query) {
+    let history = Storage.get('launcher', 'history', []);
+    history = history.filter(h => h.query.toLowerCase() !== query.toLowerCase());
+    Storage.set('launcher', 'history', history);
+  }
+
+  /**
+   * Clear launcher history
+   */
+  _clearHistory() {
+    Storage.remove('launcher', 'history');
+    this._hideDropdown();
+  }
+
+  /**
+   * Escape HTML for safe rendering
+   */
+  _escapeHtml(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
   }
 
   /**

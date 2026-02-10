@@ -72,6 +72,17 @@ const SettingsModule = {
         </div>
 
         <div class="settings-section">
+          <h3 class="settings-section-title">Launcher</h3>
+          <div class="settings-row">
+            <div>
+              <label class="settings-label">Search History</label>
+              <p class="settings-description">Clear URL and search history from the taskbar launcher</p>
+            </div>
+            <button class="settings-btn" data-action="clear-launcher-history">Clear</button>
+          </div>
+        </div>
+
+        <div class="settings-section">
           <h3 class="settings-section-title">RSS</h3>
           <div class="settings-row">
             <div>
@@ -202,6 +213,11 @@ const SettingsModule = {
 
     this.container.querySelector('[data-setting="npr-text-mode"]').addEventListener('change', (e) => {
       Storage.set('rss', 'nprTextMode', e.target.checked);
+    });
+
+    this.container.querySelector('[data-action="clear-launcher-history"]').addEventListener('click', () => {
+      Storage.remove('launcher', 'history');
+      alert('Launcher history cleared.');
     });
 
     // Screensaver settings

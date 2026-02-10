@@ -44,7 +44,18 @@ RULES:
 - Notes should progress from normal/mundane to increasingly unsettling
 - Include 2 writing documents: one longer research/work piece that trails off, one shorter personal piece (journal, unsent letter, etc.)
 - Note content should be plain text, 2-6 sentences each
-- Include 4-6 bookmarks: websites the character was researching related to their obsession. Use plausible real-looking URLs (e.g. Wikipedia articles, research sites, forums). Mix mundane early bookmarks with increasingly specific/disturbing ones.
+- Include 4-6 bookmarks that are REAL, verifiable URLs the character would have researched.
+  Use a MIX of sources (~50% Wikipedia, ~50% other reputable sites):
+  - Wikipedia articles (use real article names that exist)
+  - Academic/research sites (arXiv, university pages, Stanford Encyclopedia)
+  - Professional tools/resources (product pages, documentation)
+  - Reference sites (Wolfram MathWorld, official docs)
+  CRITICAL: Only use URLs you are confident exist. When in doubt, use Wikipedia.
+  DO NOT invent fake Reddit threads, fake article paths, or placeholder URLs.
+  Good examples:
+  - https://en.wikipedia.org/wiki/Infrasound (real Wikipedia)
+  - https://mathworld.wolfram.com/CellularAutomaton.html (real reference)
+  - https://plato.stanford.edu/entries/emergence/ (real encyclopedia)
 - The tone should be unsettling and mysterious, hinting at something wrong without being graphic
 - Each generation should be a COMPLETELY different character, story, and obsession
 - The story should feel like discovering someone's abandoned digital life
@@ -225,14 +236,19 @@ const GhostEngine = {
 
     Storage.set('writing', 'documents', ghostDocs);
 
-    // Populate Bookmarks
+    // Populate Bookmarks with desktop positions
     if (narrative.bookmarks && narrative.bookmarks.length > 0) {
-      Storage.set('bookmarks', 'list', narrative.bookmarks.map(b => ({
+      const bookmarksWithPositions = narrative.bookmarks.map((b, i) => ({
         name: b.name,
-        url: b.url
-      })));
+        url: b.url,
+        x: 20,  // First column
+        y: 20 + (i * 100)  // Stack vertically
+      }));
+      Storage.set('bookmarks', 'list', bookmarksWithPositions);
+      Storage.set('bookmarks', 'showOnDesktop', true);
     } else {
       Storage.set('bookmarks', 'list', []);
+      Storage.set('bookmarks', 'showOnDesktop', false);
     }
 
     // Clear RSS feeds (empty state)

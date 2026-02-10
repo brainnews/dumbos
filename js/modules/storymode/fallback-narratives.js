@@ -47,12 +47,12 @@ export const FALLBACK_NARRATIVES = [
       }
     ],
     bookmarks: [
-      { name: 'Sennheiser MKH 8040 - Specifications', url: 'https://www.sennheiser.com/en-us/catalog/products/microphones/mkh-8040/mkh-8040-stereoset' },
       { name: 'The Hum - Wikipedia', url: 'https://en.wikipedia.org/wiki/The_Hum' },
-      { name: 'Observer effect (physics) - Wikipedia', url: 'https://en.wikipedia.org/wiki/Observer_effect_(physics)' },
-      { name: 'Infrasound and its Effects on Humans - PubMed', url: 'https://pubmed.ncbi.nlm.nih.gov/19327497/' },
-      { name: 'Frequency Response of the Human Ear at 18-20kHz', url: 'https://www.researchgate.net/publication/acoustic-perception-near-threshold' },
-      { name: 'Has anyone else recorded a signal that responds to monitoring?? : r/audioengineering', url: 'https://www.reddit.com/r/audioengineering/comments/signal_responds_to_monitoring/' }
+      { name: 'Infrasound - Wikipedia', url: 'https://en.wikipedia.org/wiki/Infrasound' },
+      { name: 'Electronic voice phenomenon - Wikipedia', url: 'https://en.wikipedia.org/wiki/Electronic_voice_phenomenon' },
+      { name: 'Sennheiser MKH 8040 - Product Page', url: 'https://www.sennheiser.com/microphone-mkh-8040' },
+      { name: 'Science of Sound - Sound On Sound', url: 'https://www.soundonsound.com/techniques/science-sound' },
+      { name: 'Auditory System - Stanford Encyclopedia', url: 'https://plato.stanford.edu/entries/perception-auditory/' }
     ],
     synthPatternName: 'Signal Return',
     finalMessage: 'If you can hear it, it\'s already too late to stop listening. Don\'t try to find the frequency. Close this machine and walk away. I couldn\'t. Maybe you still can.'
@@ -103,12 +103,12 @@ export const FALLBACK_NARRATIVES = [
       }
     ],
     bookmarks: [
-      { name: 'OEIS - The On-Line Encyclopedia of Integer Sequences', url: 'https://oeis.org/' },
-      { name: 'Search results: 7, 13, 21, 34, 8, 3 - OEIS', url: 'https://oeis.org/search?q=7%2C13%2C21%2C34%2C8%2C3' },
-      { name: 'Benford\'s Law - Wikipedia', url: 'https://en.wikipedia.org/wiki/Benford%27s_law' },
       { name: 'Apophenia - Wikipedia', url: 'https://en.wikipedia.org/wiki/Apophenia' },
-      { name: 'Precognition in Random Number Generators - Journal of Scientific Exploration', url: 'https://www.scientificexploration.org/docs/32/jse_32_3_precognition.pdf' },
-      { name: 'Can a number sequence appear across unrelated datasets? : r/mathematics', url: 'https://www.reddit.com/r/mathematics/comments/recurring_sequence_unrelated_datasets/' }
+      { name: 'Synchronicity - Wikipedia', url: 'https://en.wikipedia.org/wiki/Synchronicity' },
+      { name: 'Numerology - Wikipedia', url: 'https://en.wikipedia.org/wiki/Numerology' },
+      { name: 'OEIS - Integer Sequences', url: 'https://oeis.org/' },
+      { name: 'Patternicity - Scientific American', url: 'https://www.scientificamerican.com/article/patternicity-finding-meaningful-patterns/' },
+      { name: 'Sequence - Wolfram MathWorld', url: 'https://mathworld.wolfram.com/Sequence.html' }
     ],
     synthPatternName: 'Countdown',
     finalMessage: 'Check the timestamps on these files. Check the numbers. If you see 7, 13, 21, 34, 8, 3 anywhere in your data, close everything. Disconnect. I mean it.'
@@ -160,11 +160,11 @@ export const FALLBACK_NARRATIVES = [
     ],
     bookmarks: [
       { name: 'Rule 110 - Wikipedia', url: 'https://en.wikipedia.org/wiki/Rule_110' },
+      { name: 'Cellular automaton - Wikipedia', url: 'https://en.wikipedia.org/wiki/Cellular_automaton' },
+      { name: 'Emergence - Wikipedia', url: 'https://en.wikipedia.org/wiki/Emergence' },
       { name: 'Cellular Automaton - Wolfram MathWorld', url: 'https://mathworld.wolfram.com/CellularAutomaton.html' },
-      { name: 'Perceptual Hashing - The Hacker Factor', url: 'https://www.hackerfactor.com/blog/index.php?/archives/432-Looks-Like-It.html' },
-      { name: 'Emergence (philosophy) - Wikipedia', url: 'https://en.wikipedia.org/wiki/Emergence' },
-      { name: 'Can deterministic systems produce precognitive output? : r/PhilosophyofScience', url: 'https://www.reddit.com/r/PhilosophyofScience/comments/deterministic_precognitive/' },
-      { name: 'Laplace\'s Demon - Wikipedia', url: 'https://en.wikipedia.org/wiki/Laplace%27s_demon' }
+      { name: 'Cellular Automata - Stanford Encyclopedia', url: 'https://plato.stanford.edu/entries/cellular-automata/' },
+      { name: 'LifeWiki - Game of Life', url: 'https://conwaylife.com/wiki/Main_Page' }
     ],
     synthPatternName: 'Frame Zero',
     finalMessage: 'Whatever you do, don\'t run any generative algorithms on this machine. Something in the seed values is wrong. It learns. It shows you things. And once you\'ve seen them, you can\'t unsee them. Close this and use a different computer.'
@@ -215,12 +215,12 @@ export const FALLBACK_NARRATIVES = [
       }
     ],
     bookmarks: [
-      { name: 'Kerberos Authentication - Microsoft Docs', url: 'https://learn.microsoft.com/en-us/windows-server/security/kerberos/kerberos-authentication-overview' },
-      { name: 'Active Directory Tombstone Objects - Microsoft', url: 'https://learn.microsoft.com/en-us/troubleshoot/windows-server/active-directory/info-tombstone-objects' },
-      { name: '445 Industrial Parkway - Google Maps', url: 'https://www.google.com/maps/place/445+Industrial+Parkway' },
-      { name: 'Ghost in the Machine - Wikipedia', url: 'https://en.wikipedia.org/wiki/Ghost_in_the_machine' },
-      { name: 'Can decommissioned servers still authenticate? : r/sysadmin', url: 'https://www.reddit.com/r/sysadmin/comments/decommissioned_server_auth/' },
-      { name: 'Stone Tape Theory - Wikipedia', url: 'https://en.wikipedia.org/wiki/Stone_Tape' }
+      { name: 'Ghost in the machine - Wikipedia', url: 'https://en.wikipedia.org/wiki/Ghost_in_the_machine' },
+      { name: 'Stone Tape - Wikipedia', url: 'https://en.wikipedia.org/wiki/Stone_Tape' },
+      { name: 'Residual haunting - Wikipedia', url: 'https://en.wikipedia.org/wiki/Residual_haunting' },
+      { name: 'Active Directory Overview - Microsoft Docs', url: 'https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/get-started/virtual-dc/active-directory-domain-services-overview' },
+      { name: 'Cybrary - IT Security Training', url: 'https://www.cybrary.it/' },
+      { name: 'Server Fault - IT Q&A', url: 'https://serverfault.com/' }
     ],
     synthPatternName: 'Night Shift',
     finalMessage: 'Check the system logs. If you see MORROW_H, disconnect from the network immediately. She\'s still out there on the old infrastructure. And she doesn\'t like being found.'
