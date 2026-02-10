@@ -209,6 +209,12 @@ const JournalModule = {
         this._toggleSearch();
       }
     });
+
+    // Render calendar and load entry here (not in render()) because init()
+    // is async and app.js calls render() before the promise resolves.
+    this._renderCalendar();
+    this._selectDate(this.selectedDate);
+    this._updateViewMode();
   },
 
   _bindKeyboardShortcuts() {
@@ -241,9 +247,9 @@ const JournalModule = {
   },
 
   render() {
-    this._renderCalendar();
-    this._selectDate(this.selectedDate);
-    this._updateViewMode();
+    // Calendar is rendered at the end of _buildUI() because init() is async
+    // and app.js calls render() synchronously before init() resolves.
+    // This is kept as a no-op so the module interface contract is satisfied.
   },
 
   // --- Calendar ---
