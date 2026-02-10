@@ -32,6 +32,7 @@ import SynthModule from '../modules/synth/synth.js';
 import StockTrackerModule from '../modules/stocktracker/stocktracker.js';
 import AppBuilderModule, { registerCustomApps } from '../modules/appbuilder/appbuilder.js';
 import StoryModeModule from '../modules/storymode/storymode.js';
+import JournalModule from '../modules/journal/journal.js';
 import Screensaver from './screensaver.js';
 
 class App {
@@ -158,6 +159,7 @@ class App {
     ModuleRegistry.register(StockTrackerModule);
     ModuleRegistry.register(AppBuilderModule);
     ModuleRegistry.register(StoryModeModule);
+    ModuleRegistry.register(JournalModule);
     ModuleRegistry.register(SettingsModule);
 
     // Register user-created apps from App Builder
