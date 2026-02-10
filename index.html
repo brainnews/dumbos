@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DumbOS</title>
   <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+  <meta name="description" content="A privacy-first, modular desktop environment in your browser">
+  <meta name="theme-color" content="#141414">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
 
   <!-- Core Styles -->
   <link rel="stylesheet" href="css/variables.css">
@@ -78,5 +84,10 @@
   </div>
 
   <script type="module" src="js/core/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js');
+    }
+  </script>
 </body>
 </html>
