@@ -133,8 +133,8 @@
 }
 
 .mobile-back-btn {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -174,42 +174,442 @@
   font-size: 16px !important;
 }
 
-/* Notes responsive layout */
-@media (max-width: 768px) {
-  .notes-layout {
-    flex-direction: column;
-  }
 
-  .notes-sidebar {
-    width: 100%;
-    max-height: 140px;
-    border-right: none;
-    border-bottom: 1px solid var(--border-color);
-  }
+/* ==========================================================================
+   Module-specific mobile overrides — tap-friendly sizing
+   Minimum touch target: 44x44px (Apple HIG)
+   ========================================================================== */
 
-  .notes-list {
-    overflow-y: auto;
-  }
+/* --- Radio --- */
+
+.radio-play-btn,
+.radio-mute-btn,
+.radio-viz-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
 }
 
-/* RSS responsive layout */
-@media (max-width: 768px) {
-  .rss-layout {
-    flex-direction: column;
-  }
+.radio-play-btn svg {
+  width: 22px;
+  height: 22px;
+}
 
-  .rss-sidebar {
-    width: 100%;
-    max-height: 160px;
-    border-right: none;
-    border-bottom: 1px solid var(--border-color);
-  }
+.radio-mute-btn svg,
+.radio-viz-btn svg {
+  width: 20px;
+  height: 20px;
+}
 
-  .rss-feed-list {
-    overflow-y: auto;
-  }
+.radio-volume {
+  height: 20px;
+  max-width: 100px;
+}
 
-  .rss-main {
-    min-height: 0;
-  }
+.radio-controls {
+  gap: 8px;
+}
+
+.radio-preset-btn {
+  padding: 10px 4px;
+  font-size: 11px;
+  min-height: 44px;
+}
+
+.radio-preset-num {
+  font-size: 14px;
+}
+
+.radio-collapse-toggle {
+  padding: 10px 0;
+  min-height: 44px;
+}
+
+.radio-collapse-toggle svg {
+  width: 20px;
+  height: 20px;
+}
+
+.radio-tab {
+  padding: 12px 8px;
+  font-size: 14px;
+  min-height: 44px;
+}
+
+.radio-search-input {
+  padding: 10px 12px;
+  font-size: 16px;
+  border-radius: 8px;
+}
+
+.radio-station-item,
+.radio-search-result {
+  padding: 12px;
+  gap: 10px;
+}
+
+.radio-station-item-name {
+  font-size: 14px;
+}
+
+.radio-station-actions {
+  gap: 6px;
+}
+
+.radio-station-actions button {
+  padding: 8px 12px;
+  font-size: 14px;
+  min-height: 36px;
+  border-radius: 6px;
+}
+
+
+/* --- Notes --- */
+
+.notes-layout {
+  flex-direction: column;
+}
+
+.notes-sidebar {
+  width: 100%;
+  max-height: 140px;
+  border-right: none;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.notes-list {
+  overflow-y: auto;
+}
+
+.notes-add-btn {
+  width: 36px;
+  height: 36px;
+  font-size: 20px;
+  border-radius: 8px;
+}
+
+.notes-sidebar-header {
+  padding: 10px var(--spacing-md);
+}
+
+.notes-list-item {
+  padding: 10px var(--spacing-md);
+  min-height: 44px;
+}
+
+.notes-remove-btn {
+  width: 32px;
+  height: 32px;
+  font-size: 18px;
+  display: flex;
+}
+
+
+/* --- RSS --- */
+
+.rss-layout {
+  flex-direction: column;
+}
+
+.rss-sidebar {
+  width: 100%;
+  max-height: 160px;
+  border-right: none;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.rss-feed-list {
+  overflow-y: auto;
+}
+
+.rss-main {
+  min-height: 0;
+}
+
+.rss-add-btn {
+  width: 36px;
+  height: 36px;
+  font-size: 20px;
+  border-radius: 8px;
+}
+
+.rss-sidebar-header {
+  padding: 10px var(--spacing-md);
+}
+
+.rss-feed-item {
+  padding: 10px var(--spacing-md);
+  min-height: 44px;
+}
+
+.rss-remove-btn {
+  width: 32px;
+  height: 32px;
+  font-size: 18px;
+  display: flex;
+}
+
+.rss-refresh-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+}
+
+.rss-main-header {
+  padding: 10px var(--spacing-md);
+}
+
+.rss-article-link {
+  padding: var(--spacing-md);
+  min-height: 44px;
+}
+
+.rss-article-title {
+  font-size: 15px;
+}
+
+.rss-reader-back {
+  padding: 8px 14px;
+  font-size: 14px;
+  min-height: 36px;
+}
+
+.rss-url-input {
+  padding: 10px 12px;
+  font-size: 16px;
+}
+
+.rss-dialog-actions button {
+  padding: 10px var(--spacing-md);
+  font-size: 14px;
+  min-height: 40px;
+}
+
+
+/* --- Stock Tracker --- */
+
+.stocktracker-layout {
+  flex-direction: column;
+}
+
+.stocktracker-sidebar {
+  width: 100%;
+  max-height: 180px;
+  border-right: none;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.stocktracker-list {
+  overflow-y: auto;
+}
+
+.stocktracker-add-btn {
+  width: 36px;
+  height: 36px;
+  font-size: 20px;
+  border-radius: 8px;
+}
+
+.stocktracker-sidebar-header {
+  padding: 10px var(--spacing-md);
+}
+
+.stocktracker-item {
+  padding: 10px var(--spacing-md);
+  min-height: 48px;
+}
+
+.stocktracker-remove-btn {
+  width: 32px;
+  height: 32px;
+  font-size: 18px;
+  display: flex;
+}
+
+.stocktracker-refresh-btn {
+  padding: 8px var(--spacing-md);
+  font-size: 14px;
+  min-height: 40px;
+}
+
+
+/* --- Art World (metmuseum) --- */
+
+.metmuseum-tab {
+  padding: 10px var(--spacing-md);
+  font-size: 14px;
+  min-height: 44px;
+}
+
+.metmuseum-refresh-btn {
+  width: 40px;
+  height: 40px;
+}
+
+.metmuseum-refresh-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.metmuseum-select,
+.metmuseum-provider-select {
+  padding: 10px var(--spacing-sm);
+  font-size: 14px;
+}
+
+.metmuseum-link,
+.metmuseum-collect-btn {
+  padding: 10px var(--spacing-md);
+  font-size: 14px;
+  min-height: 40px;
+}
+
+.metmuseum-retry-btn {
+  padding: 10px var(--spacing-md);
+  font-size: 14px;
+  min-height: 40px;
+}
+
+.metmuseum-collection-remove {
+  width: 32px;
+  height: 32px;
+  font-size: 18px;
+  opacity: 1;
+}
+
+.metmuseum-collection-grid {
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+}
+
+.metmuseum-swap-cancel {
+  padding: 10px var(--spacing-md);
+  font-size: 14px;
+  min-height: 40px;
+}
+
+.metmuseum-image-container {
+  max-height: none;
+}
+
+
+/* --- Settings --- */
+
+.settings-row {
+  padding: 12px;
+  gap: var(--spacing-sm);
+}
+
+.settings-select {
+  padding: 10px var(--spacing-sm);
+  font-size: 14px;
+  min-height: 40px;
+}
+
+.settings-btn {
+  padding: 10px var(--spacing-md);
+  font-size: 14px;
+  min-height: 40px;
+}
+
+.settings-btn-small {
+  padding: 8px var(--spacing-sm);
+  min-height: 36px;
+}
+
+.settings-input {
+  padding: 10px var(--spacing-sm);
+  font-size: 16px;
+  min-height: 40px;
+}
+
+.settings-checkbox {
+  width: 24px;
+  height: 24px;
+}
+
+.settings-color {
+  width: 56px;
+  height: 40px;
+}
+
+.settings-file::file-selector-button {
+  padding: 8px var(--spacing-sm);
+  font-size: 14px;
+}
+
+.settings-input-group {
+  flex-direction: column;
+}
+
+.settings-btn-group {
+  flex-direction: column;
+}
+
+
+/* --- Snake --- */
+
+.snake-btn {
+  padding: 12px 24px;
+  font-size: 16px;
+  min-height: 44px;
+  border-radius: 8px;
+}
+
+.snake-controls {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.snake-hint {
+  font-size: 13px;
+  text-align: center;
+}
+
+
+/* --- Bubble Wrap --- */
+
+.bubblewrap-reset {
+  padding: 10px var(--spacing-md);
+  font-size: 14px;
+  min-height: 40px;
+  border-radius: 8px;
+}
+
+.bubblewrap-header {
+  padding: var(--spacing-xs) 0;
+}
+
+.bubblewrap-counter {
+  font-size: 14px;
+}
+
+
+/* --- Help --- */
+
+.help-app {
+  padding: 12px;
+  min-height: 48px;
+}
+
+.help-app-icon {
+  width: 40px;
+  height: 40px;
+}
+
+.help-app-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.help-app-emoji {
+  font-size: 28px;
+}
+
+.help-app-info strong {
+  font-size: 14px;
+}
+
+.help-app-info span {
+  font-size: 13px;
 }
