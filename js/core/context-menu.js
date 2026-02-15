@@ -25,6 +25,7 @@ class ContextMenu {
    * @param {Array} items - Menu items [{label, action, disabled, separator}]
    */
   show(x, y, items) {
+    if (!this.menuEl) this.init();
     this.menuEl.innerHTML = '';
 
     items.forEach(item => {
