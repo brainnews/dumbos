@@ -452,6 +452,7 @@ const RadioModule = {
   },
 
   _resizeWindow() {
+    if (!WindowManager.windows) return;
     const windowData = WindowManager.windows.get(this.id);
     if (!windowData || windowData.state.maximized) return;
     const windowEl = windowData.element;

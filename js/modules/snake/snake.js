@@ -85,6 +85,41 @@ const SnakeModule = {
     this.container.querySelector('[data-action="start"]').addEventListener('click', () => {
       if (this.gameState !== 'playing') this._startGame();
     });
+
+    // Touch swipe controls
+    if ('ontouchstart' in window) {
+      let touchStartX = 0;
+      let touchStartY = 0;
+      this.container.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+      }, { passive: true });
+      this.container.addEventListener('touchend', (e) => {
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        const dy = e.changedTouches[0].clientY - touchStartY;
+        const absDx = Math.abs(dx);
+        const absDy = Math.abs(dy);
+        if (Math.max(absDx, absDy) < 20) return;
+
+        let newDir;
+        if (absDx > absDy) {
+          newDir = dx > 0 ? 'right' : 'left';
+        } else {
+          newDir = dy > 0 ? 'down' : 'up';
+        }
+
+        if (this.gameState === 'playing') {
+          const opposites = { up: 'down', down: 'up', left: 'right', right: 'left' };
+          if (opposites[newDir] !== this.direction) {
+            this.nextDirection = newDir;
+          }
+        }
+      }, { passive: true });
+
+      // Update hint text for touch
+      const hint = this.container.querySelector('.snake-hint');
+      if (hint) hint.textContent = 'Swipe to move';
+    }
   },
 
   render() {

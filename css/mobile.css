@@ -1,0 +1,215 @@
+/* Mobile Shell - loaded via media="(max-width: 768px)" */
+
+/* Hide desktop chrome on mobile */
+#taskbar,
+.start-menu,
+.welcome-modal,
+#mobile-notice {
+  display: none !important;
+}
+
+/* Desktop fills full screen on mobile */
+#desktop {
+  bottom: 0;
+  overflow: visible;
+}
+
+/* Mobile Shell */
+.mobile-shell {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+}
+
+/* Home Screen */
+.mobile-home {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: env(safe-area-inset-top) var(--spacing-md) env(safe-area-inset-bottom);
+}
+
+.mobile-home-header {
+  text-align: center;
+  padding: var(--spacing-xl) 0 var(--spacing-lg);
+}
+
+.mobile-clock {
+  font-size: 48px;
+  font-weight: 200;
+  color: var(--text-primary);
+  letter-spacing: 2px;
+  line-height: 1.1;
+}
+
+.mobile-branding {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  margin-top: var(--spacing-xs);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* App Grid */
+.mobile-app-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-lg) var(--spacing-sm);
+  padding: var(--spacing-lg) var(--spacing-sm);
+  justify-items: center;
+}
+
+.mobile-app-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  background: none;
+  border: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  padding: var(--spacing-xs);
+}
+
+.mobile-app-icon:active .mobile-icon-wrap {
+  transform: scale(0.9);
+  opacity: 0.7;
+}
+
+.mobile-icon-wrap {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-tertiary);
+  border-radius: 14px;
+  color: var(--text-primary);
+  transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+.mobile-icon-wrap svg {
+  width: 26px;
+  height: 26px;
+}
+
+.mobile-icon-emoji {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.mobile-icon-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-align: center;
+  line-height: 1.2;
+  max-width: 70px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* App View (full-screen module container) */
+.mobile-app-view {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-window);
+  z-index: 100;
+}
+
+.mobile-app-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  height: calc(44px + env(safe-area-inset-top));
+  padding: env(safe-area-inset-top) var(--spacing-sm) 0;
+  background: var(--bg-window-header);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.mobile-back-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--accent-primary);
+  cursor: pointer;
+  border-radius: 8px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-back-btn:active {
+  background: var(--bg-tertiary);
+}
+
+.mobile-app-title {
+  font-size: var(--font-size-lg);
+  font-weight: 500;
+  color: var(--text-primary);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-app-content {
+  flex: 1;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Prevent iOS zoom on input focus */
+.mobile-app-content input,
+.mobile-app-content textarea,
+.mobile-app-content select {
+  font-size: 16px !important;
+}
+
+/* Notes responsive layout */
+@media (max-width: 768px) {
+  .notes-layout {
+    flex-direction: column;
+  }
+
+  .notes-sidebar {
+    width: 100%;
+    max-height: 140px;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .notes-list {
+    overflow-y: auto;
+  }
+}
+
+/* RSS responsive layout */
+@media (max-width: 768px) {
+  .rss-layout {
+    flex-direction: column;
+  }
+
+  .rss-sidebar {
+    width: 100%;
+    max-height: 160px;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .rss-feed-list {
+    overflow-y: auto;
+  }
+
+  .rss-main {
+    min-height: 0;
+  }
+}

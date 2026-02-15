@@ -39,33 +39,43 @@ import Screensaver from './screensaver.js';
 class App {
   constructor() {
     this.desktop = null;
+    this._isMobile = false;
+    this._mobileShell = null;
+  }
+
+  static isMobile() {
+    return window.matchMedia('(max-width: 768px)').matches;
   }
 
   /**
    * Initialize the application
    */
-  init() {
+  async init() {
     this.desktop = document.getElementById('desktop');
+    this._isMobile = App.isMobile();
 
-    // Initialize core systems
+    // Register modules first (needed by both desktop and mobile paths)
+    this._registerModules();
+
+    if (this._isMobile) {
+      // Mobile path: launch mobile shell, skip desktop UI entirely
+      const { default: MobileShell } = await import('./mobile-shell.js');
+      this._mobileShell = MobileShell;
+      MobileShell.init(this.desktop);
+      return;
+    }
+
+    // Desktop path
     WindowManager.init(this.desktop);
     ContextMenu.init();
 
-    // Register modules first (needed by other systems)
-    this._registerModules();
-
-    // Initialize UI systems that depend on modules
     StartMenu.init();
     DesktopShortcuts.init(this.desktop);
     Taskbar.init();
 
-    // Initialize screensaver system
     Screensaver.init();
 
-    // Restore previously open windows or show defaults
     this._restoreWindows();
-
-    // Show welcome modal on first visit
     this._showWelcome();
   }
 
@@ -188,6 +198,12 @@ class App {
    * Open a module window
    */
   openModule(moduleId) {
+    // Route through mobile shell on mobile
+    if (this._isMobile && this._mobileShell) {
+      this._mobileShell.openApp(moduleId);
+      return;
+    }
+
     const module = ModuleRegistry.get(moduleId);
     if (!module) {
       console.error(`Module ${moduleId} not found`);

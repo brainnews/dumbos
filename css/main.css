@@ -229,13 +229,7 @@ body {
 
 /* Mobile Breakpoint */
 @media (max-width: 768px) {
-  #mobile-notice {
-    display: flex;
-  }
-
-  #desktop,
-  #taskbar,
-  .welcome-modal {
-    display: none !important;
-  }
+  #mobile-notice { display: none; }
+  #desktop { bottom: 0; }
+  #taskbar, .welcome-modal { display: none !important; }
 }
