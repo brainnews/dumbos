@@ -33,6 +33,7 @@ import StockTrackerModule from '../modules/stocktracker/stocktracker.js';
 import AppBuilderModule, { registerCustomApps } from '../modules/appbuilder/appbuilder.js';
 import StoryModeModule from '../modules/storymode/storymode.js';
 import JournalModule from '../modules/journal/journal.js';
+import RadioModule from '../modules/radio/radio.js';
 import Screensaver from './screensaver.js';
 
 class App {
@@ -160,6 +161,7 @@ class App {
     ModuleRegistry.register(AppBuilderModule);
     ModuleRegistry.register(StoryModeModule);
     ModuleRegistry.register(JournalModule);
+    ModuleRegistry.register(RadioModule);
     ModuleRegistry.register(SettingsModule);
 
     // Register user-created apps from App Builder
