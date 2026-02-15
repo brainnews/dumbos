@@ -140,6 +140,7 @@ const RadioModule = {
       this.audio.load();
       this.audio = null;
     }
+    document.title = 'DumbOS';
     clearTimeout(this.searchTimeout);
     if (this._keyHandler) {
       window.removeEventListener('keydown', this._keyHandler);
@@ -430,6 +431,7 @@ const RadioModule = {
     });
 
     this.storage.set('lastStation', station);
+    this._updatePageTitle();
 
     if (this.visualizerEnabled) {
       this._initAudioContext();
@@ -446,6 +448,7 @@ const RadioModule = {
     this._setStatus('');
     this._highlightActive();
     this._stopVisualizer();
+    this._updatePageTitle();
   },
 
   _resizeWindow() {
@@ -748,6 +751,15 @@ const RadioModule = {
     if (this._vizCtx && this._vizCanvas) {
       const dpr = window.devicePixelRatio || 1;
       this._vizCtx.clearRect(0, 0, this._vizCanvas.width / dpr, this._vizCanvas.height / dpr);
+    }
+  },
+
+  _updatePageTitle() {
+    const isPlaying = this.playState === 'playing' || this.playState === 'loading';
+    if (isPlaying && this.currentStation) {
+      document.title = `${this.currentStation.name} — DumbOS`;
+    } else {
+      document.title = 'DumbOS';
     }
   },
 
