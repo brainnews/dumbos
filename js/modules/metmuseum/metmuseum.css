@@ -1,22 +1,75 @@
-/* Met Museum Module Styles */
+/* Art World Module Styles */
 .metmuseum-container {
   display: flex;
   flex-direction: column;
   height: 100%;
   overflow: hidden;
+  position: relative;
 }
 
 /* Header */
 .metmuseum-header {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: var(--spacing-sm);
   padding: var(--spacing-sm) var(--spacing-md);
   border-bottom: 1px solid var(--border-color);
   flex-shrink: 0;
 }
 
-.metmuseum-select {
+/* Tabs */
+.metmuseum-tabs {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.metmuseum-tab {
+  padding: var(--spacing-xs) var(--spacing-md);
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.metmuseum-tab:hover {
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+}
+
+.metmuseum-tab.active {
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+  border-color: var(--border-color);
+}
+
+.metmuseum-tab-count {
+  display: inline-block;
+  min-width: 18px;
+  padding: 0 5px;
+  background: var(--bg-secondary);
+  border-radius: 9px;
+  font-size: 11px;
+  text-align: center;
+  line-height: 18px;
+}
+
+.metmuseum-tab.active .metmuseum-tab-count {
+  background: var(--accent-primary);
+  color: #fff;
+}
+
+/* Controls row */
+.metmuseum-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.metmuseum-select,
+.metmuseum-provider-select {
   flex: 1;
   padding: var(--spacing-sm);
   background: var(--bg-secondary);
@@ -27,7 +80,8 @@
   cursor: pointer;
 }
 
-.metmuseum-select:focus {
+.metmuseum-select:focus,
+.metmuseum-provider-select:focus {
   outline: none;
   border-color: var(--accent-primary);
 }
@@ -131,11 +185,19 @@
   color: var(--text-muted);
 }
 
+/* Actions row */
+.metmuseum-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
 .metmuseum-link {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
-  margin-top: var(--spacing-sm);
   padding: var(--spacing-sm) var(--spacing-md);
   background: var(--bg-tertiary);
   border: 1px solid var(--border-color);
@@ -144,7 +206,6 @@
   text-decoration: none;
   font-size: var(--font-size-sm);
   transition: all var(--transition-fast);
-  align-self: flex-start;
 }
 
 .metmuseum-link:hover {
@@ -155,6 +216,41 @@
 .metmuseum-link svg {
   width: 12px;
   height: 12px;
+}
+
+/* Collect Button */
+.metmuseum-collect-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.metmuseum-collect-btn:hover {
+  border-color: #e25555;
+  color: #e25555;
+}
+
+.metmuseum-collect-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.metmuseum-collect-btn.collected {
+  color: #e25555;
+  border-color: #e25555;
+}
+
+.metmuseum-collect-btn.collected:hover {
+  background: var(--bg-tertiary);
+  opacity: 0.8;
 }
 
 /* Loading State */
@@ -207,4 +303,253 @@
 
 .metmuseum-retry-btn:hover {
   background: var(--accent-primary);
+}
+
+/* Collection Grid */
+.metmuseum-collection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+}
+
+.metmuseum-collection-item {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.metmuseum-collection-item:hover {
+  border-color: var(--accent-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.metmuseum-collection-thumb {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--bg-tertiary);
+}
+
+.metmuseum-collection-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.metmuseum-collection-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.metmuseum-collection-item:hover .metmuseum-collection-remove {
+  opacity: 1;
+}
+
+.metmuseum-collection-remove:hover {
+  background: #e25555;
+}
+
+.metmuseum-collection-info {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 0;
+}
+
+.metmuseum-collection-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.metmuseum-collection-artist {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Swap Modal Overlay */
+.metmuseum-swap-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.metmuseum-swap-overlay.show {
+  opacity: 1;
+}
+
+.metmuseum-swap-modal {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: var(--spacing-md);
+  max-width: 380px;
+  width: 90%;
+  max-height: 90%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.metmuseum-swap-header h3 {
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.metmuseum-swap-header p {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+.metmuseum-swap-new {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  background: var(--bg-secondary);
+  border-radius: 6px;
+}
+
+.metmuseum-swap-new img {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.metmuseum-swap-new div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.metmuseum-swap-new strong {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.metmuseum-swap-new span {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.metmuseum-swap-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.metmuseum-swap-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--spacing-xs);
+}
+
+.metmuseum-swap-item {
+  aspect-ratio: 1;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all var(--transition-fast);
+}
+
+.metmuseum-swap-item:hover {
+  border-color: #e25555;
+  transform: scale(1.05);
+}
+
+.metmuseum-swap-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.metmuseum-swap-cancel {
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  align-self: center;
+}
+
+.metmuseum-swap-cancel:hover {
+  background: var(--bg-secondary);
+}
+
+/* Toast */
+.metmuseum-toast {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  opacity: 0;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  z-index: 5;
+  white-space: nowrap;
+}
+
+.metmuseum-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
