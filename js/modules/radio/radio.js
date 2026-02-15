@@ -757,7 +757,7 @@ const RadioModule = {
   _updatePageTitle() {
     const isPlaying = this.playState === 'playing' || this.playState === 'loading';
     if (isPlaying && this.currentStation) {
-      document.title = `${this.currentStation.name} — DumbOS`;
+      document.title = `📡 ${this.currentStation.name} — DumbOS`;
     } else {
       document.title = 'DumbOS';
     }
