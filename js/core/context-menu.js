@@ -12,6 +12,7 @@ class ContextMenu {
    * Initialize the context menu system
    */
   init() {
+    if (this.menuEl) return;
     this.menuEl = document.createElement('div');
     this.menuEl.className = 'context-menu';
     this.menuEl.style.display = 'none';

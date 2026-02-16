@@ -177,9 +177,9 @@ const BrowserModule = {
         <h2 class="browser-homepage-title">Your Pages</h2>
         <div class="browser-homepage-grid">
           ${pages.map(page => `
-            <div class="browser-page-card" data-slug="${page.slug}">
-              <div class="browser-page-card-name">${page.name}</div>
-              <div class="browser-page-card-url">dumbos://${page.slug}</div>
+            <div class="browser-page-card" data-slug="${this._escapeAttr(page.slug)}">
+              <div class="browser-page-card-name">${this._escapeHtml(page.name)}</div>
+              <div class="browser-page-card-url">dumbos://${this._escapeHtml(page.slug)}</div>
             </div>
           `).join('')}
         </div>
@@ -245,9 +245,21 @@ const BrowserModule = {
     viewport.innerHTML = `
       <div class="browser-empty">
         <h2>Page Not Found</h2>
-        <p>The page <strong>dumbos://${slug}</strong> does not exist.</p>
+        <p>The page <strong>dumbos://${this._escapeHtml(slug)}</strong> does not exist.</p>
       </div>
     `;
+  },
+
+  _escapeHtml(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  },
+
+  _escapeAttr(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
   },
 
   render() {},

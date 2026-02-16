@@ -265,6 +265,10 @@ class WindowManager {
 
     windowData.state.minimized = true;
     windowData.element.classList.add('minimized');
+    windowData.element.classList.remove('active');
+    if (this.activeWindow === windowId) {
+      this.activeWindow = null;
+    }
     this._saveState(windowId);
 
     // Dispatch event for taskbar

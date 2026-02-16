@@ -352,20 +352,55 @@ const RSSModule = {
   },
 
   /**
-   * Sanitize HTML for reader (allow basic formatting)
+   * Sanitize HTML for reader (whitelist-based)
    */
   _sanitizeHtml(html) {
+    const ALLOWED_TAGS = new Set([
+      'p', 'br', 'b', 'i', 'em', 'strong', 'a', 'ul', 'ol', 'li',
+      'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'pre', 'code',
+      'figure', 'figcaption', 'img', 'table', 'thead', 'tbody', 'tr', 'th', 'td',
+      'dl', 'dt', 'dd', 'sub', 'sup', 'hr', 'span', 'div'
+    ]);
+    const ALLOWED_ATTRS = {
+      'a': new Set(['href']),
+      'img': new Set(['src', 'alt', 'width', 'height']),
+      'td': new Set(['colspan', 'rowspan']),
+      'th': new Set(['colspan', 'rowspan']),
+    };
+    const SAFE_URL = /^https?:\/\//i;
+
     const tmp = document.createElement('div');
     tmp.innerHTML = html;
 
-    // Remove script tags and event handlers
-    tmp.querySelectorAll('script, style').forEach(el => el.remove());
+    // Remove disallowed elements entirely
     tmp.querySelectorAll('*').forEach(el => {
+      const tag = el.tagName.toLowerCase();
+      if (!ALLOWED_TAGS.has(tag)) {
+        el.remove();
+        return;
+      }
+
+      // Strip all attributes except those whitelisted for this tag
+      const allowed = ALLOWED_ATTRS[tag] || new Set();
       [...el.attributes].forEach(attr => {
-        if (attr.name.startsWith('on') || attr.name === 'href' && attr.value.startsWith('javascript:')) {
+        if (!allowed.has(attr.name)) {
           el.removeAttribute(attr.name);
         }
       });
+
+      // Validate URL attributes
+      if (tag === 'a') {
+        const href = el.getAttribute('href');
+        if (href && !SAFE_URL.test(href)) {
+          el.removeAttribute('href');
+        }
+      }
+      if (tag === 'img') {
+        const src = el.getAttribute('src');
+        if (src && !SAFE_URL.test(src)) {
+          el.removeAttribute('src');
+        }
+      }
     });
 
     return tmp.innerHTML;

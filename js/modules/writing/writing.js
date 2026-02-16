@@ -420,7 +420,20 @@ const WritingModule = {
     if (!this.marked || this.viewMode !== 'preview') return;
 
     const content = this.textarea.value;
-    this.previewEl.innerHTML = this.marked.parse(content);
+    const parsed = this.marked.parse(content);
+    this.previewEl.innerHTML = this._sanitizePreview(parsed);
+  },
+
+  _sanitizePreview(html) {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    tmp.querySelectorAll('script, style, iframe, object, embed, form').forEach(el => el.remove());
+    tmp.querySelectorAll('*').forEach(el => {
+      [...el.attributes].forEach(attr => {
+        if (attr.name.startsWith('on')) el.removeAttribute(attr.name);
+      });
+    });
+    return tmp.innerHTML;
   },
 
   /**

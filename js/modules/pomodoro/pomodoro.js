@@ -159,7 +159,10 @@ const PomodoroModule = {
 
   _playSound() {
     try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if (!this._audioCtx) {
+        this._audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      const ctx = this._audioCtx;
       const oscillator = ctx.createOscillator();
       const gain = ctx.createGain();
       oscillator.connect(gain);
@@ -191,6 +194,10 @@ const PomodoroModule = {
   destroy() {
     if (this.intervalId) {
       clearInterval(this.intervalId);
+    }
+    if (this._audioCtx) {
+      this._audioCtx.close().catch(() => {});
+      this._audioCtx = null;
     }
   }
 };

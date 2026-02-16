@@ -672,6 +672,8 @@ console.log('Hello from Code Editor!');`
   // Console methods
   _setupConsoleListener() {
     this._messageListener = (event) => {
+      // Only accept messages from our own iframe (same origin or null for srcdoc)
+      if (event.origin !== 'null' && event.origin !== window.location.origin) return;
       if (event.data && event.data.type === 'console') {
         if (event.data.method === 'clear') {
           this._clearConsole();

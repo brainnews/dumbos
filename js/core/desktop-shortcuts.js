@@ -86,14 +86,27 @@ class DesktopShortcuts {
     el.style.left = `${shortcut.x}px`;
     el.style.top = `${shortcut.y}px`;
 
-    const iconHtml = module.icon.startsWith('<')
-      ? module.icon
-      : `<span class="desktop-shortcut-emoji">${module.icon}</span>`;
+    // Sanitize icon: only allow SVG tags or treat as emoji text
+    let iconHtml;
+    if (module.icon && module.icon.trimStart().startsWith('<svg')) {
+      iconHtml = module.icon;
+    } else {
+      const emojiSpan = document.createElement('span');
+      emojiSpan.className = 'desktop-shortcut-emoji';
+      emojiSpan.textContent = module.icon || '';
+      iconHtml = emojiSpan.outerHTML;
+    }
 
-    el.innerHTML = `
-      <div class="desktop-shortcut-icon">${iconHtml}</div>
-      <div class="desktop-shortcut-label">${module.title}</div>
-    `;
+    const iconDiv = document.createElement('div');
+    iconDiv.className = 'desktop-shortcut-icon';
+    iconDiv.innerHTML = iconHtml;
+
+    const labelDiv = document.createElement('div');
+    labelDiv.className = 'desktop-shortcut-label';
+    labelDiv.textContent = module.title;
+
+    el.appendChild(iconDiv);
+    el.appendChild(labelDiv);
 
     // Double-click to open
     el.addEventListener('dblclick', () => {

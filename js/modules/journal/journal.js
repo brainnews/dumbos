@@ -198,10 +198,10 @@ const JournalModule = {
     });
 
     // Search input
-    let searchTimeout = null;
+    this._searchTimeout = null;
     this.searchInputEl.addEventListener('input', () => {
-      if (searchTimeout) clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(() => this._performSearch(), 300);
+      if (this._searchTimeout) clearTimeout(this._searchTimeout);
+      this._searchTimeout = setTimeout(() => this._performSearch(), 300);
     });
     this.searchInputEl.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
@@ -466,7 +466,20 @@ const JournalModule = {
 
   _renderPreview() {
     if (!this.marked || this.viewMode !== 'preview') return;
-    this.previewEl.innerHTML = this.marked.parse(this.textarea.value);
+    const parsed = this.marked.parse(this.textarea.value);
+    this.previewEl.innerHTML = this._sanitizePreview(parsed);
+  },
+
+  _sanitizePreview(html) {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    tmp.querySelectorAll('script, style, iframe, object, embed, form').forEach(el => el.remove());
+    tmp.querySelectorAll('*').forEach(el => {
+      [...el.attributes].forEach(attr => {
+        if (attr.name.startsWith('on')) el.removeAttribute(attr.name);
+      });
+    });
+    return tmp.innerHTML;
   },
 
   // --- Sidebar ---
@@ -677,6 +690,10 @@ const JournalModule = {
       clearTimeout(this.saveTimeout);
       this.saveTimeout = null;
       this._save();
+    }
+    if (this._searchTimeout) {
+      clearTimeout(this._searchTimeout);
+      this._searchTimeout = null;
     }
     if (this._keyHandler) {
       window.removeEventListener('keydown', this._keyHandler);

@@ -457,21 +457,37 @@ const SettingsModule = {
           return;
         }
 
-        // Clear existing dumbos:* keys
-        const keysToRemove = [];
+        // Validate import data can be written before clearing
+        const newKeys = Object.entries(importObj.data).filter(([k]) => k.startsWith('dumbos:'));
+        if (newKeys.length === 0) {
+          alert('Backup file contains no data.');
+          return;
+        }
+
+        // Backup current data in case import fails
+        const backup = {};
         for (let i = 0; i < localStorage.length; i++) {
           const key = localStorage.key(i);
-          if (key.startsWith('dumbos:')) {
-            keysToRemove.push(key);
+          if (key && key.startsWith('dumbos:')) {
+            backup[key] = localStorage.getItem(key);
           }
         }
-        keysToRemove.forEach(key => localStorage.removeItem(key));
 
-        // Import all keys from backup
-        for (const [key, value] of Object.entries(importObj.data)) {
-          if (key.startsWith('dumbos:')) {
+        // Clear existing dumbos:* keys
+        Object.keys(backup).forEach(key => localStorage.removeItem(key));
+
+        // Import all keys from backup file
+        try {
+          for (const [key, value] of newKeys) {
             localStorage.setItem(key, value);
           }
+        } catch (writeErr) {
+          // Restore from backup on failure
+          Object.entries(backup).forEach(([key, value]) => {
+            try { localStorage.setItem(key, value); } catch (_) {}
+          });
+          alert('Import failed — your data has been restored. Storage may be full.');
+          return;
         }
 
         window.location.reload();

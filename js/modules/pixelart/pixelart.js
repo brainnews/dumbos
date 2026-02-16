@@ -145,7 +145,10 @@ const PixelArtModule = {
   render() {},
 
   destroy() {
-    if (this._saveTimeout) clearTimeout(this._saveTimeout);
+    if (this._saveTimeout) {
+      clearTimeout(this._saveTimeout);
+      this.storage.set('pixels', this.pixels);
+    }
     document.removeEventListener('mouseup', this._onMouseUp);
   }
 };
