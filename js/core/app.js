@@ -34,6 +34,7 @@ import AppBuilderModule, { registerCustomApps } from '../modules/appbuilder/appb
 import StoryModeModule from '../modules/storymode/storymode.js';
 import JournalModule from '../modules/journal/journal.js';
 import RadioModule from '../modules/radio/radio.js';
+import DoSomethingModule from '../modules/do-something/do-something.js';
 import Screensaver from './screensaver.js';
 
 class App {
@@ -172,6 +173,7 @@ class App {
     ModuleRegistry.register(StoryModeModule);
     ModuleRegistry.register(JournalModule);
     ModuleRegistry.register(RadioModule);
+    ModuleRegistry.register(DoSomethingModule);
     ModuleRegistry.register(SettingsModule);
 
     // Register user-created apps from App Builder

@@ -221,13 +221,11 @@
 }
 
 .radio-collapse-toggle {
-  padding: 10px 0;
-  min-height: 44px;
+  display: none;
 }
 
-.radio-collapse-toggle svg {
-  width: 20px;
-  height: 20px;
+.radio-browse.collapsed .radio-browse-content {
+  display: flex;
 }
 
 .radio-tab {
@@ -612,4 +610,192 @@
 
 .help-app-info span {
   font-size: 13px;
+}
+
+
+/* --- Do Something --- */
+
+.ds-stop-btn {
+  padding: 8px 18px;
+  font-size: 13px;
+  min-height: 36px;
+  border-radius: 18px;
+}
+
+.ds-start-btn {
+  padding: 14px 36px;
+  font-size: 17px;
+  min-height: 48px;
+}
+
+.ds-notification {
+  padding: 16px;
+}
+
+.ds-popup-close-btn {
+  width: 28px;
+  height: 28px;
+  font-size: 14px;
+  top: 8px;
+  right: 10px;
+}
+
+.ds-terms-scroll {
+  max-height: 200px;
+}
+
+.ds-terms-agree {
+  padding: 10px 24px;
+  font-size: 14px;
+  min-height: 40px;
+}
+
+.ds-switch {
+  width: 52px;
+  height: 32px;
+}
+
+.ds-switch-slider::before {
+  width: 26px;
+  height: 26px;
+}
+
+.ds-captcha-checkbox {
+  width: 36px;
+  height: 36px;
+}
+
+.ds-unsub-input {
+  font-size: 16px;
+  padding: 12px 14px;
+}
+
+.ds-unsub-btn {
+  padding: 12px 28px;
+  min-height: 44px;
+}
+
+.ds-wifi-network {
+  padding: 14px 16px;
+  min-height: 48px;
+  font-size: 16px;
+}
+
+.ds-reply-input {
+  font-size: 16px;
+  padding: 10px 14px;
+}
+
+.ds-reply-send {
+  width: 40px;
+  height: 40px;
+}
+
+.ds-delete-x {
+  width: 28px;
+  height: 28px;
+  font-size: 14px;
+  top: -8px;
+  left: -8px;
+}
+
+.ds-delete-dialog-actions button {
+  min-height: 44px;
+}
+
+.ds-rate-star {
+  font-size: 40px;
+  padding: 6px;
+}
+
+.ds-trash-empty-btn {
+  padding: 14px;
+  min-height: 48px;
+}
+
+.ds-trash-dialog-actions button {
+  min-height: 44px;
+}
+
+.ds-password-input {
+  font-size: 16px;
+  padding: 12px 14px;
+}
+
+.ds-cookies-buttons {
+  flex-direction: column;
+}
+
+.ds-cookies-buttons button {
+  min-height: 40px;
+  font-size: 14px;
+}
+
+.ds-skipad-skip {
+  padding: 10px 18px;
+  font-size: 14px;
+  min-height: 40px;
+}
+
+.ds-alarm-buttons button {
+  padding: 16px 32px;
+  font-size: 17px;
+  min-height: 48px;
+}
+
+.ds-chat-widget-close {
+  width: 36px;
+  height: 36px;
+  font-size: 18px;
+}
+
+.ds-notifperm-actions button {
+  padding: 10px 16px;
+  font-size: 14px;
+  min-height: 40px;
+}
+
+.ds-tutorial-next {
+  padding: 12px 28px;
+  font-size: 16px;
+  min-height: 44px;
+}
+
+.ds-tutorial-skip {
+  font-size: 15px;
+  padding: 8px 12px;
+  min-height: 36px;
+}
+
+.ds-email-item {
+  padding: 16px;
+  min-height: 48px;
+}
+
+.ds-email-verify-btn {
+  padding: 14px 32px;
+  font-size: 16px;
+  min-height: 48px;
+}
+
+.ds-email-back {
+  padding: 8px 12px;
+  min-height: 36px;
+}
+
+.ds-update-btn {
+  padding: 14px 32px;
+  font-size: 16px;
+  min-height: 48px;
+}
+
+.ds-sort-item {
+  width: 64px;
+  height: 64px;
+  font-size: 24px;
+}
+
+.ds-loader-ring {
+  width: 180px;
+  height: 180px;
 }

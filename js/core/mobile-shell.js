@@ -5,7 +5,7 @@
 import ModuleRegistry from './module-registry.js';
 import Storage from './storage.js';
 
-const MOBILE_MODULES = ['radio', 'metmuseum', 'stocktracker', 'notes', 'rss', 'snake', 'bubblewrap', 'settings', 'help'];
+const MOBILE_MODULES = ['radio', 'metmuseum', 'stocktracker', 'notes', 'rss', 'snake', 'bubblewrap', 'do-something', 'settings', 'help'];
 
 class MobileShell {
   constructor() {

@@ -1,0 +1,2630 @@
+/* ==========================================================================
+   Do Something — Module Styles
+   ========================================================================== */
+
+.ds-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  background: var(--bg-primary);
+  overflow: hidden;
+}
+
+/* --- Stop Button (always visible during play) --- */
+.ds-stop-btn {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+  z-index: 10;
+  text-transform: lowercase;
+  letter-spacing: 0.5px;
+}
+
+.ds-stop-btn:hover {
+  opacity: 1;
+  color: var(--text-primary);
+}
+
+/* --- Start Screen --- */
+.ds-start-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 12px;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.ds-start-icon {
+  font-size: 64px;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.ds-start-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.ds-start-sub {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0 0 20px;
+}
+
+.ds-start-btn {
+  background: var(--accent-primary);
+  color: #fff;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.ds-start-btn:hover {
+  filter: brightness(1.1);
+}
+
+.ds-start-btn:active {
+  transform: scale(0.97);
+}
+
+/* --- Prompt (between games) --- */
+.ds-prompt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 40px 20px;
+  animation: ds-fade-in 0.5s ease;
+}
+
+.ds-prompt-text {
+  font-size: 20px;
+  color: var(--text-primary);
+  text-align: center;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+}
+
+@keyframes ds-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Game Area --- */
+.ds-game-area {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  animation: ds-fade-in 0.4s ease;
+}
+
+.ds-game {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+
+/* ==========================================================================
+   Game 1: Dismiss Notification
+   ========================================================================== */
+
+.ds-notif-game {
+  background: #1c1c1e;
+}
+
+.ds-phone-screen {
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ds-notif-bar {
+  text-align: center;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 0;
+}
+
+.ds-notification {
+  display: flex;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(20px);
+  border-radius: 14px;
+  padding: 14px;
+  cursor: grab;
+  user-select: none;
+  touch-action: pan-y;
+}
+
+.ds-notification:active {
+  cursor: grabbing;
+}
+
+.ds-notif-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.ds-notif-title {
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.ds-notif-text {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.ds-notif-hint {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 12px;
+}
+
+
+/* ==========================================================================
+   Game 2: Accept Cookies
+   ========================================================================== */
+
+.ds-cookies-game {
+  background: #f5f5f5;
+  flex-direction: column;
+  position: relative;
+}
+
+.ds-cookies-site {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.ds-cookies-content {
+  flex: 1;
+  padding: 24px;
+}
+
+.ds-cookies-fake-text {
+  height: 14px;
+  background: #ddd;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.ds-cookies-fake-text.short { width: 60%; }
+.ds-cookies-fake-text.med { width: 80%; }
+
+.ds-cookies-banner {
+  background: #2d3748;
+  color: #e2e8f0;
+  padding: 16px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.ds-cookies-msg {
+  margin-bottom: 12px;
+}
+
+.ds-cookies-link {
+  color: #63b3ed;
+}
+
+.ds-cookies-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ds-cookies-buttons button {
+  padding: 8px 14px;
+  border-radius: 4px;
+  border: none;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.ds-cookies-manage {
+  background: transparent;
+  color: #a0aec0;
+  border: 1px solid #4a5568 !important;
+}
+
+.ds-cookies-reject {
+  background: transparent;
+  color: #a0aec0;
+  border: 1px solid #4a5568 !important;
+}
+
+.ds-cookies-accept {
+  background: #48bb78;
+  color: #fff;
+}
+
+.ds-cookies-accept:hover {
+  background: #38a169;
+}
+
+
+/* ==========================================================================
+   Game 3: Like a Photo
+   ========================================================================== */
+
+.ds-like-game {
+  background: #000;
+}
+
+.ds-like-post {
+  width: 100%;
+  max-width: 320px;
+}
+
+.ds-like-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+}
+
+.ds-like-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+}
+
+.ds-like-username {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ds-like-photo {
+  width: 100%;
+  aspect-ratio: 1;
+  position: relative;
+  cursor: pointer;
+}
+
+.ds-like-big-heart {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 80px;
+  color: #fff;
+  opacity: 0;
+  transform: scale(0);
+  pointer-events: none;
+  transition: none;
+}
+
+.ds-like-big-heart.show {
+  animation: ds-heart-pop 0.8s ease forwards;
+}
+
+@keyframes ds-heart-pop {
+  0% { opacity: 0; transform: scale(0); }
+  15% { opacity: 1; transform: scale(1.2); }
+  30% { transform: scale(0.95); }
+  45% { transform: scale(1); }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: scale(1); }
+}
+
+.ds-like-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+}
+
+.ds-like-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: transform 0.15s;
+}
+
+.ds-like-btn:active {
+  transform: scale(0.85);
+}
+
+.ds-like-btn.liked {
+  color: #ed4956;
+  animation: ds-like-bounce 0.4s ease;
+}
+
+@keyframes ds-like-bounce {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.3); }
+  50% { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
+.ds-like-count {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+
+/* ==========================================================================
+   Game 4: Close Popup Ad
+   ========================================================================== */
+
+.ds-popup-game {
+  background: rgba(0, 0, 0, 0.6);
+  padding: 0;
+}
+
+.ds-popup-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+}
+
+.ds-popup-ad {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  padding: 32px 24px 24px;
+  max-width: 300px;
+  width: 100%;
+  position: relative;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: ds-popup-in 0.4s ease;
+}
+
+@keyframes ds-popup-in {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.ds-popup-close-btn {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  border-radius: 50%;
+  line-height: 1;
+}
+
+.ds-popup-close-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.ds-popup-badge {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.ds-popup-headline {
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.ds-popup-sub {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.ds-popup-cta {
+  background: #ffd700;
+  color: #333;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: default;
+  margin-bottom: 12px;
+}
+
+.ds-popup-fine {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 10px;
+}
+
+
+/* ==========================================================================
+   Game 5: Agree to Terms
+   ========================================================================== */
+
+.ds-terms-game {
+  background: #f0f0f0;
+  padding: 12px;
+}
+
+.ds-terms-window {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+}
+
+.ds-terms-header {
+  background: #e8e8e8;
+  padding: 10px 14px;
+  font-weight: 600;
+  font-size: 13px;
+  color: #333;
+  border-radius: 8px 8px 0 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.ds-terms-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  min-height: 0;
+  max-height: 240px;
+}
+
+.ds-terms-text {
+  font-family: inherit;
+  font-size: 11px;
+  line-height: 1.6;
+  color: #555;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin: 0;
+}
+
+.ds-terms-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-top: 1px solid #ddd;
+  gap: 8px;
+}
+
+.ds-terms-scroll-hint {
+  font-size: 11px;
+  color: #999;
+  animation: ds-hint-pulse 1.5s ease infinite;
+}
+
+@keyframes ds-hint-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.ds-terms-agree {
+  background: #0066cc;
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.ds-terms-agree:disabled {
+  background: #ccc;
+  color: #888;
+  cursor: not-allowed;
+}
+
+.ds-terms-agree.agreed {
+  background: #38a169;
+}
+
+
+/* ==========================================================================
+   Game 6: Slide the Sliders
+   ========================================================================== */
+
+.ds-sliders-game {
+  background: var(--bg-secondary);
+}
+
+.ds-sliders-panel {
+  width: 100%;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.ds-slider-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ds-slider-row label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.ds-slider {
+  width: 100%;
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--bg-tertiary);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+}
+
+.ds-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  cursor: grab;
+}
+
+.ds-slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  border: none;
+  cursor: grab;
+}
+
+.ds-slider:active::-webkit-slider-thumb {
+  cursor: grabbing;
+  transform: scale(1.15);
+}
+
+
+/* ==========================================================================
+   Game 7: Toggle the Switches
+   ========================================================================== */
+
+.ds-switches-game {
+  background: var(--bg-secondary);
+}
+
+.ds-switches-panel {
+  width: 100%;
+  max-width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ds-switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+  font-size: 15px;
+  color: var(--text-primary);
+}
+
+.ds-switch-row:first-child {
+  border-radius: 10px 10px 0 0;
+}
+
+.ds-switch-row:last-child {
+  border-radius: 0 0 10px 10px;
+  border-bottom: none;
+}
+
+.ds-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 30px;
+  flex-shrink: 0;
+}
+
+.ds-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.ds-switch-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: var(--bg-tertiary);
+  border-radius: 30px;
+  transition: background 0.3s;
+}
+
+.ds-switch-slider::before {
+  content: '';
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  left: 3px;
+  bottom: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.3s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.ds-switch input:checked + .ds-switch-slider {
+  background: #34c759;
+}
+
+.ds-switch input:checked + .ds-switch-slider::before {
+  transform: translateX(20px);
+}
+
+
+/* ==========================================================================
+   Game 8: Unsubscribe
+   ========================================================================== */
+
+.ds-unsub-game {
+  background: #fafafa;
+}
+
+.ds-unsub-panel {
+  text-align: center;
+  max-width: 300px;
+  width: 100%;
+}
+
+.ds-unsub-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.ds-unsub-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.ds-unsub-text {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.ds-unsub-text strong {
+  color: #333;
+  font-family: monospace;
+  letter-spacing: 1px;
+}
+
+.ds-unsub-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  text-align: center;
+  letter-spacing: 2px;
+  font-family: monospace;
+  outline: none;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+  color: #333;
+  background: #fff;
+}
+
+.ds-unsub-input:focus {
+  border-color: #667eea;
+}
+
+.ds-unsub-btn {
+  background: #e53e3e;
+  color: #fff;
+  border: none;
+  padding: 10px 28px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.ds-unsub-btn:disabled {
+  background: #ccc;
+  color: #888;
+  cursor: not-allowed;
+}
+
+.ds-unsub-btn.confirmed {
+  background: #38a169;
+}
+
+
+/* ==========================================================================
+   Game 9: Pull to Refresh
+   ========================================================================== */
+
+.ds-pull-game {
+  background: var(--bg-primary);
+  padding: 0;
+}
+
+.ds-pull-area {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+}
+
+.ds-pull-area:active {
+  cursor: grabbing;
+}
+
+.ds-pull-indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  opacity: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  transform: translateY(-40px);
+}
+
+.ds-pull-arrow {
+  font-size: 18px;
+  transition: transform 0.1s;
+}
+
+.ds-pull-arrow.spinning {
+  animation: ds-spin 0.8s linear infinite;
+}
+
+@keyframes ds-spin {
+  to { transform: rotate(360deg); }
+}
+
+.ds-pull-content {
+  padding: 24px 16px;
+}
+
+.ds-pull-item {
+  padding: 16px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.ds-pull-item.faded {
+  opacity: 0.4;
+}
+
+
+/* ==========================================================================
+   Game 10: Captcha Checkbox
+   ========================================================================== */
+
+.ds-captcha-game {
+  background: #f9f9f9;
+}
+
+.ds-captcha-box {
+  background: #fff;
+  border: 1px solid #d3d3d3;
+  border-radius: 3px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 300px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.ds-captcha-check {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.ds-captcha-checkbox {
+  width: 28px;
+  height: 28px;
+  border: 2px solid #c1c1c1;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  background: #fff;
+  font-size: 18px;
+}
+
+.ds-captcha-checkbox:hover {
+  border-color: #4285f4;
+}
+
+.ds-captcha-checkbox.checking {
+  border-color: #4285f4;
+}
+
+.ds-captcha-checkbox.checked {
+  border-color: #0f9d58;
+  color: #0f9d58;
+  font-weight: 700;
+}
+
+.ds-captcha-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #e0e0e0;
+  border-top-color: #4285f4;
+  border-radius: 50%;
+  animation: ds-spin 0.7s linear infinite;
+}
+
+.ds-captcha-check span {
+  font-size: 14px;
+  color: #555;
+}
+
+.ds-captcha-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.ds-captcha-label {
+  font-size: 9px;
+  color: #999;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.ds-captcha-label span {
+  font-size: 8px;
+  color: #bbb;
+}
+
+
+/* ==========================================================================
+   Game 11: Connect to Wi-Fi
+   ========================================================================== */
+
+.ds-wifi-game {
+  background: var(--bg-secondary);
+}
+
+.ds-wifi-panel {
+  width: 100%;
+  max-width: 300px;
+  background: var(--bg-primary);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.ds-wifi-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.ds-wifi-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.ds-wifi-toggle {
+  margin: 0;
+}
+
+.ds-wifi-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.ds-wifi-network {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  color: var(--text-primary);
+  font-size: 15px;
+  gap: 8px;
+  transition: background 0.15s;
+}
+
+.ds-wifi-network:last-child {
+  border-bottom: none;
+}
+
+.ds-wifi-network:hover {
+  background: var(--bg-tertiary);
+}
+
+.ds-wifi-network:active {
+  background: var(--bg-tertiary);
+}
+
+.ds-wifi-network.connecting {
+  opacity: 0.7;
+}
+
+.ds-wifi-network.connected {
+  background: var(--bg-tertiary);
+}
+
+.ds-wifi-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ds-wifi-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.ds-wifi-lock {
+  font-size: 12px;
+}
+
+.ds-wifi-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 16px;
+}
+
+.ds-wifi-bar {
+  width: 4px;
+  background: var(--border-color);
+  border-radius: 1px;
+}
+
+.ds-wifi-bar.active {
+  background: var(--text-primary);
+}
+
+.ds-wifi-check {
+  color: #34c759;
+  font-weight: 700;
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+
+/* ==========================================================================
+   Game 12: Reply "ok"
+   ========================================================================== */
+
+.ds-reply-game {
+  background: #000;
+}
+
+.ds-reply-phone {
+  width: 100%;
+  max-width: 340px;
+  height: 100%;
+  max-height: 400px;
+  display: flex;
+  flex-direction: column;
+  background: #1c1c1e;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ds-reply-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: #2c2c2e;
+  border-bottom: 1px solid #3a3a3c;
+}
+
+.ds-reply-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #636366;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.ds-reply-name {
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.ds-reply-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ds-reply-bubble {
+  max-width: 75%;
+  padding: 8px 12px;
+  border-radius: 18px;
+  font-size: 15px;
+  line-height: 1.35;
+  word-wrap: break-word;
+  animation: ds-fade-in 0.25s ease;
+}
+
+.ds-reply-bubble.incoming {
+  background: #2c2c2e;
+  color: #fff;
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+
+.ds-reply-bubble.outgoing {
+  background: #0b84fe;
+  color: #fff;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+.ds-reply-status {
+  align-self: flex-end;
+  font-size: 11px;
+  color: #8e8e93;
+  margin-top: 2px;
+  animation: ds-fade-in 0.3s ease;
+}
+
+.ds-reply-input-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: #1c1c1e;
+  border-top: 1px solid #3a3a3c;
+}
+
+.ds-reply-input {
+  flex: 1;
+  background: #2c2c2e;
+  border: 1px solid #3a3a3c;
+  border-radius: 20px;
+  padding: 8px 14px;
+  color: #fff;
+  font-size: 16px;
+  outline: none;
+}
+
+.ds-reply-input::placeholder {
+  color: #636366;
+}
+
+.ds-reply-send {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #0b84fe;
+  border: none;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+}
+
+.ds-reply-send:disabled {
+  background: #3a3a3c;
+  color: #636366;
+  cursor: default;
+}
+
+
+/* ==========================================================================
+   Game 13: Delete the App
+   ========================================================================== */
+
+.ds-delete-game {
+  background: #1c1c1e;
+  position: relative;
+  padding: 0;
+}
+
+.ds-delete-screen {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+
+.ds-delete-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px 12px;
+  padding: 12px;
+  justify-items: center;
+}
+
+.ds-delete-app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.ds-delete-app.wiggle {
+  animation: ds-wiggle 0.4s ease-in-out infinite alternate;
+}
+
+.ds-delete-app:nth-child(2n) {
+  animation-delay: 0.1s;
+}
+
+.ds-delete-app:nth-child(3n) {
+  animation-delay: 0.2s;
+}
+
+@keyframes ds-wiggle {
+  0% { transform: rotate(-2deg); }
+  100% { transform: rotate(2deg); }
+}
+
+.ds-delete-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  position: relative;
+}
+
+.ds-delete-icon span {
+  line-height: 1;
+}
+
+.ds-delete-x {
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(80, 80, 80, 0.9);
+  border: none;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.ds-delete-label {
+  font-size: 11px;
+  color: #fff;
+  text-align: center;
+  max-width: 70px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ds-delete-hint {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+  margin-top: auto;
+  padding: 12px;
+}
+
+.ds-delete-hint strong {
+  color: #fff;
+}
+
+.ds-delete-confirm {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 5;
+}
+
+.ds-delete-dialog {
+  background: #2c2c2e;
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+  max-width: 270px;
+  width: 100%;
+}
+
+.ds-delete-dialog-title {
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+
+.ds-delete-dialog-text {
+  color: #ababab;
+  font-size: 13px;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+.ds-delete-dialog-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.ds-delete-dialog-actions button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.ds-delete-cancel {
+  background: #3a3a3c;
+  color: #0a84ff;
+}
+
+.ds-delete-confirm-btn {
+  background: #3a3a3c;
+  color: #ff453a;
+  font-weight: 600;
+}
+
+
+/* ==========================================================================
+   Game 14: Rate Us 5 Stars
+   ========================================================================== */
+
+.ds-rate-game {
+  background: #fff;
+}
+
+.ds-rate-panel {
+  text-align: center;
+  max-width: 300px;
+  width: 100%;
+  padding: 16px;
+}
+
+.ds-rate-emoji {
+  font-size: 48px;
+  margin-bottom: 12px;
+  transition: all 0.2s;
+}
+
+.ds-rate-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 4px;
+}
+
+.ds-rate-sub {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 20px;
+}
+
+.ds-rate-stars {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.ds-rate-star {
+  background: none;
+  border: none;
+  font-size: 36px;
+  color: #d4d4d4;
+  cursor: pointer;
+  padding: 4px;
+  transition: transform 0.15s;
+  line-height: 1;
+}
+
+.ds-rate-star:active {
+  transform: scale(0.85);
+}
+
+.ds-rate-star.filled {
+  color: #fbbf24;
+  animation: ds-star-pop 0.3s ease;
+}
+
+@keyframes ds-star-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+.ds-rate-label {
+  font-size: 14px;
+  color: #666;
+  font-weight: 500;
+  min-height: 20px;
+}
+
+
+/* ==========================================================================
+   Game 15: Empty the Trash
+   ========================================================================== */
+
+.ds-trash-game {
+  background: #f0f0f0;
+  position: relative;
+}
+
+.ds-trash-panel {
+  width: 100%;
+  max-width: 300px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.ds-trash-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.ds-trash-icon-large {
+  font-size: 32px;
+}
+
+.ds-trash-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.ds-trash-count {
+  font-size: 12px;
+  color: #999;
+}
+
+.ds-trash-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.ds-trash-file {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid #f5f5f5;
+  max-height: 44px;
+}
+
+.ds-trash-file-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.ds-trash-file-name {
+  font-size: 13px;
+  color: #555;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ds-trash-empty-btn {
+  width: 100%;
+  padding: 12px;
+  background: none;
+  border: none;
+  border-top: 1px solid #eee;
+  color: #e53e3e;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.ds-trash-empty-btn:hover {
+  background: #fef2f2;
+}
+
+.ds-trash-empty-btn:disabled {
+  color: #ccc;
+  cursor: default;
+  background: none;
+}
+
+.ds-trash-confirm {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 5;
+}
+
+.ds-trash-dialog {
+  background: #fff;
+  border-radius: 14px;
+  padding: 24px 20px;
+  text-align: center;
+  max-width: 260px;
+  width: 100%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.ds-trash-dialog-icon {
+  font-size: 36px;
+  margin-bottom: 8px;
+}
+
+.ds-trash-dialog-text {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.ds-trash-dialog-text span {
+  font-size: 12px;
+  color: #999;
+}
+
+.ds-trash-dialog-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.ds-trash-dialog-actions button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.ds-trash-cancel {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.ds-trash-delete {
+  background: #e53e3e;
+  color: #fff;
+  font-weight: 600;
+}
+
+
+/* ==========================================================================
+   Game 16: Skip the Ad
+   ========================================================================== */
+
+.ds-skipad-game {
+  background: #000;
+  padding: 0;
+}
+
+.ds-skipad-player {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.ds-skipad-video {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+}
+
+.ds-skipad-fake-ad {
+  text-align: center;
+  padding: 20px;
+}
+
+.ds-skipad-brand {
+  font-size: 24px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.ds-skipad-slogan {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 1.4;
+  font-style: italic;
+}
+
+.ds-skipad-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  padding-bottom: 40px;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 11;
+  position: relative;
+}
+
+.ds-skipad-progress {
+  flex: 1;
+  height: 3px;
+  background: #333;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.ds-skipad-progress-fill {
+  height: 100%;
+  width: 0;
+  background: #ffd700;
+  transition: width 0.9s linear;
+}
+
+.ds-skipad-skip {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: 3px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.ds-skipad-skip:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.ds-skipad-skip:not(:disabled):hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.ds-skipad-arrow {
+  font-size: 10px;
+  letter-spacing: -2px;
+}
+
+
+/* ==========================================================================
+   Game 17: Snooze the Alarm
+   ========================================================================== */
+
+.ds-alarm-game {
+  background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+}
+
+.ds-alarm-screen {
+  text-align: center;
+  width: 100%;
+  max-width: 280px;
+}
+
+.ds-alarm-time {
+  font-size: 72px;
+  font-weight: 200;
+  color: #fff;
+  letter-spacing: 2px;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.ds-alarm-label {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 24px;
+  transition: color 0.3s;
+}
+
+.ds-alarm-ring {
+  font-size: 48px;
+  margin-bottom: 32px;
+  display: inline-block;
+}
+
+.ds-alarm-ring.ringing {
+  animation: ds-ring-shake 0.3s ease-in-out infinite;
+}
+
+@keyframes ds-ring-shake {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(15deg); }
+  75% { transform: rotate(-15deg); }
+}
+
+.ds-alarm-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.ds-alarm-buttons button {
+  padding: 14px 28px;
+  border-radius: 30px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.ds-alarm-snooze {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+.ds-alarm-stop {
+  background: #ef4444;
+  color: #fff;
+}
+
+
+/* ==========================================================================
+   Game 18: Close the Chat Widget
+   ========================================================================== */
+
+.ds-chat-game {
+  background: #f5f5f5;
+  position: relative;
+  padding: 0;
+}
+
+.ds-chat-site {
+  width: 100%;
+  height: 100%;
+  padding: 24px;
+}
+
+.ds-chat-fake-content {
+  max-width: 280px;
+}
+
+.ds-chat-widget {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  z-index: 5;
+  animation: ds-chat-pop 0.4s ease;
+}
+
+@keyframes ds-chat-pop {
+  from { transform: scale(0.5) translateY(20px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.ds-chat-widget-window {
+  width: 260px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.ds-chat-widget-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #4f46e5;
+  color: #fff;
+}
+
+.ds-chat-widget-avatar {
+  font-size: 20px;
+}
+
+.ds-chat-widget-info {
+  flex: 1;
+}
+
+.ds-chat-widget-name {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ds-chat-widget-status {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.ds-chat-widget-close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 16px;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.ds-chat-widget-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.ds-chat-widget-body {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ds-chat-widget-msg {
+  background: #f0f0f0;
+  border-radius: 12px 12px 12px 4px;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #333;
+  max-width: 90%;
+  animation: ds-fade-in 0.3s ease;
+}
+
+.ds-chat-widget-msg.delay {
+  animation: ds-fade-in 0.4s ease 1s both;
+}
+
+
+/* ==========================================================================
+   Game 19: Allow Notifications
+   ========================================================================== */
+
+.ds-notifperm-game {
+  background: #e8e8e8;
+  padding: 0;
+}
+
+.ds-notifperm-site {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.ds-notifperm-page {
+  padding: 24px;
+}
+
+.ds-notifperm-dialog {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  padding: 16px;
+  width: calc(100% - 32px);
+  max-width: 320px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: ds-slide-down 0.3s ease;
+  z-index: 5;
+}
+
+@keyframes ds-slide-down {
+  from { transform: translateX(-50%) translateY(-20px); opacity: 0; }
+  to { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+
+.ds-notifperm-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.ds-notifperm-text {
+  flex: 1;
+  font-size: 13px;
+  color: #333;
+  line-height: 1.4;
+}
+
+.ds-notifperm-text strong {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 2px;
+}
+
+.ds-notifperm-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.ds-notifperm-actions button {
+  padding: 6px 14px;
+  border-radius: 4px;
+  border: none;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.ds-notifperm-block {
+  background: #f0f0f0;
+  color: #666;
+}
+
+.ds-notifperm-allow {
+  background: #4f46e5;
+  color: #fff;
+}
+
+
+/* ==========================================================================
+   Game 20: Skip the Tutorial
+   ========================================================================== */
+
+.ds-tutorial-game {
+  background: #fff;
+}
+
+.ds-tutorial-card {
+  width: 100%;
+  max-width: 300px;
+  position: relative;
+  padding: 16px;
+}
+
+.ds-tutorial-slide {
+  text-align: center;
+  padding: 24px 16px;
+  animation: ds-fade-in 0.3s ease;
+}
+
+.ds-tutorial-emoji {
+  font-size: 56px;
+  margin-bottom: 16px;
+}
+
+.ds-tutorial-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+
+.ds-tutorial-text {
+  font-size: 14px;
+  color: #888;
+  line-height: 1.5;
+}
+
+.ds-tutorial-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+}
+
+.ds-tutorial-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.ds-tutorial-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ddd;
+  transition: background 0.2s;
+}
+
+.ds-tutorial-dot.active {
+  background: #4f46e5;
+}
+
+.ds-tutorial-next {
+  background: #4f46e5;
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.ds-tutorial-skip {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.ds-tutorial-skip:hover {
+  color: #666;
+}
+
+
+/* ==========================================================================
+   Game 21: Verify Your Email
+   ========================================================================== */
+
+.ds-email-game {
+  background: #f0f2f5;
+  padding: 0;
+}
+
+.ds-email-inbox {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+
+.ds-email-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  background: #fafafa;
+}
+
+.ds-email-inbox-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.ds-email-badge {
+  background: #ef4444;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ds-email-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.ds-email-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+
+.ds-email-item:hover {
+  background: #f8f8f8;
+}
+
+.ds-email-item.unread {
+  background: #f0f7ff;
+}
+
+.ds-email-item.read {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.ds-email-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #3b82f6;
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+.ds-email-item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.ds-email-from {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ds-email-subject {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ds-email-preview {
+  font-size: 12px;
+  color: #999;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ds-email-view {
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  background: #fff;
+}
+
+.ds-email-view-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  background: #fafafa;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.ds-email-back {
+  background: none;
+  border: none;
+  color: #3b82f6;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.ds-email-view-body {
+  padding: 20px 16px;
+  font-size: 14px;
+  color: #555;
+  line-height: 1.6;
+}
+
+.ds-email-view-body p {
+  margin: 0 0 12px;
+}
+
+.ds-email-verify-btn {
+  display: block;
+  background: #3b82f6;
+  color: #fff;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  margin: 16px 0;
+  font-weight: 500;
+}
+
+.ds-email-verify-btn.verified {
+  background: #38a169;
+}
+
+.ds-email-fine {
+  font-size: 12px;
+  color: #aaa;
+}
+
+
+/* ==========================================================================
+   Game 22: Update Available
+   ========================================================================== */
+
+.ds-update-game {
+  background: var(--bg-secondary);
+}
+
+.ds-update-panel {
+  text-align: center;
+  max-width: 280px;
+  width: 100%;
+  padding: 16px;
+}
+
+.ds-update-icon {
+  font-size: 40px;
+  margin-bottom: 8px;
+}
+
+.ds-update-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.ds-update-version {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  font-family: monospace;
+}
+
+.ds-update-notes {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.ds-update-note {
+  font-size: 13px;
+  color: var(--text-secondary);
+  padding: 3px 0;
+}
+
+.ds-update-btn {
+  background: #3b82f6;
+  color: #fff;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  font-weight: 500;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.ds-update-later {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.ds-update-progress {
+  margin-top: 12px;
+}
+
+.ds-update-progress-bar {
+  height: 6px;
+  background: var(--bg-tertiary);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.ds-update-progress-fill {
+  height: 100%;
+  width: 0;
+  background: #3b82f6;
+  border-radius: 3px;
+  transition: width 0.2s;
+}
+
+.ds-update-progress-text {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+
+/* ==========================================================================
+   Game 23: Sort the Icons
+   ========================================================================== */
+
+.ds-sort-game {
+  background: var(--bg-secondary);
+}
+
+.ds-sort-panel {
+  width: 100%;
+  max-width: 280px;
+  text-align: center;
+}
+
+.ds-sort-hint {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+.ds-sort-list {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.ds-sort-item {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  border: 3px solid transparent;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.ds-sort-item:active {
+  transform: scale(0.92);
+}
+
+.ds-sort-item.selected {
+  border-color: #fff;
+  transform: scale(1.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.ds-sort-item.swapping {
+  opacity: 0.5;
+  transform: scale(0.9);
+}
+
+.ds-sort-item.sorted {
+  animation: ds-sort-bounce 0.4s ease;
+}
+
+@keyframes ds-sort-bounce {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+
+/* ==========================================================================
+   Game 24: Spin the Loading Spinner
+   ========================================================================== */
+
+.ds-loader-game {
+  background: var(--bg-primary);
+}
+
+.ds-loader-panel {
+  text-align: center;
+}
+
+.ds-loader-ring {
+  width: 160px;
+  height: 160px;
+  position: relative;
+  margin: 0 auto 20px;
+  cursor: grab;
+  touch-action: none;
+}
+
+.ds-loader-ring:active {
+  cursor: grabbing;
+}
+
+.ds-loader-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.ds-loader-track {
+  stroke: var(--bg-tertiary);
+}
+
+.ds-loader-fill {
+  stroke: var(--accent-primary);
+  transition: stroke 0.3s;
+}
+
+.ds-loader-pct {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.ds-loader-text {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+
+/* ==========================================================================
+   Game 25: Password Too Weak
+   ========================================================================== */
+
+.ds-password-game {
+  background: #f7f7f7;
+}
+
+.ds-password-panel {
+  text-align: center;
+  max-width: 300px;
+  width: 100%;
+  padding: 16px;
+}
+
+.ds-password-icon {
+  font-size: 40px;
+  margin-bottom: 8px;
+}
+
+.ds-password-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16px;
+}
+
+.ds-password-input-wrap {
+  margin-bottom: 12px;
+}
+
+.ds-password-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  font-family: monospace;
+  letter-spacing: 1px;
+  outline: none;
+  box-sizing: border-box;
+  background: #fff;
+  color: #333;
+}
+
+.ds-password-input:focus {
+  border-color: #667eea;
+}
+
+.ds-password-meter {
+  height: 6px;
+  background: #e0e0e0;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.ds-password-meter-fill {
+  height: 100%;
+  width: 0;
+  border-radius: 3px;
+  transition: width 0.3s, background 0.3s;
+}
+
+.ds-password-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #888;
+  margin-bottom: 14px;
+  min-height: 18px;
+}
+
+.ds-password-rules {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+}
+
+.ds-password-rules li {
+  font-size: 12px;
+  color: #999;
+  padding: 4px 0 4px 22px;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.ds-password-rules li::before {
+  content: '○';
+  position: absolute;
+  left: 4px;
+  color: #ccc;
+  transition: color 0.2s;
+}
+
+.ds-password-rules li.pass {
+  color: #38a169;
+}
+
+.ds-password-rules li.pass::before {
+  content: '●';
+  color: #38a169;
+}
+
+
+/* ==========================================================================
+   Screen Time Report
+   ========================================================================== */
+
+.ds-report {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 20px;
+  padding: 32px 20px;
+  animation: ds-fade-in 0.6s ease;
+  text-align: center;
+}
+
+.ds-report-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.ds-report-icon {
+  font-size: 40px;
+}
+
+.ds-report-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.ds-report-stats {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.ds-report-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 80px;
+}
+
+.ds-report-stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.ds-report-stat-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ds-report-quip {
+  font-size: 14px;
+  color: var(--text-muted);
+  font-style: italic;
+  margin: 8px 0;
+}
