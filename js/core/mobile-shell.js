@@ -97,9 +97,16 @@ class MobileShell {
       this.openApp(btn.dataset.module);
     });
 
-    // Back button
+    // Back button (in-app)
     this.appViewEl.querySelector('.mobile-back-btn').addEventListener('click', () => {
-      this.closeApp();
+      history.back();
+    });
+
+    // Browser back button
+    window.addEventListener('popstate', (e) => {
+      if (this.activeModule && !(e.state && e.state.app)) {
+        this.closeApp();
+      }
     });
   }
 
@@ -115,6 +122,9 @@ class MobileShell {
     this.activeModule = mod;
     this.appBarTitle.textContent = mod.title;
     this.appContentEl.innerHTML = '';
+
+    // Push history entry so browser back button closes the app
+    history.pushState({ app: moduleId }, '', '');
 
     // Show app view, hide home
     this.homeEl.style.display = 'none';
