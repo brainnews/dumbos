@@ -17,6 +17,7 @@ const PomodoroModule = {
   isRunning: false,
   mode: 'work', // 'work', 'shortBreak', 'longBreak'
   sessionsCompleted: 0,
+  _originalTitle: null,
 
   DURATIONS: {
     work: 25 * 60,
@@ -113,6 +114,7 @@ const PomodoroModule = {
     this.startBtn.textContent = 'Resume';
     this.startBtn.classList.remove('running');
     clearInterval(this.intervalId);
+    this._restorePageTitle();
   },
 
   _reset() {
@@ -122,6 +124,7 @@ const PomodoroModule = {
     clearInterval(this.intervalId);
     this.timeLeft = this.DURATIONS[this.mode];
     this._updateDisplay();
+    this._restorePageTitle();
   },
 
   _complete() {
@@ -181,7 +184,13 @@ const PomodoroModule = {
   _updateDisplay() {
     const mins = Math.floor(this.timeLeft / 60);
     const secs = this.timeLeft % 60;
-    this.timeDisplay.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    const timeStr = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    this.timeDisplay.textContent = timeStr;
+
+    if (this.isRunning) {
+      const labels = { work: 'Work', shortBreak: 'Break', longBreak: 'Long Break' };
+      this._setPageTitle(`${timeStr} ${labels[this.mode]}`);
+    }
   },
 
   render() {
@@ -191,10 +200,25 @@ const PomodoroModule = {
     }
   },
 
+  _setPageTitle(text) {
+    if (this._originalTitle === null) {
+      this._originalTitle = document.title;
+    }
+    document.title = `${text} — DumbOS`;
+  },
+
+  _restorePageTitle() {
+    if (this._originalTitle !== null) {
+      document.title = this._originalTitle;
+      this._originalTitle = null;
+    }
+  },
+
   destroy() {
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
+    this._restorePageTitle();
     if (this._audioCtx) {
       this._audioCtx.close().catch(() => {});
       this._audioCtx = null;

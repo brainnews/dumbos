@@ -13,6 +13,7 @@ const YouTubeModule = {
   container: null,
   storage: null,
   player: null,
+  _originalTitle: null,
   queue: [],
   currentIndex: -1,
   volume: 80,
@@ -41,6 +42,7 @@ const YouTubeModule = {
   destroy() {
     // Save current playback position before closing
     this._saveCurrentTime();
+    this._restorePageTitle();
 
     if (this.progressInterval) {
       clearInterval(this.progressInterval);
@@ -562,9 +564,25 @@ const YouTubeModule = {
       const track = this.queue[this.currentIndex];
       titleEl.textContent = track.title;
       authorEl.textContent = track.author;
+      this._setPageTitle(track.title);
     } else {
       titleEl.textContent = 'No track loaded';
       authorEl.textContent = '';
+      this._restorePageTitle();
+    }
+  },
+
+  _setPageTitle(trackTitle) {
+    if (this._originalTitle === null) {
+      this._originalTitle = document.title;
+    }
+    document.title = `${trackTitle} — DumbOS`;
+  },
+
+  _restorePageTitle() {
+    if (this._originalTitle !== null) {
+      document.title = this._originalTitle;
+      this._originalTitle = null;
     }
   },
 
